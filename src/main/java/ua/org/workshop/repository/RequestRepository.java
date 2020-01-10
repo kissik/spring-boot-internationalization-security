@@ -12,4 +12,8 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     public List<Request> getRequestListByLanguageAndAuthor(
             String language,
             Account author);
+
+    public List<Request> getRequestListByLanguage(
+            String language
+    );
 }

@@ -33,7 +33,7 @@
         							<th class="string"><spring:message code="requestsList.table.title" /></th>
         							<th class="string"><spring:message code="requestsList.table.status" /></th>
         							<th class="string"><spring:message code="requestsList.table.description" /></th>
-        							<security:authorize access="hasRole('MANAGER')">
+        							<security:authorize access="hasRole('ADMIN')">
         							    <th class="string"><spring:message code="requestsList.table.author" /></th>
         							</security:authorize>
         						</tr>
@@ -46,7 +46,7 @@
         								<td class="title"><span class="request" style="white-space:nowrap"><a href="${requestUrl}"><c:out value="${request.title}" /></a></td>
         								<td class="status"><c:out value="${request.status.code}" /></td>
         								<td class="description"><c:out value="${request.description}" /></td>
-        								<security:authorize access="hasRole('MANAGER')">
+        								<security:authorize access="hasRole('ADMIN')">
         								    <td class="author"><a href="${usersUrl}/${request.user.id}"><c:out value="${request.user.username}" /></a></td>
         							    </security:authorize>
         							</tr>

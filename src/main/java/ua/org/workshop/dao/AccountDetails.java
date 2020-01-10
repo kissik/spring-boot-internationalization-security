@@ -22,6 +22,10 @@ public class AccountDetails implements UserDetails {
 
     }
 
+    public boolean hasRole(String role){
+        return account.hasRole(role);
+    }
+
     @Override
     public String getPassword() {
         return account.getPassword();

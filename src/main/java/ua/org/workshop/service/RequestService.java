@@ -7,11 +7,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import ua.org.workshop.domain.Account;
 import ua.org.workshop.domain.Request;
+import ua.org.workshop.domain.Status;
 import ua.org.workshop.repository.AccountRepository;
 import ua.org.workshop.repository.RequestRepository;
 
 import org.springframework.transaction.annotation.Transactional;
 import ua.org.workshop.repository.StatusRepository;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,9 +28,9 @@ public class RequestService  {
     private final RequestRepository requestRepository;
 
     @Autowired
-    private StatusRepository statusRepository;
+    private StatusService statusService;
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountService accountService;
 
     public RequestService(RequestRepository requestRepository){
         super();
@@ -36,8 +42,8 @@ public class RequestService  {
         boolean valid = !errors.hasErrors();
 
         if (valid) {
-            Account author = accountRepository.findByUsername(username);
-            request.setStatus(statusRepository.findByCode(status));
+            Account author = accountService.getAccountByUsername(username);
+            request.setStatus(statusService.findByCode(status));
             request.setAuthor(author);
             request.setUser(author);
             request.setClosed(false);
@@ -49,7 +55,22 @@ public class RequestService  {
         return valid;
     }
 
-    public RequestRepository getRequestRepository() {
-        return requestRepository;
+    public List<Request> getRequestListByLanguageAndAuthor(String language, Account author){
+        return requestRepository.getRequestListByLanguageAndAuthor(language, author);
+    }
+
+    public List<Request> getRequestListByLanguage(String language){
+        return requestRepository.getRequestListByLanguage(language);
+    }
+
+    public Optional<Request> findById(Long id){
+        return requestRepository.findById(id);
+    }
+
+    @Transactional(readOnly = false)
+    public void setRequestInfo(Request request, String status) {
+
+        request.setStatus(statusService.findByCode(status));
+        requestRepository.saveAndFlush(request);
     }
 }

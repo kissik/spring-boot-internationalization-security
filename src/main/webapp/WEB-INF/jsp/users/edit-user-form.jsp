@@ -6,7 +6,7 @@
 
 <%@ include file="/WEB-INF/jsp/urls.jspf" %>
 
-<c:url var="userUrl" value="/users/${originalAccount.id}.html" />
+<c:url var="userUrl" value="/users/${originalAccount.id}" />
 
 <spring:message var="saveLabel" code="editUser.label.submit" />
 
@@ -23,7 +23,7 @@
         	<li class="breadcrumb-item"><a href="${usersUrl}"><spring:message code="usersList.pageTitle" /></a></li>
         	<li class="breadcrumb-item active"><a href="${userUrl}">${originalAccount.username}</a></li>
         </ol>
-        	<h1><spring:message code="editUser.pageTitle" />: ${account.username} </h1>
+        <h1><spring:message code="editUser.pageTitle" />: ${account.username} </h1>
 
 		<c:if test="${param.saved == true}">
 			<div class="info alert"><spring:message code="editUser.user.save" /><a href="${userUrl}"><spring:message code="editUser.user.view" /></a></div>
