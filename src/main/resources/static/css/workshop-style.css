@@ -1,0 +1,9 @@
+.workshop-wrapper-float-right{
+    display: inline-block;
+    color: white;
+}
+
+.workshop-content-body{
+    max-width: 1000px;
+    margin: auto;
+}

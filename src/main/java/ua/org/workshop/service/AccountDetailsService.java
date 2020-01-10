@@ -1,0 +1,40 @@
+package ua.org.workshop.service;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.Hibernate;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ua.org.workshop.dao.AccountDetails;
+import ua.org.workshop.domain.Account;
+import ua.org.workshop.repository.AccountRepository;
+
+@Service
+@Transactional(readOnly = true)
+public class AccountDetailsService implements UserDetailsService {
+
+    private final AccountRepository accountRepository;
+    private static final Logger logger = LogManager.getLogger(AccountDetailsService.class);
+
+    public AccountDetailsService(AccountRepository accountRepository){
+        super();
+        this.accountRepository = accountRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Account account = this.accountRepository.findByUsername(username);
+        logger.info(account.getFirstName());
+
+        if (account == null) {
+            logger.info("cannot find username: " + username);
+            throw new UsernameNotFoundException("cannot find username: " + username);
+        }
+
+        Hibernate.initialize(account.getRoles());
+        return new AccountDetails(account);
+    }
+}
