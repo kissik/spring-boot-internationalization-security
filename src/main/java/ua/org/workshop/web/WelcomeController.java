@@ -6,7 +6,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -20,6 +19,8 @@ import ua.org.workshop.service.AccountService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+
+/* TODO all Map without Object ! */
 
 @Controller
 public class WelcomeController {
@@ -95,7 +96,7 @@ public class WelcomeController {
 		try{
 			model.put("roleList", this.roleService.getRoleRepository().findAll());
 			logger.info("role list: " + this.roleService.getRoleRepository().findAll().toString());
-			Account account = accountService.getAccountById(id).get();
+			Account account = accountService.getAccountById(id);
 			model.put("originalAccount", account);
 			logger.info("originalAccount:" + account.toString());
 			RoleForm roleForm = new RoleForm();
@@ -122,7 +123,7 @@ public class WelcomeController {
 			Map<String, Object> model) {
 
 		Account accountOrigin;
-		accountOrigin = accountService.getAccountById(id).get();
+		accountOrigin = accountService.getAccountById(id);
 
 		accountService.setAccountInfo(accountOrigin, roleForm.getRole());
 

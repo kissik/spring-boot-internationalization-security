@@ -6,10 +6,11 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.math.BigDecimal;
 
+/**
+ * TODO send all validation messages to messages properties
+ */
 @Entity
 @Table(name = "requestlist")
-@NamedQuery(name = "requestlist.byId",
-        query = "from Request r where r.id = :id")
 public class Request {
     private Long id;
     private String title;

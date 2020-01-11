@@ -10,8 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ua.org.workshop.domain.Account;
 import ua.org.workshop.domain.Role;
+import ua.org.workshop.exception.WorkshopErrors;
+import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.repository.AccountRepository;
-import ua.org.workshop.repository.RoleRepository;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,7 +27,7 @@ import java.util.Optional;
 public class AccountService{
 
     @Autowired
-    private RoleRepository roleRepository;
+    private RoleService roleService;
 
     private final AccountRepository accountRepository;
 
@@ -36,7 +37,7 @@ public class AccountService{
     }
 
     private static final Logger logger = LogManager.getLogger(AccountService.class);
-
+    /* TODO try catch VS valid form */
     @Transactional(readOnly = false)
     public boolean registerAccount(Account account, String[] roleForm, String password, Errors errors) {
         validateUsername(account.getUsername(), errors);
@@ -48,7 +49,7 @@ public class AccountService{
 
         if (valid) {
             Collection<Role> roles = new HashSet<>();
-            for (String roleStr : roleForm) roles.add(roleRepository.findByCode(roleStr));
+            for (String roleStr : roleForm) roles.add(roleService.findByCode(roleStr));
             account.setRoles(roles);
             accountRepository.save(account);
         }
@@ -87,27 +88,37 @@ public class AccountService{
         }
     }
 
-    public List<Account> getAccountList() {
-        return accountRepository.findAll();
+    public List<Account> getAccountList() throws WorkshopException {
+
+        List<Account> accountList = accountRepository
+                .findAll();
+        if (accountList == null) {
+            throw new WorkshopException(WorkshopErrors.ACCOUNT_LIST_IS_EMPTY_ERROR);
+        }
+        return accountList;
     }
 
-    public Optional<Account> getAccountById(Long id) {return accountRepository.findById(id);}
+    public Account getAccountById(Long id) throws WorkshopException {
+        return accountRepository
+                .findById(id)
+                .orElseThrow(() -> new WorkshopException(WorkshopErrors.ACCOUNT_NOT_FOUND_ERROR));
+    }
 
     @Transactional(readOnly = false)
     public void setAccountInfo(Account account, String[] roleForm) {
 
             Collection<Role> roles = new HashSet<>();
-            for (String roleStr : roleForm) roles.add(roleRepository.findByCode(roleStr));
+            for (String roleStr : roleForm) roles.add(roleService.findByCode(roleStr));
             account.setRoles(roles);
             accountRepository.saveAndFlush(account);
 
     }
 
-    public Account getAccountByUsername(String username) {
-        Account account = accountRepository.findByUsername(username);
-        if (account != null) {
-            Hibernate.initialize(account.getRoles());
-        }
+    public Account getAccountByUsername(String username) throws WorkshopException {
+        Account account = accountRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new WorkshopException(WorkshopErrors.ACCOUNT_NOT_FOUND_ERROR));
+        Hibernate.initialize(account.getRoles());
         return account;
     }
 }

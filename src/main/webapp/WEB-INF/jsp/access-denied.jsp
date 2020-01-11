@@ -9,8 +9,10 @@
         <title><spring:message code="access.denied.title"/></title>
     </jsp:attribute>
     <jsp:body>
-        <h1><spring:message code="access.denied.title" /></h1>
-        <p><spring:message code="access.denied.sorry" /></p>
-        <p>${error}</p><p><spring:message code="home.welcome" /></p>
+        <div class="workshop-access-denied-body-class">
+            <div class="workshop-error-message-wrapper">
+        		<h1><spring:message code="access.denied.title" /></h1>
+            </div>
+        </div>
     </jsp:body>
 </t:generic>

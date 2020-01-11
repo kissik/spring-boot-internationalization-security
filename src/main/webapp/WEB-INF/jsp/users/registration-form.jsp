@@ -15,7 +15,7 @@
     <jsp:body>
         <div class="container main-content">
         		<h1><spring:message code="newUserRegistration.pageTitle" /></h1>
-        		<form:form cssClass="main" modelAttribute="account" method = "${method}">
+        		<form:form cssClass="main" modelAttribute="account" method = "post">
         			<p> <spring:message code="newUserRegistration.message.allFieldsRequired" /></p>
         				<div class="form-group row">
         					<div class="col-sm-2 workshop-field-label">

@@ -62,7 +62,7 @@
 				</div>
 			</div>
 		</div>
-		<security:authorize access="hasRole('MANAGER')">
+		<security:authorize access="hasAnyRole('MANAGER', 'WORKMAN')">
 		    <a href="${editRequestUrl}" class="btn btn-primary" title="${editRequest}"><spring:message code="request.edit" /></a>
 		</security:authorize>
     </div>

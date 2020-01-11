@@ -4,80 +4,35 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 import ua.org.workshop.dao.AccountDetails;
 import ua.org.workshop.domain.Request;
+import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.AccountService;
 import ua.org.workshop.service.RequestService;
 import ua.org.workshop.service.StatusService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.*;
 
 @Controller
 public class RequestController {
 
-    public class RequestForm{
-
-        private String title;
-        private String description;
-
-        @NotNull
-        @Size(min = 6, max = 50, message = "Can't be less than 6 or more than 50 characters")
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        @NotNull
-        @Size(min = 6, max = 255, message = "Can't be less than 6 or more than 255 characters")
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        public String toString() {
-            return new StringBuilder()
-                    .append(" title:" + title)
-                    .append(" description:" + description)
-                    .toString();
-        }
-    }
-
-    public class StatusForm{
-        private String status;
-
-        @NotNull(message = "This field is required!")
-        public String getStatus() { return status; }
-
-        public void setStatus(String status) { this.status = status; }
-
-        public String toString() {
-            return new StringBuilder()
-                    .append(" status:" + status)
-                    .toString();
-        }
-    }
-
-    private static final String VN_NEW_FORM = "requests/create-request-form";
-    private static final String VN_NEW_OK = "redirect:/requests";
-    private static final String VN_EDIT_OK = "redirect:/requests/{id}?saved=true";
+    private static final String CREATE_NEW_FORM_JSP_FILE = "requests/create-request-form";
+    private static final String REDIRECT_TO_REQUESTS_LISTS_ON_SUCCESSFUL_NEW_REQUEST = "redirect:/requests";
+    private static final String REDIRECT_TO_REQUEST_ON_SUCCESSFUL_EDIT_REQUEST = "redirect:/requests/{id}?saved=true";
     private static final String DEFAULT_STATUS = "REGISTER";
+    private static final String MANAGER_STATUS = "REGISTER";
+    private static final String WORKMAN_STATUS = "ACCEPT";
 
     private static final Logger logger = LogManager.getLogger(RequestController.class);
 
@@ -99,101 +54,135 @@ public class RequestController {
     }
 
     @GetMapping("/requests")
-    public String requests(Map<String, Object> model,
+    public String requests(Model model,
                            Locale locale) {
-        List<Request> requestsList = null;
-
-        if (isCurrentUserHasRole("MANAGER"))
-            requestsList = requestService
-                    .getRequestListByLanguage(
-                            getLanguageStringForStoreInDB(locale)
-                    );
-        else
-            requestsList = requestService
+        try{
+            model.addAttribute("requestsList", requestService
                     .getRequestListByLanguageAndAuthor(
                             getLanguageStringForStoreInDB(locale),
                             accountService.getAccountByUsername(getCurrentUsername())
-                    );
+                    ));
+        }catch(WorkshopException e){
+            logger.info("custom error message: " + e.getMessage());
+            logger.error("custom error message: " + e.getMessage());
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
+        return "requests/requests-list";
+    }
 
-        model.put("requestsList", requestsList);
+    @GetMapping("/manager-requests")
+    public String managerRequests(Model model,
+                           Locale locale) {
+        try{
+            model.addAttribute("requestsList",  requestService
+                    .getRequestListByLanguageAndStatus(
+                            getLanguageStringForStoreInDB(locale),
+                            statusService.findByCode(MANAGER_STATUS)
+                    ));
+        }catch(WorkshopException e){
+            logger.info("custom error message: " + e.getMessage());
+            logger.error("custom error message: " + e.getMessage());
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
+
+        return "requests/requests-list";
+    }
+
+    @GetMapping("/workman-requests")
+    public String workmanRequests(Model model,
+                                  Locale locale) {
+        try{
+            model.addAttribute("requestsList",  requestService
+                .getRequestListByLanguageAndStatus(
+                        getLanguageStringForStoreInDB(locale),
+                        statusService.findByCode(WORKMAN_STATUS)
+                ));
+        }catch(WorkshopException e){
+            logger.info("custom error message: " + e.getMessage());
+            logger.error("custom error message: " + e.getMessage());
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
         return "requests/requests-list";
     }
 
     @RequestMapping(value = "/requests/{id}", method = RequestMethod.GET)
-    public String getRequest(@PathVariable("id") Long id, Map<String, Object> model) throws IllegalArgumentException{
+    public String getRequest(@PathVariable("id") Long id, Model model) throws IllegalArgumentException{
         try{
-            Optional<Request> request = requestService.findById(id);
-            model.put("request", request.get());
-        }catch(IllegalArgumentException e){
-            model.put("error", e.getMessage());
-            return "access-denied";
+            model.addAttribute("request", requestService.findById(id));
+        }catch(WorkshopException e){
+            logger.info("custom error message: " + e.getMessage());
+            logger.error("custom error message: " + e.getMessage());
+            model.addAttribute("message", e.getMessage());
+            return "error";
         }
         return "requests/request";
     }
 
     @RequestMapping(value = "/requests/new", method = RequestMethod.GET)
-    public String getRequestForm(Map<String, Object> model) {
-        RequestForm requestForm = new RequestForm();
-        model.put("request", requestForm);
-        model.put("method", "post");
-
-        return VN_NEW_FORM;
+    public String getRequestForm(Map<String, RequestForm> model) {
+        model.put("request", new RequestForm());
+        return CREATE_NEW_FORM_JSP_FILE;
     }
 
     @RequestMapping(value = "/requests/new", method = RequestMethod.POST)
     public String postRequestForm(
             @ModelAttribute("request") @Valid RequestForm form,
-            BindingResult result, Map<String, Object> model,
+            BindingResult result,
+            Model model,
             Locale locale) {
 
-        logger.info(form.toString());
+        logger.info("new request form creation: "+ form.toString());
 
-        requestService.newRequest(toRequest(form, locale), getCurrentUsername(), DEFAULT_STATUS, result);
-
-        model.put("method", "post");
-
-        return (result.hasErrors() ? VN_NEW_FORM : VN_NEW_OK);
+        try{
+            requestService.newRequest(toRequest(form, locale),
+                accountService.getAccountByUsername(getCurrentUsername()),
+                statusService.findByCode(DEFAULT_STATUS));
+        }catch(WorkshopException e){
+            logger.info("custom error message: " + e.getMessage());
+            logger.error("custom error message: " + e.getMessage());
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
+        return (result.hasErrors() ? CREATE_NEW_FORM_JSP_FILE : REDIRECT_TO_REQUESTS_LISTS_ON_SUCCESSFUL_NEW_REQUEST);
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER', 'WORKMAN')")
     @RequestMapping(value = "/requests/{id}/edit", method = RequestMethod.GET)
     public String getEditRequestStatusForm(
             @PathVariable("id") Long id,
-            Map<String, Object> model) {
+            Model model) {
+        StatusForm statusForm = new StatusForm();
         try{
-            Request request = requestService.findById(id).get();
-
-            model.put("statusList", request.getStatus().getNextStatuses());
-            logger.info("statuses list: " + request.getStatus().getNextStatuses().toString());
-            model.put("originalRequest", request);
-            logger.info("originalRequest:" + request.toString());
-            model.put("statuses", new StatusForm());
-
-        }catch(IllegalArgumentException e){
-            model.put("error", e.getMessage());
-            return "access-denied";
-        }catch(NullPointerException e){
-            model.put("error", e.getMessage());
-            return "access-denied";
+            statusForm.setRequest(requestService.findById(id));
+        }catch(WorkshopException e){
+            logger.info("custom error message: " + e.getMessage());
+            logger.error("custom error message: " + e.getMessage());
+            model.addAttribute("message", e.getMessage());
+            return "error";
         }
+        model.addAttribute("statuses", statusForm);
         return "requests/edit-request-form";
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER', 'WORKMAN')")
     @RequestMapping(value = "/requests/{id}/edit", method = RequestMethod.POST)
     public String putRequestStatus(
             @PathVariable("id") Long id,
             @ModelAttribute("statuses") @Valid StatusForm statusForm,
-            BindingResult result,
-            Map<String, Object> model) {
-
-        Request requestOrigin;
-        requestOrigin = requestService.findById(id).get();
-
-        requestService.setRequestInfo(requestOrigin, statusForm.getStatus());
-
-        model.put("title", requestOrigin.getTitle());
-        return VN_EDIT_OK;
+            Model model) {
+        try{
+            requestService.setRequestInfo(requestService.findById(id), statusForm.getStatus());
+        }catch(WorkshopException e){
+            logger.info("custom error message: " + e.getMessage());
+            logger.error("custom error message: " + e.getMessage());
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
+        return REDIRECT_TO_REQUEST_ON_SUCCESSFUL_EDIT_REQUEST;
     }
-
 
     private AccountDetails getAuthentication(){
         SecurityContext securityCtx = SecurityContextHolder.getContext();

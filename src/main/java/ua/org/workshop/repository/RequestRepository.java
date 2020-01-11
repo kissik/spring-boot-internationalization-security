@@ -4,16 +4,23 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ua.org.workshop.domain.Account;
 import ua.org.workshop.domain.Request;
+import ua.org.workshop.domain.Status;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
-    public List<Request> getRequestListByLanguageAndAuthor(
+    public Optional<List<Request>> getRequestListByLanguageAndAuthor(
             String language,
             Account author);
 
-    public List<Request> getRequestListByLanguage(
+    public Optional<List<Request>> getRequestListByLanguage(
             String language
+    );
+
+    public Optional<List<Request>> getRequestListByLanguageAndStatus(
+            String language,
+            Status status
     );
 }

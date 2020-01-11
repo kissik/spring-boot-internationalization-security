@@ -6,7 +6,7 @@
 
 <%@ include file="/WEB-INF/jsp/urls.jspf" %>
 
-<c:url var="requestUrl" value="/requests/${originalRequest.id}" />
+<c:url var="requestUrl" value="/requests/${statuses.request.id}" />
 
 <spring:message var="saveLabel" code="editRequest.label.submit" />
 
@@ -21,9 +21,9 @@
         <ol class="breadcrumb">
         	<li class="breadcrumb-item"><a href="${homeUrl}"><spring:message code="home.pageTitle" /></a></li>
         	<li class="breadcrumb-item"><a href="${requestsUrl}"><spring:message code="requestsList.pageTitle" /></a></li>
-        	<li class="breadcrumb-item active"><a href="${requestUrl}">${originalRequest.title}</a></li>
+        	<li class="breadcrumb-item active"><a href="${requestUrl}">${statuses.request.title}</a></li>
         </ol>
-        <h1><spring:message code="editRequest.pageTitle" />: ${originalRequest.title} </h1>
+        <h1><spring:message code="editRequest.pageTitle" />: ${statuses.request.title} </h1>
 
 		<c:if test="${param.saved == true}">
 			<div class="info alert"><spring:message code="editRequest.request.save" /><a href="${requestUrl}"><spring:message code="editRequest.request.view" /></a></div>
@@ -35,14 +35,14 @@
         					<div class="col-sm-2 workshop-field-label">
         					</div>
         					<div class="col-sm-6">
-        					    ${originalRequest.title}
+        					    ${statuses.request.title}
         					</div>
         			    </div>
                         <div class="form-group row">
         					<div class="col-sm-2 workshop-field-label">
         					</div>
         					<div class="col-sm-6">
-        					    ${originalRequest.description}
+        					    ${statuses.request.description}
         					</div>
         			    </div>
                         <div class="form-group row">
@@ -52,7 +52,7 @@
         					<div class="col-sm-6">
         						<div>
         						<form:select path="status" cssClass="custom-select medium" cssErrorClass="medium error" >
-        							<c:forEach items="${statusList}" var="statuses">
+        							<c:forEach items="${statuses.request.status.nextStatuses}" var="statuses">
         			 				<form:option value="${statuses.code}">${statuses.code}</form:option>
         							</c:forEach>
         			 			</form:select>

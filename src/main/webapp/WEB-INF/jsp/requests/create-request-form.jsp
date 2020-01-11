@@ -15,7 +15,7 @@
     <jsp:body>
         <div class="container main-content">
         		<h1><spring:message code="newRequest.pageTitle" /></h1>
-        		<form:form cssClass="main" modelAttribute="request" method = "${method}">
+        		<form:form cssClass="main" modelAttribute="request" method = "post">
         				<div class="form-group row">
         					<div class="col-sm-2 workshop-field-label">
         					    <spring:message code="newRequest.label.title" />

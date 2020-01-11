@@ -4,20 +4,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
 import ua.org.workshop.domain.Account;
 import ua.org.workshop.domain.Request;
 import ua.org.workshop.domain.Status;
-import ua.org.workshop.repository.AccountRepository;
+import ua.org.workshop.exception.WorkshopErrors;
+import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.repository.RequestRepository;
 
 import org.springframework.transaction.annotation.Transactional;
-import ua.org.workshop.repository.StatusRepository;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -38,39 +34,59 @@ public class RequestService  {
     }
 
     @Transactional(readOnly = false)
-    public boolean newRequest(Request request, String username, String status, Errors errors) {
-        boolean valid = !errors.hasErrors();
+    public void newRequest(Request request, Account author, Status status) throws WorkshopException {
+        logger.info("Before New request creation");
 
-        if (valid) {
-            Account author = accountService.getAccountByUsername(username);
-            request.setStatus(statusService.findByCode(status));
-            request.setAuthor(author);
-            request.setUser(author);
-            request.setClosed(false);
-
+        request.setStatus(status);
+        request.setAuthor(author);
+        request.setUser(author);
+        request.setClosed(false);
+        try {
             requestRepository.save(request);
-            logger.info(request.toString());
         }
-
-        return valid;
+        catch(Exception e){
+            logger.error(WorkshopErrors.DATABASE_CONNECTION_ERROR.message());
+            throw new WorkshopException(WorkshopErrors.DATABASE_CONNECTION_ERROR);
+            }
+        logger.info("New request was created: " + request.toString());
     }
 
-    public List<Request> getRequestListByLanguageAndAuthor(String language, Account author){
-        return requestRepository.getRequestListByLanguageAndAuthor(language, author);
+    public List<Request> getRequestListByLanguageAndAuthor(String language, Account author) throws WorkshopException{
+        return requestRepository
+                .getRequestListByLanguageAndAuthor(language, author)
+                .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_IS_EMPTY_ERROR));
     }
 
-    public List<Request> getRequestListByLanguage(String language){
-        return requestRepository.getRequestListByLanguage(language);
+    public List<Request> getRequestListByLanguage(String language) throws WorkshopException{
+        return requestRepository
+                .getRequestListByLanguage(language)
+                .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_IS_EMPTY_ERROR));
     }
 
-    public Optional<Request> findById(Long id){
-        return requestRepository.findById(id);
+    public Request findById(Long id) throws WorkshopException{
+        return requestRepository
+                .findById(id)
+                .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_NOT_FOUND_ERROR));
     }
 
     @Transactional(readOnly = false)
-    public void setRequestInfo(Request request, String status) {
-
+    public void setRequestInfo(Request request, String status) throws WorkshopException{
         request.setStatus(statusService.findByCode(status));
-        requestRepository.saveAndFlush(request);
+        try{
+            requestRepository.saveAndFlush(request);
+        }
+        catch(Exception e){
+            logger.error(WorkshopErrors.DATABASE_CONNECTION_ERROR.message());
+            throw new WorkshopException(WorkshopErrors.DATABASE_CONNECTION_ERROR);
+        }
+        logger.info("Request was changed: " + request.toString());
+    }
+
+    public List<Request> getRequestListByLanguageAndStatus (
+            String language,
+            Status status) throws WorkshopException{
+        return requestRepository
+                .getRequestListByLanguageAndStatus(language, status)
+                .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_IS_EMPTY_ERROR));
     }
 }

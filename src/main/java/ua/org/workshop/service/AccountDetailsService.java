@@ -16,17 +16,17 @@ import ua.org.workshop.repository.AccountRepository;
 @Transactional(readOnly = true)
 public class AccountDetailsService implements UserDetailsService {
 
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
     private static final Logger logger = LogManager.getLogger(AccountDetailsService.class);
 
-    public AccountDetailsService(AccountRepository accountRepository){
+    public AccountDetailsService(AccountService accountService){
         super();
-        this.accountRepository = accountRepository;
+        this.accountService = accountService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = this.accountRepository.findByUsername(username);
+        Account account = accountService.getAccountByUsername(username);
         logger.info(account.getFirstName());
 
         if (account == null) {

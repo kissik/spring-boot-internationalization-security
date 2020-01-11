@@ -1,6 +1,7 @@
 package ua.org.workshop.service;
 
 import org.springframework.stereotype.Service;
+import ua.org.workshop.domain.Role;
 import ua.org.workshop.repository.RoleRepository;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -17,5 +18,9 @@ public class RoleService  {
 
     public RoleRepository getRoleRepository() {
         return roleRepository;
+    }
+
+    public Role findByCode(String roleStr) {
+        return roleRepository.findByCode(roleStr);
     }
 }

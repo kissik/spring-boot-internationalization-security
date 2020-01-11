@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class PortalController {
 
-    // Use this instead of <mvc:view-controller> so we can handle all HTTP methods and not just GET. (Forwarding to the
-    // access denied page preserves the HTTP request method.)
-    @RequestMapping(value = "/access-denied.html")
-    public String getAccessDenied() { return "access-denied"; }
+    @RequestMapping(value = "/access-denied")
+    public String getAccessDenied() {
+        return "access-denied";
+    }
 
     @GetMapping(value = "/login")
     public String getLogin(){
