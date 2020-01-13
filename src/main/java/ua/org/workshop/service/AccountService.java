@@ -58,10 +58,16 @@ public class AccountService{
     }
 
     private void validateUsername(String username, Errors errors) {
-        if (accountRepository.findByUsername(username) != null) {
-            logger.debug("Validation failed: duplicate username -> " + username);
-            errors.rejectValue("username", "error.duplicate", new String[]{username}, "Login is already in use!");
+        try {
+            accountRepository.findByUsername(username);
         }
+        catch (WorkshopException e){
+            logger.error("error: " + e.getMessage());
+            logger.info("error: " + e.getMessage());
+            return;
+        }
+        errors.rejectValue("username", "error.duplicate", new String[]{username}, "Login is already in use!");
+        logger.info("Validation failed: duplicate username -> " + username);
     }
 
     private void validateEmail(String username, String email, Errors errors) {

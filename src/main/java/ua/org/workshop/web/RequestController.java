@@ -58,9 +58,10 @@ public class RequestController {
                            Locale locale) {
         try{
             model.addAttribute("requestsList", requestService
-                    .getRequestListByLanguageAndAuthor(
+                    .getRequestListByLanguageAndAuthorAndClosed(
                             getLanguageStringForStoreInDB(locale),
-                            accountService.getAccountByUsername(getCurrentUsername())
+                            accountService.getAccountByUsername(getCurrentUsername()),
+                            false
                     ));
         }catch(WorkshopException e){
             logger.info("custom error message: " + e.getMessage());
@@ -76,9 +77,10 @@ public class RequestController {
                            Locale locale) {
         try{
             model.addAttribute("requestsList",  requestService
-                    .getRequestListByLanguageAndStatus(
+                    .getRequestListByLanguageAndStatusAndClosed(
                             getLanguageStringForStoreInDB(locale),
-                            statusService.findByCode(MANAGER_STATUS)
+                            statusService.findByCode(MANAGER_STATUS),
+                            false
                     ));
         }catch(WorkshopException e){
             logger.info("custom error message: " + e.getMessage());
@@ -95,9 +97,10 @@ public class RequestController {
                                   Locale locale) {
         try{
             model.addAttribute("requestsList",  requestService
-                .getRequestListByLanguageAndStatus(
+                .getRequestListByLanguageAndStatusAndClosed(
                         getLanguageStringForStoreInDB(locale),
-                        statusService.findByCode(WORKMAN_STATUS)
+                        statusService.findByCode(WORKMAN_STATUS),
+                        false
                 ));
         }catch(WorkshopException e){
             logger.info("custom error message: " + e.getMessage());
@@ -174,7 +177,9 @@ public class RequestController {
             @ModelAttribute("statuses") @Valid StatusForm statusForm,
             Model model) {
         try{
-            requestService.setRequestInfo(requestService.findById(id), statusForm.getStatus());
+            requestService.setRequestInfo(requestService.findById(id),
+                    accountService.getAccountByUsername(getCurrentUsername()),
+                    statusForm.getStatus());
         }catch(WorkshopException e){
             logger.info("custom error message: " + e.getMessage());
             logger.error("custom error message: " + e.getMessage());

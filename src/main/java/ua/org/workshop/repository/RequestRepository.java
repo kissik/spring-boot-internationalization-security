@@ -11,16 +11,19 @@ import java.util.Optional;
 
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
-    public Optional<List<Request>> getRequestListByLanguageAndAuthor(
+    public Optional<List<Request>> getRequestListByLanguageAndAuthorAndClosed(
             String language,
-            Account author);
+            Account author,
+            boolean closed);
 
-    public Optional<List<Request>> getRequestListByLanguage(
-            String language
+    public Optional<List<Request>> getRequestListByLanguageAndClosed(
+            String language,
+            boolean closed
     );
 
-    public Optional<List<Request>> getRequestListByLanguageAndStatus(
+    public Optional<List<Request>> getRequestListByLanguageAndStatusAndClosed(
             String language,
-            Status status
+            Status status,
+            boolean closed
     );
 }

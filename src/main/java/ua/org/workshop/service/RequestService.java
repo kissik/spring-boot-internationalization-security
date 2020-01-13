@@ -40,7 +40,7 @@ public class RequestService  {
         request.setStatus(status);
         request.setAuthor(author);
         request.setUser(author);
-        request.setClosed(false);
+        request.setClosed(status.isClose());
         try {
             requestRepository.save(request);
         }
@@ -51,15 +51,15 @@ public class RequestService  {
         logger.info("New request was created: " + request.toString());
     }
 
-    public List<Request> getRequestListByLanguageAndAuthor(String language, Account author) throws WorkshopException{
+    public List<Request> getRequestListByLanguageAndAuthorAndClosed(String language, Account author, boolean closed) throws WorkshopException{
         return requestRepository
-                .getRequestListByLanguageAndAuthor(language, author)
+                .getRequestListByLanguageAndAuthorAndClosed(language, author, closed)
                 .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_IS_EMPTY_ERROR));
     }
 
-    public List<Request> getRequestListByLanguage(String language) throws WorkshopException{
+    public List<Request> getRequestListByLanguageAndClosed(String language, boolean closed) throws WorkshopException{
         return requestRepository
-                .getRequestListByLanguage(language)
+                .getRequestListByLanguageAndClosed(language, closed)
                 .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_IS_EMPTY_ERROR));
     }
 
@@ -70,8 +70,11 @@ public class RequestService  {
     }
 
     @Transactional(readOnly = false)
-    public void setRequestInfo(Request request, String status) throws WorkshopException{
-        request.setStatus(statusService.findByCode(status));
+    public void setRequestInfo(Request request, Account user, String status) throws WorkshopException{
+        Status newStatus = statusService.findByCode(status);
+        request.setStatus(newStatus);
+        request.setUser(user);
+        request.setClosed(newStatus.isClose());
         try{
             requestRepository.saveAndFlush(request);
         }
@@ -82,11 +85,12 @@ public class RequestService  {
         logger.info("Request was changed: " + request.toString());
     }
 
-    public List<Request> getRequestListByLanguageAndStatus (
+    public List<Request> getRequestListByLanguageAndStatusAndClosed (
             String language,
-            Status status) throws WorkshopException{
+            Status status,
+            boolean closed) throws WorkshopException{
         return requestRepository
-                .getRequestListByLanguageAndStatus(language, status)
+                .getRequestListByLanguageAndStatusAndClosed(language, status, closed)
                 .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_IS_EMPTY_ERROR));
     }
 }

@@ -44,7 +44,7 @@ public class AccountServiceIntegrationTest {
 
         accountService.registerAccount(
                 account,
-                new String[]{roleService.getRoleRepository().findByCode("ADMIN").getCode()},
+                new String[]{roleService.findByCode("ADMIN").getCode()},
                 passwordEncoder.encode("p4$$w0rd"),
                 (Errors) errors);
         Account newAccount = accountService.getAccountByUsername("kissik");

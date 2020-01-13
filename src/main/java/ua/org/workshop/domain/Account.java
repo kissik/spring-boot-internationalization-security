@@ -15,9 +15,7 @@ import org.springframework.security.core.GrantedAuthority;
  * @author kissik
  */
 @Entity
-@Table(name = "userlist")
-@NamedQuery(name = "userlist.byLogin",
-        query = "from Account a where a.username = :username")
+@Table(name = "user_list")
 public class Account {
     public static final Account ACCOUNT = new Account("anonymous");
 
@@ -124,7 +122,7 @@ public class Account {
 
     @ManyToMany
     @JoinTable(
-            name = "userrole",
+            name = "user_role",
             joinColumns = { @JoinColumn(name = "nuser", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "nrole", referencedColumnName = "id") })
     public Collection<Role> getRoles() { return roles; }

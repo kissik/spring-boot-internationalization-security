@@ -53,14 +53,14 @@
                     <security:authorize access="hasRole('MANAGER')">
                         <li class="nav-item active">
                             <a class="nav-link" href="/manager-requests">
-                                <spring:message code="requestsList.pageTitle"/>
+                                MANAGER <spring:message code="requestsList.pageTitle"/>
                             </a>
                         </li>
                     </security:authorize>
                     <security:authorize access="hasRole('WORKMAN')">
                         <li class="nav-item active">
                             <a class="nav-link" href="/workman-requests">
-                                <spring:message code="requestsList.pageTitle"/>
+                                WORKMAN <spring:message code="requestsList.pageTitle"/>
                             </a>
                         </li>
                     </security:authorize>

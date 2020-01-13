@@ -8,10 +8,16 @@ public enum WorkshopErrors {
     ACCOUNT_CREATE_NEW_ERROR (201, "account.create.error"),
     ACCOUNT_LIST_IS_EMPTY_ERROR (202, "account.list.empty.error"),
 
+    ROLE_NOT_FOUND_ERROR(250, "role.not.found.error"),
+
     REQUEST_NOT_FOUND_ERROR (300, "request.not.found.error"),
     REQUEST_CREATE_NEW_ERROR (301, "request.create.error"),
-    REQUEST_LIST_IS_EMPTY_ERROR (302, "request.list.empty.error");
+    REQUEST_LIST_IS_EMPTY_ERROR (302, "request.list.empty.error"),
 
+    REQUEST_HISTORY_NOT_FOUND_ERROR(330, "request.history.not.found.error"),
+    REQUEST_LIST_HISTORY_IS_EMPTY_ERROR (331, "request.history.list.not.found.error"),
+
+    STATUS_NOT_FOUND_ERROR(350, "status.not.found.error");
     private int code;
     private String message;
 

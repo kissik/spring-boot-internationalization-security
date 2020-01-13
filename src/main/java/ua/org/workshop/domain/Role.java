@@ -17,7 +17,6 @@ import org.springframework.security.core.GrantedAuthority;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "role")
-@NamedQuery(name = "role.byCode", query = "from Role where code= :code")
 public class Role implements GrantedAuthority{
     private Long id;
     private String code;

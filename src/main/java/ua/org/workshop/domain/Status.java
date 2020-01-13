@@ -12,11 +12,11 @@ import java.util.HashSet;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "status")
-@NamedQuery(name = "status.byCode", query = "from Status where code= :code")
 public class Status {
     private Long id;
     private String code;
     private String name;
+    private boolean close;
     private Collection<Status> nextStatuses = new HashSet<>();
 
     @Id
@@ -37,9 +37,17 @@ public class Status {
 
     public void setName(String name) { this.name = name; }
 
+    @Column(name = "bclose")
+    public boolean isClose() {
+        return close;
+    }
+
+    public void setClose(boolean close) {
+        this.close = close;
+    }
     @ManyToMany
     @JoinTable(
-            name = "nextstatuses",
+            name = "next_statuses",
             joinColumns = { @JoinColumn(name = "nstatus", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "nnextstatus", referencedColumnName = "id") })
     public Collection<Status> getNextStatuses() { return nextStatuses; }

@@ -3,27 +3,28 @@ package ua.org.workshop.domain;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  * TODO send all validation messages to messages properties
  */
 @Entity
-@Table(name = "request_list")
-public class Request {
+@Table(name = "request_list_history")
+public class RequestHistory {
     private Long id;
     private String title;
     private String description;
     private Status status;
     private Account author;
     private Account user;
-    private boolean closed = false;
     private LocalDate dateCreated;
     private LocalDate dateUpdated;
     private BigDecimal price;
     private String cause;
     private String language;
+    private String review;
+    private Long rating;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -141,12 +142,21 @@ public class Request {
         this.author = author;
     }
 
-    @Column(name = "bclosed")
-    public boolean isClosed() {
-        return closed;
+    @Column(name = "sreview")
+    public String getReview() {
+        return review;
     }
 
-    public void setClosed(boolean closed) {
-        this.closed = closed;
+    public void setReview(String review) {
+        this.review = review;
+    }
+
+    @Column(name = "nrating")
+    public Long getRating() {
+        return rating;
+    }
+
+    public void setRating(Long rating) {
+        this.rating = rating;
     }
 }
