@@ -61,6 +61,24 @@
         					</div>
         				</div>
         				<div class="form-group row">
+        					<div class="col-sm-2 workshop-field-label">
+        					    <spring:message code="editRequest.label.price" />
+        					</div>
+        					<div class="col-sm-6">
+        						<div><form:input type="number" path="price" cssClass="medium" cssErrorClass="medium error" /></div>
+        						<div class="alert alert-danger"><form:errors path="price" htmlEscape="false" /></div>
+        					</div>
+        				</div>
+        				<div class="form-group row">
+        					<div class="col-sm-2 workshop-field-label">
+        					    <spring:message code="editRequest.label.cause" />
+        					</div>
+        					<div class="col-sm-6">
+        						<div><form:input path="cause" cssClass="medium" cssErrorClass="medium error" /></div>
+        						<div class="alert alert-danger"><form:errors path="cause" htmlEscape="false" /></div>
+        					</div>
+        				</div>
+        				<div class="form-group row">
         					<div class="col-sm-2">
         						<input type="submit" class="btn btn-primary" value="<spring:message code="editRequest.label.submit" />" />
         					</div>

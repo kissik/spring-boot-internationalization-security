@@ -179,7 +179,7 @@ public class RequestController {
         try{
             requestService.setRequestInfo(requestService.findById(id),
                     accountService.getAccountByUsername(getCurrentUsername()),
-                    statusForm.getStatus());
+                    statusForm);
         }catch(WorkshopException e){
             logger.info("custom error message: " + e.getMessage());
             logger.error("custom error message: " + e.getMessage());
@@ -205,7 +205,13 @@ public class RequestController {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.setAllowedFields("title", "description", "status");
+        binder.setAllowedFields(
+                "title",
+                "description",
+                "status",
+                "price",
+                "comment",
+                "cause");
     }
 
     private Request toRequest(RequestForm form, Locale locale) {

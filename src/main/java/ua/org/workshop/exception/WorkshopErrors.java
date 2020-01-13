@@ -2,6 +2,11 @@ package ua.org.workshop.exception;
 
 public enum WorkshopErrors {
 
+    PRICE_NOT_FOUND_ERROR(10, "price.not.found.error"),
+    CAUSE_NOT_FOUND_ERROR(15, "cause.not.found.error"),
+    COMMENT_NOT_FOUND_ERROR(20, "comment.not.found.error"),
+    RATING_NOT_FOUND_ERROR(25, "rating.not.found.error"),
+
     DATABASE_CONNECTION_ERROR (100, "error.db.connection"),
 
     ACCOUNT_NOT_FOUND_ERROR (200, "account.not.found.error"),
@@ -18,6 +23,7 @@ public enum WorkshopErrors {
     REQUEST_LIST_HISTORY_IS_EMPTY_ERROR (331, "request.history.list.not.found.error"),
 
     STATUS_NOT_FOUND_ERROR(350, "status.not.found.error");
+
     private int code;
     private String message;
 
