@@ -58,7 +58,7 @@
 				</div>
 				<div class="form-group row">
 					<div class="col-sm-2 workshop-field-label"><spring:message code="request.closed" /></div>
-					<div class="col-sm-6"><spring:message code="${request.closed}" /></div>
+					<div class="col-sm-6"><spring:message code="${request.getClosedLiteral()}" /></div>
 				</div>
 			</div>
 		</div>

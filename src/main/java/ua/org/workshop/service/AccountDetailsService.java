@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.org.workshop.dao.AccountDetails;
 import ua.org.workshop.domain.Account;
-import ua.org.workshop.repository.AccountRepository;
+import ua.org.workshop.exception.WorkshopException;
 
 @Service
 @Transactional(readOnly = true)
@@ -26,13 +26,16 @@ public class AccountDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = accountService.getAccountByUsername(username);
-        logger.info(account.getFirstName());
-
-        if (account == null) {
+        Account account;
+        try {
+            account = accountService.getAccountByUsername(username);
+        }
+        catch(WorkshopException e){
             logger.info("cannot find username: " + username);
             throw new UsernameNotFoundException("cannot find username: " + username);
         }
+
+        logger.info(account.getFirstName());
 
         Hibernate.initialize(account.getRoles());
         return new AccountDetails(account);

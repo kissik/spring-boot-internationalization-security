@@ -6,9 +6,6 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.math.BigDecimal;
 
-/**
- * TODO send all validation messages to messages properties
- */
 @Entity
 @Table(name = "request_list")
 public class Request {
@@ -36,8 +33,8 @@ public class Request {
         this.id = id;
     }
 
-    @NotNull
-    @Size(min = 6, max = 50, message = "Can't be less than 6 or more than 50 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 6, max = 50, message = "{validation.text.error.from.six.to.fifty}")
     @Column(name = "stitle")
     public String getTitle() {
         return title;
@@ -47,8 +44,8 @@ public class Request {
         this.title = title;
     }
 
-    @NotNull
-    @Size(min = 1, max = 255, message = "Can't be less than 6 or more than 255 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 6, max = 255, message = "{validation.text.error.from.six.to.two.five.five}")
     @Column(name = "sdescription")
     public String getDescription() {
         return description;
@@ -58,7 +55,7 @@ public class Request {
         this.description = description;
     }
 
-    @NotNull
+    @NotNull(message = "{validation.text.error.required.field}")
     @ManyToOne
     @JoinColumn(name="nstatus", referencedColumnName = "id")
     public Status getStatus() {
@@ -69,7 +66,7 @@ public class Request {
         this.status = status;
     }
 
-    @NotNull
+    @NotNull(message = "{validation.text.error.required.field}")
     @ManyToOne
     @JoinColumn(name="nuser", referencedColumnName = "id")
     public Account getUser() {
@@ -108,6 +105,7 @@ public class Request {
     }
 
     @Column(name = "scause")
+    @Size(max = 255, message = "{validation.text.error.more.than.two.five.five}")
     public String getCause() {
         return cause;
     }
@@ -120,7 +118,7 @@ public class Request {
         return this.title + ": " + this.description;
     }
 
-    @NotNull
+    @NotNull(message = "{validation.text.error.required.field}")
     @Column(name = "slang")
     public String getLanguage() {
         return language;
@@ -130,7 +128,7 @@ public class Request {
         this.language = language;
     }
 
-    @NotNull
+    @NotNull(message = "{validation.text.error.required.field}")
     @ManyToOne
     @JoinColumn(name="nauthor", referencedColumnName = "id")
     public Account getAuthor() {
@@ -148,5 +146,10 @@ public class Request {
 
     public void setClosed(boolean closed) {
         this.closed = closed;
+    }
+
+    @Transient
+    public String getClosedLiteral(){
+        return "app.literal." + String.valueOf(closed);
     }
 }

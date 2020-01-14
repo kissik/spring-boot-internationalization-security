@@ -32,15 +32,15 @@ public class AccountForm {
     private String phone;
     private String[] role = {"ROLE_USER"};
 
-    @NotNull
-    @Size(min = 6, max = 50, message = "Can't be less than 6 or more than 50 characters")
-    @Pattern(regexp="[a-z_]{1}[0-9a-z_]*", message = "Latin symbols, '_' symbol and digits only")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 6, max = 50, message = "{validation.text.error.from.six.to.fifty}")
+    @Pattern(regexp="[a-z_]{1}[0-9a-z_]*", message = "{validation.username.symbols}")
     public String getUsername() { return username; }
 
     public void setUsername(String userName) { this.username = userName; }
 
-    @NotNull
-    @Size(min = 8, max = 50, message = "Can't be less than 8 or more than 50 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 8, max = 50, message = "{validation.text.error.from.eight.to.fifty}")
     public String getPassword() { return password; }
 
     public void setPassword(String password) { this.password = password; }
@@ -51,31 +51,31 @@ public class AccountForm {
         this.confirmPassword = confirmPassword;
     }
 
-    @NotNull
-    @Size(min = 3, max = 50, message = "Can't be less than 3 or more than 50 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
     public String getFirstName() { return firstName; }
 
     public void setFirstName(String firstName) { this.firstName = firstName; }
 
-    @NotNull
-    @Size(min = 3, max = 50, message = "Can't be less than 3 or more than 50 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
     public String getLastName() { return lastName; }
 
     public void setLastName(String lastName) { this.lastName = lastName; }
 
-    @NotNull
-    @Size(min = 6, max = 50, message = "Can't be less than 6 or more than 50 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 6, max = 50, message = "{validation.text.error.from.six.to.fifty}")
     public String getEmail() { return email; }
 
     public void setEmail(String email) { this.email = email; }
 
-    @NotNull
+    @NotNull(message = "{validation.text.error.required.field}")
     @Pattern(regexp="\\+\\d{12}", message="+380001112233")
     public String getPhone() { return phone; }
 
     public void setPhone(String phone) { this.phone = phone; }
 
-    @NotNull(message = "Choose at least one role!")
+    @NotNull(message = "{validation.text.error.at.least.one}")
     public String[] getRole() { return role; }
 
     public void setRole(String[] role) { this.role = role; }
@@ -93,8 +93,8 @@ public class AccountForm {
                 .toString();
     }
 
-    @NotNull
-    @Size(min = 3, max = 50, message = "Can't be less than 3 or more than 50 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
     public String getFirstNameOrigin() {
         return firstNameOrigin;
     }
@@ -103,8 +103,8 @@ public class AccountForm {
         this.firstNameOrigin = firstNameOrigin;
     }
 
-    @NotNull
-    @Size(min = 3, max = 50, message = "Can't be less than 3 or more than 50 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
     public String getLastNameOrigin() {
         return lastNameOrigin;
     }

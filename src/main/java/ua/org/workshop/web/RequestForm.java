@@ -9,8 +9,8 @@ public class RequestForm {
     private String title;
     private String description;
 
-    @NotNull
-    @Size(min = 6, max = 50, message = "Can't be less than 6 or more than 50 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 6, max = 50, message = "{validation.text.error.from.six.to.fifty}")
     public String getTitle() {
         return title;
     }
@@ -19,8 +19,8 @@ public class RequestForm {
         this.title = title;
     }
 
-    @NotNull
-    @Size(min = 6, max = 255, message = "Can't be less than 6 or more than 255 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 6, max = 255, message = "{validation.text.error.from.six.to.two.five.five}")
     public String getDescription() {
         return description;
     }

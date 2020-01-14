@@ -1,12 +1,10 @@
 package ua.org.workshop.web;
 
 import ua.org.workshop.domain.Request;
-import ua.org.workshop.exception.WorkshopErrors;
 import ua.org.workshop.exception.WorkshopException;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.Optional;
 
 public class StatusForm {
     private String status;
@@ -14,7 +12,7 @@ public class StatusForm {
     private String cause;
     private Request request;
 
-    @NotNull(message = "This field is required!")
+    @NotNull(message = "{validation.text.error.required.field}")
     public String getStatus() { return status; }
 
     public void setStatus(String status) { this.status = status; }

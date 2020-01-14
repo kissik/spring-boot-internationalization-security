@@ -36,13 +36,17 @@ public class RequestService  {
     }
 
     @Transactional(readOnly = false)
-    public void newRequest(Request request, Account author, Status status) throws WorkshopException {
+    public void newRequest(
+            Request request,
+            Account author,
+            Status status) throws WorkshopException {
         logger.info("Before New request creation");
 
         request.setStatus(status);
         request.setAuthor(author);
         request.setUser(author);
         request.setClosed(status.isClose());
+
         try {
             requestRepository.save(request);
         }
@@ -76,7 +80,7 @@ public class RequestService  {
         Status newStatus = statusService.findByCode(status.getStatus());
         try {
             request.setPrice(
-                    Optional.of(status.getPrice())
+                    Optional.ofNullable(status.getPrice())
                             .orElseThrow(() -> new WorkshopException(WorkshopErrors.PRICE_NOT_FOUND_ERROR)));
         }catch(WorkshopException e){
             logger.info("custom error message: " + e.getMessage());
@@ -84,7 +88,7 @@ public class RequestService  {
         }
         try {
             request.setCause(
-                    Optional.of(status.getCause())
+                    Optional.ofNullable(status.getCause())
                             .orElseThrow(() -> new WorkshopException(WorkshopErrors.CAUSE_NOT_FOUND_ERROR)));
         }catch(WorkshopException e){
             logger.info("custom error message: " + e.getMessage());

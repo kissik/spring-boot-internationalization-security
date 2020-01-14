@@ -1,19 +1,21 @@
 package ua.org.workshop.web;
 
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import ua.org.workshop.domain.Account;
 import ua.org.workshop.domain.Role;
+import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.RoleService;
 import ua.org.workshop.service.AccountService;
 
@@ -65,7 +67,7 @@ public class WelcomeController {
 		AccountForm accountForm = new AccountForm();
 		accountForm.setRole(new String[] {DEFAULT_ROLE});
 		model.put("account", accountForm);
-		model.put("roleList", this.roleService.getRoleRepository().findAll());
+		model.put("roleList", this.roleService.findAll());
 		model.put("method", "post");
 
 		return VN_REG_FORM;
@@ -74,17 +76,29 @@ public class WelcomeController {
 	@RequestMapping(value = "/registration", method = RequestMethod.POST)
 	public String postRegistrationForm(
 			@ModelAttribute("account") @Valid AccountForm form,
-			BindingResult result, Map<String, Object> model) {
+			BindingResult result, Model model) {
 
-		convertPasswordError(result);
-		convertRoleError(result);
-		String password = form.getPassword();
-		logger.info(form.toString());
-		accountService.registerAccount(toAccount(form), new String[] {DEFAULT_ROLE},  passwordEncoder.encode(password), result);
+		convertError(result);
 
-		model.put("roleList", this.roleService.getRoleRepository().findAll());
-		model.put("username", form.getUsername());
-        model.put("method", "post");
+		validateUsername(form.getUsername(),result);
+		validateEmail(form.getUsername(),form.getEmail(),result);
+		validatePhone(form.getUsername(),form.getPhone(),result);
+
+		Account account = toAccount(form);
+		account.setRoles(Collections.singletonList(roleService.findByCode(DEFAULT_ROLE)));
+		account.setPassword(passwordEncoder.encode(form.getPassword()));
+
+		if (!result.hasErrors())
+			try {
+				accountService.registerAccount(account);
+			}catch (WorkshopException e){
+				logger.info("New account error: "+ e.getMessage());
+				logger.error("New account error: "+ e.getMessage());
+			}
+
+		model.addAttribute("roleList", this.roleService.findAll());
+		model.addAttribute("username", form.getUsername());
+        model.addAttribute("method", "post");
 
 		return (result.hasErrors() ? VN_REG_FORM : VN_REG_OK);
 	}
@@ -92,26 +106,24 @@ public class WelcomeController {
 	@RequestMapping(value = "/users/{id}/edit", method = RequestMethod.GET)
 	public String getEditAccountRoleForm(
 			@PathVariable("id") Long id,
-			Map<String, Object> model) {
+			Model model) {
 		try{
-			model.put("roleList", this.roleService.getRoleRepository().findAll());
-			logger.info("role list: " + this.roleService.getRoleRepository().findAll().toString());
+			model.addAttribute("roleList", this.roleService.findAll());
+			logger.info("role list: " + this.roleService.findAll().toString());
 			Account account = accountService.getAccountById(id);
-			model.put("originalAccount", account);
+			model.addAttribute("originalAccount", account);
 			logger.info("originalAccount:" + account.toString());
 			RoleForm roleForm = new RoleForm();
 			String roles = "";
 			for(Role r : account.getRoles()) roles=roles + r.getCode() +" ";
 			roleForm.setRole(roles.split(" "));
-			model.put("roles", roleForm);
+			model.addAttribute("roles", roleForm);
 			logger.info("form roles:" + roleForm.toString());
 		}catch(IllegalArgumentException e){
-			model.put("error", e.getMessage());
-			return "access-denied";
-		}catch(NullPointerException e){
-			model.put("error", e.getMessage());
+			model.addAttribute("error", e.getMessage());
 			return "access-denied";
 		}
+
 		return "users/edit-user-form";
 	}
 
@@ -138,30 +150,66 @@ public class WelcomeController {
 				"email","phone","role");
 	}
 
-	private static void convertPasswordError(BindingResult result) {
-		// Map class-level Hibernate error message to field-level Spring error message.
+	private static void convertError(BindingResult result) {
 		for (ObjectError error : result.getGlobalErrors()) {
+
 			String msg = error.getDefaultMessage();
+			if ("validation.username.symbols".equals(msg)) {
+				if (!result.hasFieldErrors("username")) {
+					result.rejectValue("username", "validation.username.symbols", new String[] { "validation.username.symbols" }, "Latin letters only!");
+				}
+			}
 			if ("account.password.mismatch.message".equals(msg)) {
-				// Don't show if there's already some other error message.
 				if (!result.hasFieldErrors("password")) {
 					result.rejectValue("password", "error.password", new String[] { "error.password" }, "Mismatch passwords!");
 				}
 			}
-		}
-	}
-
-	private static void convertRoleError(BindingResult result) {
-		// Map class-level Hibernate error message to field-level Spring error message.
-		for (ObjectError error : result.getGlobalErrors()) {
-			String msg = error.getDefaultMessage();
 			if ("account.role.isnull.message".equals(msg)) {
-				// Don't show if there's already some other error message.
 				if (!result.hasFieldErrors("role")) {
 					result.rejectValue("role", "error.role", new String[] { "error.role" }, "Add one role at least!");
 				}
 			}
 		}
+	}
+
+
+	private void validateUsername(String username, Errors errors) {
+		try {
+			accountService.getAccountByUsername(username);
+		}
+		catch (WorkshopException e){
+			logger.error("error: " + e.getMessage());
+			logger.info("error: " + e.getMessage());
+			return;
+		}
+		errors.rejectValue("username", "error.duplicate", new String[]{username}, "Login is already in use!");
+		logger.info("Validation failed: duplicate username -> " + username);
+	}
+
+	private void validateEmail(String username, String email, Errors errors) {
+		try {
+			accountService.getAccountByEmail(email);
+		}
+		catch (WorkshopException e){
+			logger.error("error: " + e.getMessage());
+			logger.info("error: " + e.getMessage());
+			return;
+		}
+		logger.debug("Validation failed: duplicate email -> " + email);
+		errors.rejectValue("email", "error.duplicate", new String[]{email}, "email is already in use!");
+	}
+
+	private void validatePhone(String username, String phone, Errors errors) {
+		try{
+			accountService.getAccountByPhone(phone);
+		}
+		catch (WorkshopException e){
+			logger.error("error: " + e.getMessage());
+			logger.info("error: " + e.getMessage());
+			return;
+		}
+		logger.debug("Validation failed: duplicate phone -> " + phone);
+		errors.rejectValue("phone", "error.duplicate", new String[]{phone}, "The phone already in use!");
 	}
 
 	private static Account toAccount(AccountForm form) {

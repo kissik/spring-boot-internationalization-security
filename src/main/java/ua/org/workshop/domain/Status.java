@@ -1,8 +1,7 @@
 package ua.org.workshop.domain;
 
-import org.springframework.security.core.GrantedAuthority;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -27,16 +26,19 @@ public class Status {
     @SuppressWarnings("unused")
     private void setId(Long id) { this.id = id; }
 
+    @NotNull(message = "{validation.text.error.required.field}")
     @Column(name = "scode")
     public String getCode() { return code; }
 
     public void setCode(String code) { this.code = code; }
 
+    @NotNull(message = "{validation.text.error.required.field}")
     @Column(name = "sname")
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
 
+    @NotNull(message = "{validation.text.error.required.field}")
     @Column(name = "bclose")
     public boolean isClose() {
         return close;

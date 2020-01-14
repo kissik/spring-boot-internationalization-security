@@ -6,9 +6,6 @@ import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-/**
- * TODO send all validation messages to messages properties
- */
 @Entity
 @Table(name = "request_list_history")
 public class RequestHistory {
@@ -37,8 +34,7 @@ public class RequestHistory {
         this.id = id;
     }
 
-    @NotNull
-    @Size(min = 6, max = 50, message = "Can't be less than 6 or more than 50 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
     @Column(name = "stitle")
     public String getTitle() {
         return title;
@@ -48,8 +44,7 @@ public class RequestHistory {
         this.title = title;
     }
 
-    @NotNull
-    @Size(min = 1, max = 255, message = "Can't be less than 6 or more than 255 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
     @Column(name = "sdescription")
     public String getDescription() {
         return description;
@@ -59,7 +54,7 @@ public class RequestHistory {
         this.description = description;
     }
 
-    @NotNull
+    @NotNull(message = "{validation.text.error.required.field}")
     @ManyToOne
     @JoinColumn(name="nstatus", referencedColumnName = "id")
     public Status getStatus() {
@@ -70,7 +65,7 @@ public class RequestHistory {
         this.status = status;
     }
 
-    @NotNull
+    @NotNull(message = "{validation.text.error.required.field}")
     @ManyToOne
     @JoinColumn(name="nuser", referencedColumnName = "id")
     public Account getUser() {
@@ -121,7 +116,7 @@ public class RequestHistory {
         return this.title + ": " + this.description;
     }
 
-    @NotNull
+    @NotNull(message = "{validation.text.error.required.field}")
     @Column(name = "slang")
     public String getLanguage() {
         return language;
@@ -131,7 +126,7 @@ public class RequestHistory {
         this.language = language;
     }
 
-    @NotNull
+    @NotNull(message = "{validation.text.error.required.field}")
     @ManyToOne
     @JoinColumn(name="nauthor", referencedColumnName = "id")
     public Account getAuthor() {
@@ -143,6 +138,7 @@ public class RequestHistory {
     }
 
     @Column(name = "sreview")
+    @Size(max=255, message="{validation.text.error.more.than.two.five.five}")
     public String getReview() {
         return review;
     }

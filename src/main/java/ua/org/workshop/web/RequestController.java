@@ -125,8 +125,8 @@ public class RequestController {
     }
 
     @RequestMapping(value = "/requests/new", method = RequestMethod.GET)
-    public String getRequestForm(Map<String, RequestForm> model) {
-        model.put("request", new RequestForm());
+    public String getRequestForm(Model model) {
+        model.addAttribute("request", new RequestForm());
         return CREATE_NEW_FORM_JSP_FILE;
     }
 
@@ -138,17 +138,16 @@ public class RequestController {
             Locale locale) {
 
         logger.info("new request form creation: "+ form.toString());
-
-        try{
-            requestService.newRequest(toRequest(form, locale),
-                accountService.getAccountByUsername(getCurrentUsername()),
-                statusService.findByCode(DEFAULT_STATUS));
-        }catch(WorkshopException e){
-            logger.info("custom error message: " + e.getMessage());
-            logger.error("custom error message: " + e.getMessage());
-            model.addAttribute("message", e.getMessage());
-            return "error";
-        }
+        if (!result.hasErrors())
+            try{
+                requestService.newRequest(toRequest(form, locale),
+                    accountService.getAccountByUsername(getCurrentUsername()),
+                    statusService.findByCode(DEFAULT_STATUS));
+            }catch(WorkshopException e){
+                logger.info("custom error message: " + e.getMessage());
+                logger.error("custom error message: " + e.getMessage());
+                model.addAttribute("message", e.getMessage());
+            }
         return (result.hasErrors() ? CREATE_NEW_FORM_JSP_FILE : REDIRECT_TO_REQUESTS_LISTS_ON_SUCCESSFUL_NEW_REQUEST);
     }
 

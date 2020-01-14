@@ -30,7 +30,7 @@ public class Account {
     private String phone;
     private boolean enabled = true;
     private LocalDate dateCreated;
-    private Collection<Role> roles = new HashSet<Role>();
+    private Collection<Role> roles = new HashSet<>();
 
     public Account(){}
     public Account(String username) { this.username = username; }
@@ -42,14 +42,14 @@ public class Account {
 
     private void setId(Long id) { this.id = id; }
 
-    @NotNull
-    @Size(min = 6, max = 50, message = "Can't be less than 6 or more than 50 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 6, max = 50, message = "{validation.text.error.from.six.to.fifty}")
     @Column(name = "slogin")
     public String getUsername() { return username; }
 
     public void setUsername(String username) { this.username = username; }
 
-    @NotNull
+    @NotNull(message = "{validation.text.error.required.field}")
     @Column(name = "spassword")
     public String getPassword() {
         return password;
@@ -59,15 +59,15 @@ public class Account {
         this.password = password;
     }
 
-    @NotNull
-    @Size(min = 3, max = 50, message = "Can't be less than 3 or more than 50 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
     @Column(name = "sfirst_name")
     public String getFirstName() { return firstName; }
 
     public void setFirstName(String firstName) { this.firstName = firstName; }
 
-    @NotNull
-    @Size(min = 3, max = 50, message = "Can't be less than 3 or more than 50 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
     @Column(name = "sfirst_name_origin")
     public String getFirstNameOrigin() {
         return firstNameOrigin;
@@ -77,8 +77,8 @@ public class Account {
         this.firstNameOrigin = firstNameOrigin;
     }
 
-    @NotNull
-    @Size(min = 3, max = 50, message = "Can't be less than 3 or more than 50 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
     @Column(name = "slast_name_origin")
     public String getLastNameOrigin() {
         return lastNameOrigin;
@@ -88,8 +88,8 @@ public class Account {
         this.lastNameOrigin = lastNameOrigin;
     }
 
-    @NotNull
-    @Size(min = 3, max = 50, message = "Can't be less than 3 or more than 50 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
     @Column(name = "slast_name")
     public String getLastName() { return lastName; }
 
@@ -101,14 +101,14 @@ public class Account {
     @Transient
     public String getFullNameOrigin() { return this.firstNameOrigin + " " + this.lastNameOrigin;}
 
-    @NotNull
-    @Size(min = 6, max = 50, message = "Can't be less than 6 or more than 50 characters")
+    @NotNull(message = "{validation.text.error.required.field}")
+    @Size(min = 6, max = 50, message = "{validation.text.error.from.six.to.fifty}")
     @Column(name = "semail")
     public String getEmail() { return email; }
 
     public void setEmail(String email) { this.email = email; }
 
-    @NotNull
+    @NotNull(message = "{validation.text.error.required.field}")
     @Pattern(regexp="\\+\\d{12}", message="+380001112233")
     @Column(name = "sphone")
     public String getPhone() { return phone; }
@@ -139,7 +139,7 @@ public class Account {
      */
     @Transient
     public Collection<GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+        Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.addAll(getRoles());
         return authorities;
     }
