@@ -152,13 +152,7 @@ public class WelcomeController {
 
 	private static void convertError(BindingResult result) {
 		for (ObjectError error : result.getGlobalErrors()) {
-
 			String msg = error.getDefaultMessage();
-			if ("validation.username.symbols".equals(msg)) {
-				if (!result.hasFieldErrors("username")) {
-					result.rejectValue("username", "validation.username.symbols", new String[] { "validation.username.symbols" }, "Latin letters only!");
-				}
-			}
 			if ("account.password.mismatch.message".equals(msg)) {
 				if (!result.hasFieldErrors("password")) {
 					result.rejectValue("password", "error.password", new String[] { "error.password" }, "Mismatch passwords!");
@@ -171,7 +165,6 @@ public class WelcomeController {
 			}
 		}
 	}
-
 
 	private void validateUsername(String username, Errors errors) {
 		try {

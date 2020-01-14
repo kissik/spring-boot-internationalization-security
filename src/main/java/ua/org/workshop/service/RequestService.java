@@ -124,4 +124,10 @@ public class RequestService  {
                 .getRequestListByLanguageAndStatusAndClosed(language, status, closed)
                 .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_IS_EMPTY_ERROR));
     }
+
+    public Request findByIdAndAuthor(Long id, Account author) throws WorkshopException{
+        return requestRepository
+                .findByIdAndAuthor(id, author)
+                .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_NOT_FOUND_ERROR));
+    }
 }

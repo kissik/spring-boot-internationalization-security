@@ -15,7 +15,7 @@ public class PortalController {
         return "access-denied";
     }
 
-    @GetMapping(value = "/login")
+    @RequestMapping(value = "/login")
     public String getLogin(){
         return "login";
     }

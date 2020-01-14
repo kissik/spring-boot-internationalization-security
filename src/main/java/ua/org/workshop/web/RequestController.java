@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 import ua.org.workshop.dao.AccountDetails;
 import ua.org.workshop.domain.Request;
+import ua.org.workshop.exception.WorkshopErrors;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.AccountService;
 import ua.org.workshop.service.RequestService;
@@ -30,6 +32,7 @@ public class RequestController {
     private static final String CREATE_NEW_FORM_JSP_FILE = "requests/create-request-form";
     private static final String REDIRECT_TO_REQUESTS_LISTS_ON_SUCCESSFUL_NEW_REQUEST = "redirect:/requests";
     private static final String REDIRECT_TO_REQUEST_ON_SUCCESSFUL_EDIT_REQUEST = "redirect:/requests/{id}?saved=true";
+    private static final String REDIRECT_TO_ACCESS_DENIED_PAGE = "redirect:/access-denied";
     private static final String DEFAULT_STATUS = "REGISTER";
     private static final String MANAGER_STATUS = "REGISTER";
     private static final String WORKMAN_STATUS = "ACCEPT";
@@ -67,7 +70,7 @@ public class RequestController {
             logger.info("custom error message: " + e.getMessage());
             logger.error("custom error message: " + e.getMessage());
             model.addAttribute("message", e.getMessage());
-            return "error";
+           // return "error";
         }
         return "requests/requests-list";
     }
@@ -86,7 +89,7 @@ public class RequestController {
             logger.info("custom error message: " + e.getMessage());
             logger.error("custom error message: " + e.getMessage());
             model.addAttribute("message", e.getMessage());
-            return "error";
+            //return "error";
         }
 
         return "requests/requests-list";
@@ -106,7 +109,7 @@ public class RequestController {
             logger.info("custom error message: " + e.getMessage());
             logger.error("custom error message: " + e.getMessage());
             model.addAttribute("message", e.getMessage());
-            return "error";
+            //return "error";
         }
         return "requests/requests-list";
     }
@@ -114,12 +117,31 @@ public class RequestController {
     @RequestMapping(value = "/requests/{id}", method = RequestMethod.GET)
     public String getRequest(@PathVariable("id") Long id, Model model) throws IllegalArgumentException{
         try{
-            model.addAttribute("request", requestService.findById(id));
+            if (isCurrentUserHasRole("MANAGER")||isCurrentUserHasRole("WORKMAN")){
+                model.addAttribute(
+                        "request",
+                        requestService.findById(id)
+                );
+            }
+            else
+                model.addAttribute(
+                        "request",
+                        requestService.findByIdAndAuthor(
+                                id,
+                                accountService
+                                        .getAccountByUsername(
+                                                getCurrentUsername()
+                                        )
+                        )
+                );
         }catch(WorkshopException e){
             logger.info("custom error message: " + e.getMessage());
             logger.error("custom error message: " + e.getMessage());
             model.addAttribute("message", e.getMessage());
-            return "error";
+            if (isCurrentUserHasRole("USER")) {
+                getAuthentication().setAuthenticated(false);
+                return REDIRECT_TO_ACCESS_DENIED_PAGE;
+            }
         }
         return "requests/request";
     }
@@ -163,7 +185,7 @@ public class RequestController {
             logger.info("custom error message: " + e.getMessage());
             logger.error("custom error message: " + e.getMessage());
             model.addAttribute("message", e.getMessage());
-            return "error";
+            //return "error";
         }
         model.addAttribute("statuses", statusForm);
         return "requests/edit-request-form";
@@ -176,6 +198,7 @@ public class RequestController {
             @ModelAttribute("statuses") @Valid StatusForm statusForm,
             Model model) {
         try{
+            checkTheAuthorities(requestService.findById(id).getStatus().getCode());
             requestService.setRequestInfo(requestService.findById(id),
                     accountService.getAccountByUsername(getCurrentUsername()),
                     statusForm);
@@ -183,23 +206,40 @@ public class RequestController {
             logger.info("custom error message: " + e.getMessage());
             logger.error("custom error message: " + e.getMessage());
             model.addAttribute("message", e.getMessage());
-            return "error";
+            if (e.getErrorCode().equals(500)) {
+                getAuthentication().setAuthenticated(false);
+                return REDIRECT_TO_ACCESS_DENIED_PAGE;
+            }
         }
         return REDIRECT_TO_REQUEST_ON_SUCCESSFUL_EDIT_REQUEST;
     }
 
-    private AccountDetails getAuthentication(){
+    private void checkTheAuthorities(String status) throws WorkshopException{
+        boolean check = true;
+        if (isCurrentUserHasRole("MANAGER") && status.equals(MANAGER_STATUS))
+            check = false;
+        if (isCurrentUserHasRole("WORKMAN") && status.equals(WORKMAN_STATUS))
+            check = false;
+
+        if (check) throw new WorkshopException(WorkshopErrors.RIGHT_VIOLATION_ERROR);
+    }
+
+    private Authentication getAuthentication(){
         SecurityContext securityCtx = SecurityContextHolder.getContext();
-        return (AccountDetails) securityCtx.getAuthentication().getPrincipal();
+        return securityCtx.getAuthentication();
+    }
+
+    private AccountDetails getPrincipal(){
+       return (AccountDetails) getAuthentication().getPrincipal();
     }
 
     private String getCurrentUsername() {
 
-        return getAuthentication().getUsername();
+        return getPrincipal().getUsername();
     }
 
     private boolean isCurrentUserHasRole(String role){
-        return getAuthentication().hasRole(role);
+        return getPrincipal().hasRole(role);
     }
 
     @InitBinder

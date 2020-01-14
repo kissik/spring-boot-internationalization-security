@@ -26,4 +26,9 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
             Status status,
             boolean closed
     );
+
+    public Optional<Request> findByIdAndAuthor(
+            Long id,
+            Account author
+    );
 }
