@@ -4,6 +4,7 @@ import ua.org.workshop.domain.Request;
 import ua.org.workshop.exception.WorkshopException;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 public class StatusForm {
@@ -41,6 +42,7 @@ public class StatusForm {
         this.price = price;
     }
 
+    @Size(max = 255, message = "{validation.text.error.from.six.to.two.five.five}")
     public String getCause() {
         return cause;
     }

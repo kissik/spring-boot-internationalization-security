@@ -15,6 +15,11 @@ import java.io.IOException;
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     private static final Logger logger = LogManager.getLogger(CustomAccessDeniedHandler.class);
+    private String accessDeniedUrl;
+
+    public CustomAccessDeniedHandler(String accessDeniedUrl){
+        this.accessDeniedUrl = accessDeniedUrl;
+    }
 
     @Override
     public void handle(
@@ -32,7 +37,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             logger.info(message);
             auth.setAuthenticated(false);
         }
-
-        response.sendRedirect("access-denied");
+        response.sendRedirect(this.accessDeniedUrl);
     }
 }

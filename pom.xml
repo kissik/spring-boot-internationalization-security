@@ -92,8 +92,13 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session</artifactId>
+			<version>1.3.5.RELEASE</version>
+		</dependency>
 
-        <!-- RDBS -->
+		<!-- RDBS -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

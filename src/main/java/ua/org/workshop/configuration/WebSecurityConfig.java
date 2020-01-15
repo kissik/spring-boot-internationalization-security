@@ -9,14 +9,16 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.session.Session;
+import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ua.org.workshop.service.AccountDetailsService;
 
 @Configuration
@@ -25,6 +27,8 @@ import ua.org.workshop.service.AccountDetailsService;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public AccountDetailsService accountDetailsService;
+//    @Autowired
+//    private FindByIndexNameSessionRepository sessionRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -40,10 +44,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return provider;
     }
 
-    @Bean
-    public SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
-    }
+//    @Bean
+//    public SpringSessionBackedSessionRegistry sessionRegistry() {
+//        return new SpringSessionBackedSessionRegistry(this.sessionRepository);
+//    }
 
     @Bean
     public GrantedAuthoritiesMapper authoritiesMapper(){
@@ -54,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Bean
     public AccessDeniedHandler accessDeniedHandler(){
-        return new CustomAccessDeniedHandler();
+        return new CustomAccessDeniedHandler("/access-denied");
     }
 
     @Override
@@ -71,6 +75,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .hasRole("ROLE_ADMIN");
 //        return http.build();
 //    }
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -93,17 +101,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/perform_login")
                 .defaultSuccessUrl("/", true)
                 .and()
-                .logout().invalidateHttpSession(true)
+                .logout()
+                .invalidateHttpSession(true)
                 .clearAuthentication(true)
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .deleteCookies("JSESSIONID")
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler())
                 //.accessDeniedPage("/access-denied")
                 .and()
                 .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .maximumSessions(1)
-                .sessionRegistry(sessionRegistry())
+//                .sessionManagement()
+//                .maximumSessions(1)
+//                .sessionRegistry(sessionRegistry())
         ;
     }
 

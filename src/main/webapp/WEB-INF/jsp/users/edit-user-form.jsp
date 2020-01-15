@@ -23,7 +23,7 @@
         	<li class="breadcrumb-item"><a href="${usersUrl}"><spring:message code="usersList.pageTitle" /></a></li>
         	<li class="breadcrumb-item active"><a href="${userUrl}">${originalAccount.username}</a></li>
         </ol>
-        <h1><spring:message code="editUser.pageTitle" />: ${account.username} </h1>
+        <h1><spring:message code="editUser.pageTitle" />: ${originalAccount.username} </h1>
 
 		<c:if test="${param.saved == true}">
 			<div class="info alert"><spring:message code="editUser.user.save" /><a href="${userUrl}"><spring:message code="editUser.user.view" /></a></div>
@@ -31,70 +31,52 @@
 
         	<form:form cssClass="main" modelAttribute="roles">
         	    <input type="hidden" name="_method" value="POST" />
-        				<div class="form-group row">
-        					<div class="col-sm-2 workshop-field-label">
-        					</div>
-        					<div class="col-sm-6">
-        					    ${originalAccount.username}
-        					</div>
+        				<div class="form-group">
+        				    <label>
+        				        ${originalAccount.username}
+        					</label>
         			    </div>
-        				<div class="form-group row">
-        					<div class="col-sm-2 workshop-field-label">
-        					</div>
-        					<div class="col-sm-6">
-                                ${originalAccount.firstName} ${originalAccount.lastName}
-                            </div>
+        				<div class="form-group">
+        					<label>
+        					    ${originalAccount.firstName} ${originalAccount.lastName}
+                            </label>
         			    </div>
-        				<div class="form-group row">
-        					<div class="col-sm-2 workshop-field-label">
-        					</div>
-        					<div class="col-sm-6">
-                                ${originalAccount.firstNameOrigin} ${originalAccount.lastNameOrigin}
-                            </div>
+        				<div class="form-group">
+        					<label>
+        					    ${originalAccount.firstNameOrigin} ${originalAccount.lastNameOrigin}
+                            </label>
         			    </div>
-        				<div class="form-group row">
-        					<div class="col-sm-2 workshop-field-label">
-        					</div>
-        					<div class="col-sm-6">
-                                ${originalAccount.email}
-                            </div>
+        				<div class="form-group">
+        					<label>
+        					    ${originalAccount.email}
+                            </label>
         			    </div>
-        				<div class="form-group row">
-        					<div class="col-sm-2 workshop-field-label">
-        					</div>
-        					<div class="col-sm-6">
-                                ${originalAccount.phone}
-                            </div>
+        				<div class="form-group">
+        					<label>
+        					    ${originalAccount.phone}
+                            </label>
         			    </div>
-        				<div class="form-group row">
-        					<div class="col-sm-2 workshop-field-label">
-        					</div>
-        					<div class="col-sm-6">
-                                ${originalAccount.dateCreated}
-                            </div>
+        				<div class="form-group">
+        					<label>
+        					    ${originalAccount.dateCreated}
+                            </label>
                         </div>
-                        <security:authorize access="isAuthenticated()">
-        				<div class="form-group row">
-        					<div class="col-sm-2 workshop-field-label">
-        					    <spring:message code="editUser.label.roles" />
-        					</div>
-        					<div class="col-sm-6">
-        						<div>
-        						<form:select multiple="true" path="role" cssClass="medium" cssErrorClass="medium error" >
-        							<c:forEach items="${roleList}" var="roles">
-        			 				<form:option value="${roles.code}">${roles.code}</form:option>
-        							</c:forEach>
-        			 			</form:select>
-        						</div>
-        						<div class="alert alert-danger"><form:errors path="role" htmlEscape="false" /></div>
-        					</div>
-        				</div>
-        				</security:authorize>
-
-        				<div class="form-group row">
-        					<div class="col-sm-2">
-        						<input type="submit" class="btn btn-primary" value="<spring:message code="editUser.label.submit" />" />
-        					</div>
+                        <div class="form-group">
+                            <label for="role" class="workshop-field-label">
+                                <spring:message code="editUser.label.roles" />
+                            </label>
+                            <form:select multiple="true" path="role" class="form-control" id="role" >
+                                <c:forEach items="${roleList}" var="roles">
+                                    <form:option value="${roles.code}">${roles.code}</form:option>
+                                </c:forEach>
+                            </form:select>
+                            <c:set var="roleErrors"><form:errors path="role"/></c:set>
+                            <c:if test="${not empty roleErrors}">
+                                <div class="alert alert-danger"><form:errors path="role"/></div>
+                            </c:if>
+                        </div>
+        				<div class="form-group">
+        				    <input type="submit" class="btn btn-primary" value="<spring:message code="editUser.label.submit" />" />
         				</div>
         		</form:form>
         </div>

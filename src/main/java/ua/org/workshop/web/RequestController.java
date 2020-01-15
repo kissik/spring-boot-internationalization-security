@@ -1,5 +1,4 @@
 package ua.org.workshop.web;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +29,10 @@ import java.util.*;
 public class RequestController {
 
     private static final String CREATE_NEW_FORM_JSP_FILE = "requests/create-request-form";
+    private static final String UPDATE_FORM_JSP_FILE = "requests/edit-request-form";
     private static final String REDIRECT_TO_REQUESTS_LISTS_ON_SUCCESSFUL_NEW_REQUEST = "redirect:/requests";
-    private static final String REDIRECT_TO_REQUEST_ON_SUCCESSFUL_EDIT_REQUEST = "redirect:/requests/{id}?saved=true";
+    private static final String REDIRECT_TO_MANAGER_REQUESTS_LISTS_ON_SUCCESSFUL_NEW_REQUEST = "redirect:/manager-requests";
+    private static final String REDIRECT_TO_WORKMAN_REQUESTS_LISTS_ON_SUCCESSFUL_NEW_REQUEST = "redirect:/workman-requests";
     private static final String REDIRECT_TO_ACCESS_DENIED_PAGE = "redirect:/access-denied";
     private static final String DEFAULT_STATUS = "REGISTER";
     private static final String MANAGER_STATUS = "REGISTER";
@@ -196,22 +197,52 @@ public class RequestController {
     public String putRequestStatus(
             @PathVariable("id") Long id,
             @ModelAttribute("statuses") @Valid StatusForm statusForm,
+            BindingResult result,
             Model model) {
-        try{
+        try {
             checkTheAuthorities(requestService.findById(id).getStatus().getCode());
-            requestService.setRequestInfo(requestService.findById(id),
-                    accountService.getAccountByUsername(getCurrentUsername()),
-                    statusForm);
-        }catch(WorkshopException e){
-            logger.info("custom error message: " + e.getMessage());
-            logger.error("custom error message: " + e.getMessage());
-            model.addAttribute("message", e.getMessage());
+        }
+        catch (WorkshopException e) {
             if (e.getErrorCode().equals(500)) {
                 getAuthentication().setAuthenticated(false);
                 return REDIRECT_TO_ACCESS_DENIED_PAGE;
             }
         }
-        return REDIRECT_TO_REQUEST_ON_SUCCESSFUL_EDIT_REQUEST;
+        validateFields(statusForm.getStatus(), statusForm, result);
+        if (!result.hasErrors())
+            try{
+                requestService.setRequestInfo(requestService.findById(id),
+                        accountService.getAccountByUsername(getCurrentUsername()),
+                        statusForm);
+            }catch(WorkshopException e){
+                logger.info("custom error message: " + e.getMessage());
+                logger.error("custom error message: " + e.getMessage());
+                model.addAttribute("message", e.getMessage());
+            }
+        try{
+            statusForm.setRequest(requestService.findById(id));
+        }catch(WorkshopException e){
+            logger.info("custom error message: " + e.getMessage());
+            logger.error("custom error message: " + e.getMessage());
+            model.addAttribute("message", e.getMessage());
+            //return "error";
+        }
+        model.addAttribute("statuses", statusForm);
+        return (result.hasErrors() ? UPDATE_FORM_JSP_FILE : getPathByAuthority());
+    }
+
+    private String getPathByAuthority() {
+        if (isCurrentUserHasRole("MANAGER"))
+            return REDIRECT_TO_MANAGER_REQUESTS_LISTS_ON_SUCCESSFUL_NEW_REQUEST;
+        else
+            return REDIRECT_TO_WORKMAN_REQUESTS_LISTS_ON_SUCCESSFUL_NEW_REQUEST;
+    }
+
+    private void validateFields(String status, StatusForm form, BindingResult result) {
+        if (status.equals("ACCEPT") && form.getPrice() == null)
+            result.rejectValue("price", "validation.text.error.required.field");
+        if (status.equals("REJECT") && form.getCause().length() < 6)
+            result.rejectValue("cause", "validation.text.error.from.six.to.two.five.five");
     }
 
     private void checkTheAuthorities(String status) throws WorkshopException{

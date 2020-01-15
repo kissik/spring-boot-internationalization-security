@@ -25,7 +25,9 @@ public enum WorkshopErrors {
 
     STATUS_NOT_FOUND_ERROR(350, "error.status.not.found"),
 
-    RIGHT_VIOLATION_ERROR(500, "error.right.violation");
+    RIGHT_VIOLATION_ERROR(500, "error.right.violation"),
+
+    NPE (600, "error.null.pointer.exception");
 
     private int code;
     private String message;

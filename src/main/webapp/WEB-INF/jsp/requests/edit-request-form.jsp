@@ -31,57 +31,52 @@
 
         <form:form cssClass="main" modelAttribute="statuses">
             <input type="hidden" name="_method" value="POST" />
-                        <div class="form-group row">
-        					<div class="col-sm-2 workshop-field-label">
-        					</div>
-        					<div class="col-sm-6">
+                        <div class="form-group">
+        					<label>
         					    ${statuses.request.title}
-        					</div>
+        					</label>
         			    </div>
-                        <div class="form-group row">
-        					<div class="col-sm-2 workshop-field-label">
-        					</div>
-        					<div class="col-sm-6">
+                        <div class="form-group">
+        					<label>
         					    ${statuses.request.description}
-        					</div>
+        					</label>
         			    </div>
-                        <div class="form-group row">
-        					<div class="col-sm-2 workshop-field-label">
-        					    <spring:message code="editRequest.label.status" />
-        					</div>
-        					<div class="col-sm-6">
-        						<div>
-        						<form:select path="status" cssClass="custom-select medium" cssErrorClass="medium error" >
-        							<c:forEach items="${statuses.request.status.nextStatuses}" var="statuses">
-        			 				<form:option value="${statuses.code}">${statuses.code}</form:option>
-        							</c:forEach>
-        			 			</form:select>
-        						</div>
-        						<div class="alert alert-danger"><form:errors path="status" htmlEscape="false" /></div>
-        					</div>
+                        <div class="form-group">
+                            <label for="status" class="workshop-field-label">
+                                <spring:message code="editRequest.label.status" />
+                            </label>
+                            <form:select path="status" class="form-control" id="status" >
+                                <c:forEach items="${statuses.request.status.nextStatuses}" var="statuses">
+                                    <form:option value="${statuses.code}">${statuses.code}</form:option>
+                                </c:forEach>
+                            </form:select>
+                            <c:set var="statusErrors"><form:errors path="status"/></c:set>
+        					<c:if test="${not empty statusErrors}">
+        					    <div class="alert alert-danger"><form:errors path="status"/></div>
+        					</c:if>
         				</div>
-        				<div class="form-group row">
-        					<div class="col-sm-2 workshop-field-label">
-        					    <spring:message code="editRequest.label.price" />
-        					</div>
-        					<div class="col-sm-6">
-        						<div><form:input type="number" path="price" cssClass="medium" cssErrorClass="medium error" /></div>
-        						<div class="alert alert-danger"><form:errors path="price" htmlEscape="false" /></div>
-        					</div>
+        				<div class="form-group">
+                            <label for="price" class="workshop-field-label">
+                                <spring:message code="editRequest.label.price" />
+                            </label>
+                            <form:input path="price" type="number" class="form-control" id="price" />
+                            <c:set var="priceErrors"><form:errors path="price"/></c:set>
+        					<c:if test="${not empty priceErrors}">
+        					    <div class="alert alert-danger"><form:errors path="price"/></div>
+        					</c:if>
         				</div>
-        				<div class="form-group row">
-        					<div class="col-sm-2 workshop-field-label">
-        					    <spring:message code="editRequest.label.cause" />
-        					</div>
-        					<div class="col-sm-6">
-        						<div><form:input path="cause" cssClass="medium" cssErrorClass="medium error" /></div>
-        						<div class="alert alert-danger"><form:errors path="cause" htmlEscape="false" /></div>
-        					</div>
+        				<div class="form-group">
+                            <label for="cause" class="workshop-field-label">
+                                <spring:message code="editRequest.label.cause" />
+                            </label>
+                            <form:textarea path="cause" class="form-control" id="cause" />
+        					<c:set var="causeErrors"><form:errors path="cause"/></c:set>
+        					<c:if test="${not empty causeErrors}">
+        					    <div class="alert alert-danger"><form:errors path="cause"/></div>
+        					</c:if>
         				</div>
-        				<div class="form-group row">
-        					<div class="col-sm-2">
-        						<input type="submit" class="btn btn-primary" value="<spring:message code="editRequest.label.submit" />" />
-        					</div>
+        				<div class="form-group">
+        				    <input type="submit" class="btn btn-primary" value="<spring:message code="editRequest.label.submit" />" />
         				</div>
         </form:form>
         </div>

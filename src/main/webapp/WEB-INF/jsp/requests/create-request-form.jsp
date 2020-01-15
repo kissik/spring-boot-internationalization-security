@@ -18,29 +18,29 @@
         <div class="container main-content">
         		<h1><spring:message code="newRequest.pageTitle" /></h1>
         		<form:form cssClass="main" modelAttribute="request" method = "post">
-        				<div class="form-group row">
-        					<div class="col-sm-2 workshop-field-label">
-        					    <spring:message code="newRequest.label.title" />
-        					</div>
-        					<div class="col-sm-6">
-        						<div><form:input path="title" cssClass="medium" cssErrorClass="medium error" /></div>
-        						<div class="alert alert-danger"><form:errors path="title" htmlEscape="false" /></div>
-        					</div>
-        				</div>
-        				<div class="form-group row">
-        					<div class="col-sm-2 workshop-field-label">
-        					    <spring:message code="newRequest.label.description" />
-        					</div>
-        					<div class="col-sm-6">
-        						<div><form:textarea path="description" cssClass="medium" cssErrorClass="medium error" /></div>
-        						<div class="alert alert-danger"><form:errors path="description" htmlEscape="false" /></div>
-        					</div>
-        				</div>
-        				<div class="form-group row">
-        					<div class="col-sm-2">
-        						<input type="submit" class="btn btn-primary" value="<spring:message code="newRequest.label.submit" />" />
-        					</div>
-        				</div>
+        			<div class="form-group">
+        				<label for="title" class="workshop-field-label">
+    				        <spring:message code="newRequest.label.title" />
+    				    </label>
+    				    <form:input path="title" type="text" class="form-control" id="title" />
+    				    <c:set var="titleErrors"><form:errors path="title"/></c:set>
+        				<c:if test="${not empty titleErrors}">
+        				    <div class="alert alert-danger"><form:errors path="title"/></div>
+        				</c:if>
+        			</div>
+        			<div class="form-group">
+        				<label for="description" class="workshop-field-label">
+    				        <spring:message code="newRequest.label.description" />
+    				    </label>
+    				    <form:textarea path="description" class="form-control" id="description" />
+        				<c:set var="descriptionErrors"><form:errors path="description"/></c:set>
+        				<c:if test="${not empty descriptionErrors}">
+        				    <div class="alert alert-danger"><form:errors path="description"/></div>
+        				</c:if>
+        			</div>
+        			<div class="form-group">
+        			    <input type="submit" class="btn btn-primary" value="<spring:message code="newRequest.label.submit" />" />
+        			</div>
         		</form:form>
         </div>
                  <script  type="text/javascript">

@@ -15,26 +15,20 @@
     <jsp:body>
     <div class="container main-content">
         <h1><spring:message code="login.in.please" /></h1>
-        	<form class="main" action="${postLoginUrl}" method="post" >
-    			<c:if test="${param.error == true}">
+        	<form action="${postLoginUrl}" method="post" >
+    			<c:if test="${error}" >
     				<div class="alert alert-danger"><spring:message code="login.warning.alert" /></div>
     			</c:if>
-    				<div class="form-group row">
-    					<div class="col-sm-2 workshop-field-label"><spring:message code="login.login" /></div>
-    					<div class="col-sm-6"><input type="text" name="username" class="short" /></div>
+    				<div class="form-group">
+    				    <label for="username" class="workshop-field-label"><spring:message code="login.login" /></label>
+    				    <input type="text" class="form-control" id="username" name="username" aria-describedby="loginHelp" placeholder="Enter login">
+                        <small id="loginHelp" class="form-text text-muted"><spring:message code="login.never.share" /></small>
+                    </div>
+    				<div class="form-group">
+    					<label for="password" class="workshop-field-label"><spring:message code="login.password" /></label>
+                        <input type="password" class="form-control" id="password" name="password" >
     				</div>
-    				<div class="form-group row">
-    					<div class="col-sm-2 workshop-field-label"><spring:message code="login.password" /></div>
-    					<div class="col-sm-6"><input type="password" name="password" class="short" /></div>
-    				</div>
-    				<div class="form-group row">
-    					<div class="col-sm-2 workshop-field-label"></div>
-    					<div class="col-sm-6">
-    					    <input type="checkbox" name="remember_me" />
-    					    <spring:message code="login.remember.me" />
-    					</div>
-    				</div>
-    				<div class="form-group row">
+    				<div class="form-group">
     					<div class="col-sm-2"><input class="btn btn-primary" type="submit" value="<spring:message code="login.in" />" /></div>
     				</div>
             </form>
