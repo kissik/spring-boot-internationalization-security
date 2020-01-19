@@ -3,6 +3,8 @@ package ua.org.workshop.service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.org.workshop.domain.Account;
 import ua.org.workshop.domain.Request;
@@ -36,16 +38,8 @@ public class RequestService  {
     }
 
     @Transactional(readOnly = false)
-    public void newRequest(
-            Request request,
-            Account author,
-            Status status) throws WorkshopException {
+    public void newRequest(Request request) throws WorkshopException {
         logger.info("Before New request creation");
-
-        request.setStatus(status);
-        request.setAuthor(author);
-        request.setUser(author);
-        request.setClosed(status.isClose());
 
         try {
             requestRepository.save(request);
@@ -76,44 +70,18 @@ public class RequestService  {
     }
 
     @Transactional(readOnly = false)
-    public void setRequestInfo(Request request, Account user, StatusForm status) throws WorkshopException{
-        Status newStatus = statusService.findByCode(status.getStatus());
-        try {
-            request.setPrice(
-                    Optional.ofNullable(status.getPrice())
-                            .orElseThrow(() -> new WorkshopException(WorkshopErrors.PRICE_NOT_FOUND_ERROR)));
-        }catch(WorkshopException e){
-            logger.info("custom error message: " + e.getMessage());
-            logger.error("custom error message: " + e.getMessage());
-        }
-        try {
-            request.setCause(
-                    Optional.ofNullable(status.getCause())
-                            .orElseThrow(() -> new WorkshopException(WorkshopErrors.CAUSE_NOT_FOUND_ERROR)));
-        }catch(WorkshopException e){
-            logger.info("custom error message: " + e.getMessage());
-            logger.error("custom error message: " + e.getMessage());
-        }
-        request.setStatus(newStatus);
-        request.setUser(user);
-        request.setClosed(newStatus.isClose());
+    public void setRequestInfo(Request request) throws WorkshopException{
         try{
             requestRepository.saveAndFlush(request);
             logger.info("Request was changed: " + request.toString());
+            if (request.getStatus().isClose())
+                requestRepository.delete(request);
+            logger.info("Request was deleted");
         }
         catch(Exception e){
             logger.error(e.getMessage());
             throw new WorkshopException(WorkshopErrors.DATABASE_CONNECTION_ERROR);
         }
-        if (newStatus.isClose())
-            try {
-                requestRepository.delete(request);
-                logger.info("Request was deleted");
-            }
-            catch(Exception e){
-                logger.error(e.getMessage());
-                throw new WorkshopException(WorkshopErrors.DATABASE_CONNECTION_ERROR);
-            }
     }
 
     public List<Request> getRequestListByLanguageAndStatusAndClosed (
@@ -129,5 +97,9 @@ public class RequestService  {
         return requestRepository
                 .findByIdAndAuthor(id, author)
                 .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_NOT_FOUND_ERROR));
+    }
+
+    public Page<Request> findAllPage(Pageable pageable){
+        return requestRepository.findAll(pageable);
     }
 }

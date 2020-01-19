@@ -14,7 +14,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 import ua.org.workshop.dao.AccountDetails;
+import ua.org.workshop.domain.Account;
 import ua.org.workshop.domain.Request;
+import ua.org.workshop.domain.Status;
 import ua.org.workshop.exception.WorkshopErrors;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.AccountService;
@@ -159,18 +161,27 @@ public class RequestController {
             BindingResult result,
             Model model,
             Locale locale) {
-
-        logger.info("new request form creation: "+ form.toString());
-        if (!result.hasErrors())
-            try{
-                requestService.newRequest(toRequest(form, locale),
-                    accountService.getAccountByUsername(getCurrentUsername()),
-                    statusService.findByCode(DEFAULT_STATUS));
-            }catch(WorkshopException e){
+        Request request;
+        Account author;
+        Status status;
+        try {
+            request = toRequest(form, locale);
+            author = accountService.getAccountByUsername(getCurrentUsername());
+            status = statusService.findByCode(DEFAULT_STATUS);
+            if (!result.hasErrors()) {
+                request.setStatus(status);
+                request.setAuthor(author);
+                request.setUser(author);
+                request.setClosed(status.isClose());
+                logger.info("new request form creation: " + form.toString());
+                requestService.newRequest(request);
+            }
+        }
+        catch(WorkshopException e){
                 logger.info("custom error message: " + e.getMessage());
                 logger.error("custom error message: " + e.getMessage());
                 model.addAttribute("message", e.getMessage());
-            }
+        }
         return (result.hasErrors() ? CREATE_NEW_FORM_JSP_FILE : REDIRECT_TO_REQUESTS_LISTS_ON_SUCCESSFUL_NEW_REQUEST);
     }
 
@@ -199,8 +210,9 @@ public class RequestController {
             @ModelAttribute("statuses") @Valid StatusForm statusForm,
             BindingResult result,
             Model model) {
+        Request request = requestService.findById(id);
         try {
-            checkTheAuthorities(requestService.findById(id).getStatus().getCode());
+            checkTheAuthorities(request.getStatus().getCode());
         }
         catch (WorkshopException e) {
             if (e.getErrorCode().equals(500)) {
@@ -209,11 +221,29 @@ public class RequestController {
             }
         }
         validateFields(statusForm.getStatus(), statusForm, result);
+        Status newStatus = statusService.findByCode(statusForm.getStatus());
+        try {
+            request.setPrice(
+                    Optional.ofNullable(statusForm.getPrice())
+                            .orElseThrow(() -> new WorkshopException(WorkshopErrors.PRICE_NOT_FOUND_ERROR)));
+        }catch(WorkshopException e){
+            logger.info("custom error message: " + e.getMessage());
+            logger.error("custom error message: " + e.getMessage());
+        }
+        try {
+            request.setCause(
+                    Optional.ofNullable(statusForm.getCause())
+                            .orElseThrow(() -> new WorkshopException(WorkshopErrors.CAUSE_NOT_FOUND_ERROR)));
+        }catch(WorkshopException e){
+            logger.info("custom error message: " + e.getMessage());
+            logger.error("custom error message: " + e.getMessage());
+        }
+        request.setStatus(newStatus);
+        request.setUser(accountService.getAccountByUsername(getCurrentUsername()));
+        request.setClosed(newStatus.isClose());
         if (!result.hasErrors())
             try{
-                requestService.setRequestInfo(requestService.findById(id),
-                        accountService.getAccountByUsername(getCurrentUsername()),
-                        statusForm);
+                requestService.setRequestInfo(request);
             }catch(WorkshopException e){
                 logger.info("custom error message: " + e.getMessage());
                 logger.error("custom error message: " + e.getMessage());

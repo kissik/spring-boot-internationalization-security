@@ -2,17 +2,16 @@ package ua.org.workshop.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.org.workshop.domain.Account;
-import ua.org.workshop.domain.Request;
 import ua.org.workshop.domain.RequestHistory;
 import ua.org.workshop.domain.Status;
 import ua.org.workshop.exception.WorkshopErrors;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.repository.RequestHistoryRepository;
-import ua.org.workshop.repository.RequestRepository;
 
 import java.util.List;
 
@@ -62,4 +61,8 @@ public class RequestHistoryService {
                     .getRequestListHistoryByLanguageAndUser(language, user)
                     .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_HISTORY_IS_EMPTY_ERROR));
         }
+
+    public Page<RequestHistory> findAllPage(Pageable pageable){
+        return requestHistoryRepository.findAll(pageable);
+    }
 }

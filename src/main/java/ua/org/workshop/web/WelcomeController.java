@@ -62,13 +62,18 @@ public class WelcomeController {
 		return "welcome";
 	}
 
+	@RequestMapping(value= "/account", method = RequestMethod.GET)
+	public String getAccount(){
+		return "users/private-page";
+	}
+
 	@RequestMapping(value = "/registration", method = RequestMethod.GET)
-	public String getRegistrationForm(Map<String, Object> model) {
+	public String getRegistrationForm(Model model) {
 		AccountForm accountForm = new AccountForm();
 		accountForm.setRole(new String[] {DEFAULT_ROLE});
-		model.put("account", accountForm);
-		model.put("roleList", this.roleService.findAll());
-		model.put("method", "post");
+		model.addAttribute("account", accountForm);
+		model.addAttribute("roleList", this.roleService.findAll());
+		model.addAttribute("method", "post");
 
 		return VN_REG_FORM;
 	}
@@ -153,16 +158,11 @@ public class WelcomeController {
 	private static void convertError(BindingResult result) {
 		for (ObjectError error : result.getGlobalErrors()) {
 			String msg = error.getDefaultMessage();
-			if ("account.password.mismatch.message".equals(msg)) {
-				if (!result.hasFieldErrors("password")) {
-					result.rejectValue("password", "error.password", new String[] { "error.password" }, "Mismatch passwords!");
-				}
-			}
-			if ("account.role.isnull.message".equals(msg)) {
-				if (!result.hasFieldErrors("role")) {
+			if ("account.password.mismatch.message".equals(msg) && !result.hasFieldErrors("password"))
+				result.rejectValue("password", "error.password", new String[] { "error.password" }, "Mismatch passwords!");
+
+			if ("account.role.isnull.message".equals(msg) && !result.hasFieldErrors("role"))
 					result.rejectValue("role", "error.role", new String[] { "error.role" }, "Add one role at least!");
-				}
-			}
 		}
 	}
 

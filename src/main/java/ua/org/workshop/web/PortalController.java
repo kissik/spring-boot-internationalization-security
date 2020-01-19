@@ -25,6 +25,7 @@ public class PortalController {
     @RequestMapping(value = "/login")
     public String getLogin(Model model, HttpServletRequest req, HttpServletResponse res) {
         try {
+            req.logout();
             if (req.getQueryString().contains("error"))
                 model.addAttribute("error", "true");
         }

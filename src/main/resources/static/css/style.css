@@ -2,6 +2,11 @@
     padding: 60px 0;
 }
 
+[href^="?lang="]{
+    border-right: 1px solid #2FA4E7;
+    padding: 0 10px;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -19,6 +24,12 @@ td, th {
 	border-bottom: 1px solid #bbb;
 	height: 40px;
 	padding: 5px;
+    position: relative;
+    overflow: hidden;
+	display: inline-block;
+	width: 25%;
+	white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 th {
@@ -32,10 +43,6 @@ tr:nth-child(odd) {
 
 tr:hover {
   background-color: #d2e4f3;
-}
-
-td, th {
-  position: relative;
 }
 
 td:hover::after{

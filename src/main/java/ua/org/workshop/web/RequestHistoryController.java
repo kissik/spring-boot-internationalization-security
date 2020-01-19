@@ -52,18 +52,19 @@ public class RequestHistoryController {
     @GetMapping("/requests-history")
     public String requestsHistory(Model model,
                            Locale locale) {
-        try{
-            model.addAttribute("requestsList", requestHistoryService
-                    .getRequestListHistoryByLanguageAndAuthor(
-                            getLanguageStringForStoreInDB(locale),
-                            accountService.getAccountByUsername(getCurrentUsername())
-                    ));
-        }catch(WorkshopException e){
-            logger.info("custom error message: " + e.getMessage());
-            logger.error("custom error message: " + e.getMessage());
-            model.addAttribute("message", e.getMessage());
-            return "error";
-        }
+//        try{
+//            model.addAttribute("requestsList", requestHistoryService
+//                    .getRequestListHistoryByLanguageAndAuthor(
+//                            getLanguageStringForStoreInDB(locale),
+//                            accountService.getAccountByUsername(getCurrentUsername())
+//                    ));
+//        }catch(WorkshopException e){
+//            logger.info("custom error message: " + e.getMessage());
+//            logger.error("custom error message: " + e.getMessage());
+//            model.addAttribute("message", e.getMessage());
+//            return "error";
+//        }
+
         return "requests/requests-list-history-user";
     }
 

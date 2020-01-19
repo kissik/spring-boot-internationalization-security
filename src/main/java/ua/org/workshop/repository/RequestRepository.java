@@ -1,5 +1,7 @@
 package ua.org.workshop.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ua.org.workshop.domain.Account;
@@ -11,24 +13,28 @@ import java.util.Optional;
 
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
-    public Optional<List<Request>> getRequestListByLanguageAndAuthorAndClosed(
+
+    Optional<List<Request>> getRequestListByLanguageAndAuthorAndClosed(
             String language,
             Account author,
             boolean closed);
 
-    public Optional<List<Request>> getRequestListByLanguageAndClosed(
+    Optional<List<Request>> getRequestListByLanguageAndClosed(
             String language,
             boolean closed
     );
 
-    public Optional<List<Request>> getRequestListByLanguageAndStatusAndClosed(
+    Optional<List<Request>> getRequestListByLanguageAndStatusAndClosed(
             String language,
             Status status,
             boolean closed
     );
 
-    public Optional<Request> findByIdAndAuthor(
+    Optional<Request> findByIdAndAuthor(
             Long id,
             Account author
     );
+
+    @Override
+    Page<Request> findAll(Pageable pageable);
 }

@@ -21,12 +21,12 @@
     			</c:if>
     				<div class="form-group">
     				    <label for="username" class="workshop-field-label"><spring:message code="login.login" /></label>
-    				    <input type="text" class="form-control" id="username" name="username" aria-describedby="loginHelp" placeholder="Enter login">
+    				    <input type="text" class="form-control" id="username" name="username" aria-describedby="loginHelp" placeholder="<spring:message code="login.login.input" />">
                         <small id="loginHelp" class="form-text text-muted"><spring:message code="login.never.share" /></small>
                     </div>
     				<div class="form-group">
     					<label for="password" class="workshop-field-label"><spring:message code="login.password" /></label>
-                        <input type="password" class="form-control" id="password" name="password" >
+                        <input type="password" class="form-control" id="password" name="password"  placeholder="<spring:message code="login.password.input" />">
     				</div>
     				<div class="form-group">
     					<div class="col-sm-2"><input class="btn btn-primary" type="submit" value="<spring:message code="login.in" />" /></div>
