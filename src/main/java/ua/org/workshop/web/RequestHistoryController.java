@@ -3,6 +3,7 @@ package ua.org.workshop.web;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ua.org.workshop.domain.HistoryRequest;
 import ua.org.workshop.service.AccountService;
+import ua.org.workshop.service.ApplicationConstants;
 import ua.org.workshop.service.HistoryRequestService;
 import ua.org.workshop.service.SecurityService;
 
@@ -26,7 +28,8 @@ public class RequestHistoryController {
     private HistoryRequestService historyRequestService;
     @Autowired
     private AccountService accountService;
-    private Utility utility = new Utility();
+    @Autowired
+    private MessageSource messageSource;
 
     @GetMapping("user/history-requests")
     @ResponseBody
@@ -39,7 +42,8 @@ public class RequestHistoryController {
                     Pageable pageable, Locale locale){
         return historyRequestService.findByLanguageAndAuthor(
                 pageable,
-                utility.getLanguageStringForStoreInDB(locale),
+                messageSource.getMessage(
+                        ApplicationConstants.BUNDLE_LANGUAGE_FOR_REQUEST, null, locale),
                 accountService.getAccountByUsername(SecurityService.getCurrentUsername())
         );
     }

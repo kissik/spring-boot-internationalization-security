@@ -56,8 +56,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
     public LocaleResolver localeResolver() {
-        CookieLocaleResolver localeResolver = new CookieLocaleResolver();
-        return localeResolver;
+        return new CookieLocaleResolver();
     }
 
     @Override

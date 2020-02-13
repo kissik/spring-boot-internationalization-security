@@ -11,34 +11,34 @@ import ua.org.workshop.domain.HistoryRequest;
 import ua.org.workshop.domain.Status;
 import ua.org.workshop.enums.WorkshopError;
 import ua.org.workshop.exception.WorkshopException;
-import ua.org.workshop.repository.RequestHistoryRepository;
+import ua.org.workshop.repository.HistoryRequestRepository;
 
 @Service
 @Transactional(readOnly = true)
 public class HistoryRequestService {
 
-    private static final Logger logger = LogManager.getLogger(HistoryRequestService.class);
+    private static final Logger LOGGER = LogManager.getLogger(HistoryRequestService.class);
 
-    private final RequestHistoryRepository requestHistoryRepository;
+    private final HistoryRequestRepository historyRequestRepository;
 
-    public HistoryRequestService(RequestHistoryRepository requestHistoryRepository){
+    public HistoryRequestService(HistoryRequestRepository historyRequestRepository){
         super();
-        this.requestHistoryRepository = requestHistoryRepository;
+        this.historyRequestRepository = historyRequestRepository;
     }
 
     public Page<HistoryRequest> findByLanguageAndAuthor(
             Pageable pageable, String language, Account author) {
-        return requestHistoryRepository
+        return historyRequestRepository
                 .findByLanguageAndAuthor(pageable, language, author);
     }
 
     public Page<HistoryRequest> findByLanguage(Pageable pageable, String language) {
-        return requestHistoryRepository
+        return historyRequestRepository
                 .findByLanguage(pageable, language);
     }
 
     public HistoryRequest findById(Long id) throws WorkshopException{
-        return requestHistoryRepository
+        return historyRequestRepository
                 .findById(id)
                 .orElseThrow(() -> new WorkshopException(WorkshopError.REQUEST_HISTORY_NOT_FOUND_ERROR));
     }
@@ -47,7 +47,7 @@ public class HistoryRequestService {
             Pageable pageable,
             String language,
             Status status){
-        return requestHistoryRepository
+        return historyRequestRepository
                 .findByLanguageAndStatus(pageable, language, status);
     }
 
@@ -55,11 +55,11 @@ public class HistoryRequestService {
             Pageable pageable,
             String language,
             Account user) throws WorkshopException{
-            return requestHistoryRepository
+            return historyRequestRepository
                     .findByLanguageAndUser(pageable, language, user);
         }
 
     public Page<HistoryRequest> findAll(Pageable pageable){
-        return requestHistoryRepository.findAll(pageable);
+        return historyRequestRepository.findAll(pageable);
     }
 }

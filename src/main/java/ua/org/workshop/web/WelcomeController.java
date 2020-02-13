@@ -73,7 +73,7 @@ public class WelcomeController {
 
 		model.addAttribute("username", form.getUsername());
 
-		return (result.hasErrors() ? Pages.REGISTRATION_FORM_PAGE : Pages.REGISTRATION_FORM_OK);
+		return (result.hasErrors() ? Pages.REGISTRATION_FORM_PAGE : Pages.REGISTRATION_FORM_REDIRECT_SUCCESS);
 	}
 
 	@InitBinder

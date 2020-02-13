@@ -1,6 +1,7 @@
-var urlPath = `/user/${requests}`;
-var urlPathHistory = `/user/history-${requests}`;
-var urlEditHistoryRequest = `/user/edit-history-request`;
+var page = `user`;
+var urlPath = `/${page}/${requests}`;
+var urlPathHistory = `/${page}/history-${requests}`;
+var urlEditHistoryRequest = `/${page}/edit-history-request`;
 
 window.onload = () => {
     wizard(urlPath);

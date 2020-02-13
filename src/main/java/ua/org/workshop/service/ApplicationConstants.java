@@ -61,6 +61,7 @@ public interface ApplicationConstants {
     String BUNDLE_REQUEST_STATUS_PREFIX = "app.request.";
 
     String REQUEST_DEFAULT_STATUS = "REGISTER";
+    String REQUEST_MANAGER_STATUS = "REGISTER";
     String REQUEST_WORKMAN_STATUS = "ACCEPT";
 
     Integer MYSQL_DEFAULT_MAX_OPEN_PREPARED_STATEMENTS = 100;
