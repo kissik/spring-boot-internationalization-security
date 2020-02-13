@@ -8,26 +8,25 @@ import ua.org.workshop.domain.Account;
 import ua.org.workshop.domain.Request;
 import ua.org.workshop.domain.Status;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
 
-    Optional<List<Request>> getRequestListByLanguageAndAuthorAndClosed(
+    Page<Request> findAllByLanguageAndAuthor(
+            Pageable page,
             String language,
-            Account author,
-            boolean closed);
+            Account author);
 
-    Optional<List<Request>> getRequestListByLanguageAndClosed(
-            String language,
-            boolean closed
+    Page<Request> findAllByLanguage(
+            Pageable page,
+            String language
     );
 
-    Optional<List<Request>> getRequestListByLanguageAndStatusAndClosed(
+    Page<Request> findAllByLanguageAndStatus(
+            Pageable page,
             String language,
-            Status status,
-            boolean closed
+            Status status
     );
 
     Optional<Request> findByIdAndAuthor(

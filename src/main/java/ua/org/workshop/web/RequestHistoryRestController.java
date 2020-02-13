@@ -30,6 +30,6 @@ public class RequestHistoryRestController {
                     @SortDefault(sort = "author", direction = Sort.Direction.ASC)
             })
                     Pageable pageable) {
-        return requestHistoryService.findAllPage(pageable);
+        return requestHistoryService.findAll(pageable);
     }
 }
