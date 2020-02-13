@@ -27,9 +27,7 @@ import javax.validation.constraints.NotNull;
 @Controller
 public class WelcomeController {
 
-	private static final String VN_REG_FORM = "users/registration-form";
-	private static final String VN_REG_OK = "redirect:/login";
-	private static final String VN_EDIT_OK = "redirect:/users/{id}?saved=true";
+	private static final String VN_EDIT_OK = "redirect:/admin/users/{id}?saved=true";
 	private static final String DEFAULT_ROLE = "USER";
 
     private static final Logger logger = LogManager.getLogger(WelcomeController.class);
@@ -75,7 +73,7 @@ public class WelcomeController {
 		model.addAttribute("roleList", this.roleService.findAll());
 		model.addAttribute("method", "post");
 
-		return VN_REG_FORM;
+		return Pages.REGISTRATION_FORM_PAGE;
 	}
 
 	@RequestMapping(value = "/registration", method = RequestMethod.POST)
@@ -105,7 +103,7 @@ public class WelcomeController {
 		model.addAttribute("username", form.getUsername());
         model.addAttribute("method", "post");
 
-		return (result.hasErrors() ? VN_REG_FORM : VN_REG_OK);
+		return (result.hasErrors() ? Pages.REGISTRATION_FORM_PAGE : Pages.REGISTRATION_FORM_OK);
 	}
 
 	@RequestMapping(value = "/users/{id}/edit", method = RequestMethod.GET)
