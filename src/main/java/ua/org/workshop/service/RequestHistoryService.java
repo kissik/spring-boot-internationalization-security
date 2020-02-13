@@ -62,7 +62,7 @@ public class RequestHistoryService {
                     .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_HISTORY_IS_EMPTY_ERROR));
         }
 
-    public Page<HistoryRequest> findAllPage(Pageable pageable){
+    public Page<HistoryRequest> findAll(Pageable pageable){
         return requestHistoryRepository.findAll(pageable);
     }
 }

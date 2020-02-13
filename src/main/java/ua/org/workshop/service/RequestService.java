@@ -14,10 +14,8 @@ import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.repository.RequestRepository;
 
 import org.springframework.transaction.annotation.Transactional;
-import ua.org.workshop.web.StatusForm;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -51,16 +49,14 @@ public class RequestService  {
         logger.info("New request was created: " + request.toString());
     }
 
-    public List<Request> getRequestListByLanguageAndAuthorAndClosed(String language, Account author, boolean closed) throws WorkshopException{
+    public Page<Request> findAllByLanguageAndAuthor(Pageable pageable, String language, Account author){
         return requestRepository
-                .getRequestListByLanguageAndAuthorAndClosed(language, author, closed)
-                .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_IS_EMPTY_ERROR));
+                .findAllByLanguageAndAuthor(pageable, language, author);
     }
 
-    public List<Request> getRequestListByLanguageAndClosed(String language, boolean closed) throws WorkshopException{
+    public Page<Request> findAllByLanguage(Pageable pageable, String language){
         return requestRepository
-                .getRequestListByLanguageAndClosed(language, closed)
-                .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_IS_EMPTY_ERROR));
+                .findAllByLanguage(pageable, language);
     }
 
     public Request findById(Long id) throws WorkshopException{
@@ -84,13 +80,12 @@ public class RequestService  {
         }
     }
 
-    public List<Request> getRequestListByLanguageAndStatusAndClosed (
+    public Page<Request> findAllByLanguageAndStatus (
+            Pageable page,
             String language,
-            Status status,
-            boolean closed) throws WorkshopException{
+            Status status){
         return requestRepository
-                .getRequestListByLanguageAndStatusAndClosed(language, status, closed)
-                .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_IS_EMPTY_ERROR));
+                .findAllByLanguageAndStatus(page, language, status);
     }
 
     public Request findByIdAndAuthor(Long id, Account author) throws WorkshopException{
@@ -99,7 +94,7 @@ public class RequestService  {
                 .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_NOT_FOUND_ERROR));
     }
 
-    public Page<Request> findAllPage(Pageable pageable){
+    public Page<Request> findAll(Pageable pageable){
         return requestRepository.findAll(pageable);
     }
 }
