@@ -31,7 +31,7 @@ public class AccountDetailsService implements UserDetailsService {
             account = accountService.getAccountByUsername(username);
         }
         catch(WorkshopException e){
-            logger.info("cannot find username: " + username);
+            logger.error("cannot find username: " + username);
             throw new UsernameNotFoundException("cannot find username: " + username);
         }
 

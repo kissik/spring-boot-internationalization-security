@@ -9,13 +9,11 @@ import org.springframework.stereotype.Service;
 import ua.org.workshop.domain.Account;
 import ua.org.workshop.domain.Request;
 import ua.org.workshop.domain.Status;
-import ua.org.workshop.exception.WorkshopErrors;
+import ua.org.workshop.enums.WorkshopError;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.repository.RequestRepository;
 
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -43,8 +41,8 @@ public class RequestService  {
             requestRepository.save(request);
         }
         catch(Exception e){
-            logger.error(WorkshopErrors.DATABASE_CONNECTION_ERROR.message());
-            throw new WorkshopException(WorkshopErrors.DATABASE_CONNECTION_ERROR);
+            logger.error(WorkshopError.DATABASE_CONNECTION_ERROR.message());
+            throw new WorkshopException(WorkshopError.DATABASE_CONNECTION_ERROR);
             }
         logger.info("New request was created: " + request.toString());
     }
@@ -62,7 +60,7 @@ public class RequestService  {
     public Request findById(Long id) throws WorkshopException{
         return requestRepository
                 .findById(id)
-                .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_NOT_FOUND_ERROR));
+                .orElseThrow(() -> new WorkshopException(WorkshopError.REQUEST_NOT_FOUND_ERROR));
     }
 
     @Transactional(readOnly = false)
@@ -76,7 +74,7 @@ public class RequestService  {
         }
         catch(Exception e){
             logger.error(e.getMessage());
-            throw new WorkshopException(WorkshopErrors.DATABASE_CONNECTION_ERROR);
+            throw new WorkshopException(WorkshopError.DATABASE_CONNECTION_ERROR);
         }
     }
 
@@ -91,7 +89,7 @@ public class RequestService  {
     public Request findByIdAndAuthor(Long id, Account author) throws WorkshopException{
         return requestRepository
                 .findByIdAndAuthor(id, author)
-                .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_NOT_FOUND_ERROR));
+                .orElseThrow(() -> new WorkshopException(WorkshopError.REQUEST_NOT_FOUND_ERROR));
     }
 
     public Page<Request> findAll(Pageable pageable){

@@ -1,4 +1,4 @@
-package ua.org.workshop.web;
+package ua.org.workshop.web.form;
 
 
 import javax.validation.constraints.NotNull;

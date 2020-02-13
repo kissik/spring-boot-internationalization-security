@@ -9,17 +9,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.session.FindByIndexNameSessionRepository;
-import org.springframework.session.Session;
-import org.springframework.session.security.SpringSessionBackedSessionRegistry;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import ua.org.workshop.service.AccountDetailsService;
+import ua.org.workshop.service.ApplicationConstants;
 
 @Configuration
 @EnableWebSecurity
@@ -27,12 +23,10 @@ import ua.org.workshop.service.AccountDetailsService;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public AccountDetailsService accountDetailsService;
-//    @Autowired
-//    private FindByIndexNameSessionRepository sessionRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(11);
+        return new BCryptPasswordEncoder(ApplicationConstants.APP_BCRYPT_SALT);
     }
 
     @Bean
@@ -44,40 +38,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return provider;
     }
 
-//    @Bean
-//    public SpringSessionBackedSessionRegistry sessionRegistry() {
-//        return new SpringSessionBackedSessionRegistry(this.sessionRepository);
-//    }
+    @Bean
+    public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
+        return new MySimpleUrlAuthenticationSuccessHandler();
+    }
 
     @Bean
     public GrantedAuthoritiesMapper authoritiesMapper(){
         SimpleAuthorityMapper authorityMapper = new SimpleAuthorityMapper();
         authorityMapper.setConvertToUpperCase(true);
-        //authorityMapper.setDefaultAuthority("ROLE_USER");
         return authorityMapper;
-    }
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler(){
-        return new CustomAccessDeniedHandler("/access-denied");
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authenticationProvider());
-    }
-
-//
-//    @Bean
-//    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http){
-//        http
-//                .authorizeExchange()
-//                .pathMatchers("/users")
-//                .hasRole("ROLE_ADMIN");
-//        return http.build();
-//    }
-    @Bean
-    public HttpSessionEventPublisher httpSessionEventPublisher() {
-        return new HttpSessionEventPublisher();
     }
 
     @Override
@@ -87,19 +62,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/", "/css/*", "/js/*", "/img/*").permitAll()
                 .antMatchers("/registration").anonymous()
-                .antMatchers("/access-denied").anonymous()
                 .antMatchers("/login").anonymous()
-                .antMatchers("/users/*").hasRole("ADMIN")
-                .antMatchers("/users").hasRole("ADMIN")
-                .antMatchers("/requests").hasRole("USER")
-                .antMatchers("/manager-requests").hasRole("MANAGER")
-                .antMatchers("/workman-requests").hasRole("WORKMAN")
+                .antMatchers("/admin/*").hasRole("ADMIN")
+                .antMatchers("/admin").hasRole("ADMIN")
+                .antMatchers("/user/*").hasRole("USER")
+                .antMatchers("/user").hasRole("USER")
+                .antMatchers("/manager/*").hasRole("MANAGER")
+                .antMatchers("/manager").hasRole("MANAGER")
+                .antMatchers("/workman").hasRole("WORKMAN")
+                .antMatchers("/workman/*").hasRole("WORKMAN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/perform_login")
-                .defaultSuccessUrl("/account", true)
+                .successHandler(myAuthenticationSuccessHandler())
                 .and()
                 .logout()
                 .invalidateHttpSession(true)
@@ -107,16 +84,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .deleteCookies("JSESSIONID")
                 .and()
                 .exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler())
-                //.accessDeniedPage("/access-denied")
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-                .maximumSessions(1)
-//                .sessionManagement()
-//                .maximumSessions(1)
-//                .sessionRegistry(sessionRegistry())
-        ;
+                .accessDeniedPage("/access-denied");
     }
-
 }

@@ -1,10 +1,10 @@
-package ua.org.workshop.web;
+package ua.org.workshop.web.form;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.ScriptAssert;
+import ua.org.workshop.service.ApplicationConstants;
 
 import java.util.Arrays;
 
@@ -30,7 +30,7 @@ public class AccountForm {
     private String lastNameOrigin;
     private String email;
     private String phone;
-    private String[] role = {"ROLE_USER"};
+    private String[] role = {ApplicationConstants.APP_DEFAULT_ROLE};
 
     @NotNull(message = "{validation.text.error.required.field}")
     @Size(min = 6, max = 50, message = "{validation.text.error.from.six.to.fifty}")

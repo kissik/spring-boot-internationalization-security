@@ -1,4 +1,4 @@
-package ua.org.workshop.web;
+package ua.org.workshop.web.form;
 
 import ua.org.workshop.domain.Request;
 import ua.org.workshop.exception.WorkshopException;
