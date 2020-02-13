@@ -7,8 +7,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "request_list_history")
-public class RequestHistory {
+@Table(name = "history_request_list")
+public class HistoryRequest {
     private Long id;
     private String title;
     private String description;
