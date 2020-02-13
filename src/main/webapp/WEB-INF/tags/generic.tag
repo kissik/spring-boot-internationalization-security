@@ -98,7 +98,7 @@
                         <security:authorize access="isAnonymous()">
                             <div class="workshop-sessionInfo">
                                 <spring:message code="subhead.welcome" />
-                                <a href="${loginUrl}"><spring:message code="subhead.login" /></a>
+                                <a class="workshop-login-logout-btn" href="${loginUrl}"><spring:message code="subhead.login" /></a>
                             </div>
             		    </security:authorize>
             		</li>
@@ -106,7 +106,7 @@
                         <security:authorize access="isAuthenticated()">
                             <div class="workshop-sessionInfo">
                                 <security:authentication property="principal.username" />.
-                                <a href="${logoutUrl}"><spring:message code="subhead.logout" /></a>
+                                <a class="workshop-login-logout-btn" href="${logoutUrl}"><spring:message code="subhead.logout" /></a>
                             </div>
                         </security:authorize>
                     </li>

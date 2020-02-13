@@ -2,7 +2,7 @@ package ua.org.workshop.service;
 
 import org.springframework.stereotype.Service;
 import ua.org.workshop.domain.Status;
-import ua.org.workshop.exception.WorkshopErrors;
+import ua.org.workshop.enums.WorkshopError;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.repository.StatusRepository;
 
@@ -25,7 +25,7 @@ public class StatusService  {
     public Status findByCode(String status) throws WorkshopException {
         return statusRepository
                 .findByCode(status)
-                .orElseThrow(() -> new WorkshopException(WorkshopErrors.STATUS_NOT_FOUND_ERROR));
+                .orElseThrow(() -> new WorkshopException(WorkshopError.STATUS_NOT_FOUND_ERROR));
     }
 
 }

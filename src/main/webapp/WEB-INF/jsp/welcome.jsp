@@ -8,7 +8,7 @@
     <jsp:attribute name="head">
         <link rel="stylesheet" href="../css/main-page-style.css">
         <title>
-            <title><spring:message code="app.title"/></title>
+            <spring:message code="app.title"/>
         </title>
     </jsp:attribute>
     <jsp:body>

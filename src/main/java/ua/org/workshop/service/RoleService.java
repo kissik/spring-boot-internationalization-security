@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import ua.org.workshop.domain.Role;
-import ua.org.workshop.exception.WorkshopErrors;
+import ua.org.workshop.enums.WorkshopError;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.repository.RoleRepository;
 
@@ -26,7 +26,7 @@ public class RoleService  {
     public Role findByCode(String roleStr) throws WorkshopException {
         return roleRepository
                 .findByCode(roleStr)
-                .orElseThrow(() -> new WorkshopException(WorkshopErrors.ROLE_NOT_FOUND_ERROR));
+                .orElseThrow(() -> new WorkshopException(WorkshopError.ROLE_NOT_FOUND_ERROR));
     }
 
 
@@ -38,7 +38,7 @@ public class RoleService  {
             logger.info("After save");
         }
         catch(Exception e){
-            throw new WorkshopException(WorkshopErrors.DATABASE_CONNECTION_ERROR);
+            throw new WorkshopException(WorkshopError.DATABASE_CONNECTION_ERROR);
         }
         return true;
     }
@@ -50,7 +50,7 @@ public class RoleService  {
                 .findAll();
         }
         catch(Exception e){
-            throw new WorkshopException(WorkshopErrors.ROLE_LIST_IS_EMPTY_ERROR);
+            throw new WorkshopException(WorkshopError.ROLE_LIST_IS_EMPTY_ERROR);
         }
         return roles;
     }

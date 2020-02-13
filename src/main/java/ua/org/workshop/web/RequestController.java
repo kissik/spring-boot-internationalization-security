@@ -9,24 +9,23 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
-import ua.org.workshop.dao.AccountDetails;
 import ua.org.workshop.domain.Account;
 import ua.org.workshop.domain.Request;
 import ua.org.workshop.domain.Status;
-import ua.org.workshop.exception.WorkshopErrors;
+import ua.org.workshop.enums.WorkshopError;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.AccountService;
 import ua.org.workshop.service.RequestService;
+import ua.org.workshop.service.SecurityService;
 import ua.org.workshop.service.StatusService;
+import ua.org.workshop.web.form.RequestForm;
+import ua.org.workshop.web.form.StatusForm;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
@@ -54,15 +53,7 @@ public class RequestController {
     @Autowired
     private StatusService statusService;
 
-    @Autowired
-    private MessageSource messageSource;
-
-    @Autowired
-    LocaleResolver localeResolver;
-
-    private String getLanguageStringForStoreInDB(Locale locale){
-        return messageSource.getMessage("locale.string", null, locale);
-    }
+    private Utility utility = new Utility();
 
     @GetMapping("user/requests")
     @ResponseBody
@@ -75,8 +66,8 @@ public class RequestController {
                     Pageable pageable, Locale locale){
         return requestService.findAllByLanguageAndAuthor(
                 pageable,
-                getLanguageStringForStoreInDB(locale),
-                accountService.getAccountByUsername(getCurrentUsername())
+                utility.getLanguageStringForStoreInDB(locale),
+                accountService.getAccountByUsername(SecurityService.getCurrentUsername())
         );
     }
 
@@ -91,7 +82,7 @@ public class RequestController {
                     Pageable pageable, Locale locale){
         return requestService.findAllByLanguageAndStatus(
                 pageable,
-                getLanguageStringForStoreInDB(locale),
+                utility.getLanguageStringForStoreInDB(locale),
                 statusService.findByCode(MANAGER_STATUS)
         );
     }
@@ -107,7 +98,7 @@ public class RequestController {
                     Pageable pageable, Locale locale){
         return requestService.findAllByLanguageAndStatus(
                 pageable,
-                getLanguageStringForStoreInDB(locale),
+                utility.getLanguageStringForStoreInDB(locale),
                 statusService.findByCode(WORKMAN_STATUS)
         );
     }
@@ -115,7 +106,8 @@ public class RequestController {
     @RequestMapping(value = "/requests/{id}", method = RequestMethod.GET)
     public String getRequest(@PathVariable("id") Long id, Model model) throws IllegalArgumentException{
         try{
-            if (isCurrentUserHasRole("MANAGER")||isCurrentUserHasRole("WORKMAN")){
+            if (SecurityService.isCurrentUserHasRole("MANAGER")||
+                    SecurityService.isCurrentUserHasRole("WORKMAN")){
                 model.addAttribute(
                         "request",
                         requestService.findById(id)
@@ -128,7 +120,7 @@ public class RequestController {
                                 id,
                                 accountService
                                         .getAccountByUsername(
-                                                getCurrentUsername()
+                                                SecurityService.getCurrentUsername()
                                         )
                         )
                 );
@@ -136,8 +128,7 @@ public class RequestController {
             logger.info("custom error message: " + e.getMessage());
             logger.error("custom error message: " + e.getMessage());
             model.addAttribute("message", e.getMessage());
-            if (isCurrentUserHasRole("USER")) {
-                getAuthentication().setAuthenticated(false);
+            if (SecurityService.isCurrentUserHasRole("USER")) {
                 return REDIRECT_TO_ACCESS_DENIED_PAGE;
             }
         }
@@ -161,7 +152,7 @@ public class RequestController {
         Status status;
         try {
             request = toRequest(form, locale);
-            author = accountService.getAccountByUsername(getCurrentUsername());
+            author = accountService.getAccountByUsername(SecurityService.getCurrentUsername());
             status = statusService.findByCode(DEFAULT_STATUS);
             if (!result.hasErrors()) {
                 request.setStatus(status);
@@ -210,17 +201,14 @@ public class RequestController {
             checkTheAuthorities(request.getStatus().getCode());
         }
         catch (WorkshopException e) {
-            if (e.getErrorCode().equals(500)) {
-                getAuthentication().setAuthenticated(false);
-                return REDIRECT_TO_ACCESS_DENIED_PAGE;
-            }
+            return REDIRECT_TO_ACCESS_DENIED_PAGE;
         }
         validateFields(statusForm.getStatus(), statusForm, result);
         Status newStatus = statusService.findByCode(statusForm.getStatus());
         try {
             request.setPrice(
                     Optional.ofNullable(statusForm.getPrice())
-                            .orElseThrow(() -> new WorkshopException(WorkshopErrors.PRICE_NOT_FOUND_ERROR)));
+                            .orElseThrow(() -> new WorkshopException(WorkshopError.PRICE_NOT_FOUND_ERROR)));
         }catch(WorkshopException e){
             logger.info("custom error message: " + e.getMessage());
             logger.error("custom error message: " + e.getMessage());
@@ -228,13 +216,13 @@ public class RequestController {
         try {
             request.setCause(
                     Optional.ofNullable(statusForm.getCause())
-                            .orElseThrow(() -> new WorkshopException(WorkshopErrors.CAUSE_NOT_FOUND_ERROR)));
+                            .orElseThrow(() -> new WorkshopException(WorkshopError.CAUSE_NOT_FOUND_ERROR)));
         }catch(WorkshopException e){
             logger.info("custom error message: " + e.getMessage());
             logger.error("custom error message: " + e.getMessage());
         }
         request.setStatus(newStatus);
-        request.setUser(accountService.getAccountByUsername(getCurrentUsername()));
+        request.setUser(accountService.getAccountByUsername(SecurityService.getCurrentUsername()));
         request.setClosed(newStatus.isClose());
         if (!result.hasErrors())
             try{
@@ -257,7 +245,7 @@ public class RequestController {
     }
 
     private String getPathByAuthority() {
-        if (isCurrentUserHasRole("MANAGER"))
+        if (SecurityService.isCurrentUserHasRole("MANAGER"))
             return REDIRECT_TO_MANAGER_REQUESTS_LISTS_ON_SUCCESSFUL_NEW_REQUEST;
         else
             return REDIRECT_TO_WORKMAN_REQUESTS_LISTS_ON_SUCCESSFUL_NEW_REQUEST;
@@ -272,30 +260,12 @@ public class RequestController {
 
     private void checkTheAuthorities(String status) throws WorkshopException{
         boolean check = true;
-        if (isCurrentUserHasRole("MANAGER") && status.equals(MANAGER_STATUS))
+        if (SecurityService.isCurrentUserHasRole("MANAGER") && status.equals(MANAGER_STATUS))
             check = false;
-        if (isCurrentUserHasRole("WORKMAN") && status.equals(WORKMAN_STATUS))
+        if (SecurityService.isCurrentUserHasRole("WORKMAN") && status.equals(WORKMAN_STATUS))
             check = false;
 
-        if (check) throw new WorkshopException(WorkshopErrors.RIGHT_VIOLATION_ERROR);
-    }
-
-    private Authentication getAuthentication(){
-        SecurityContext securityCtx = SecurityContextHolder.getContext();
-        return securityCtx.getAuthentication();
-    }
-
-    private AccountDetails getPrincipal(){
-       return (AccountDetails) getAuthentication().getPrincipal();
-    }
-
-    private String getCurrentUsername() {
-
-        return getPrincipal().getUsername();
-    }
-
-    private boolean isCurrentUserHasRole(String role){
-        return getPrincipal().hasRole(role);
+        if (check) throw new WorkshopException(WorkshopError.RIGHT_VIOLATION_ERROR);
     }
 
     @InitBinder
@@ -314,7 +284,7 @@ public class RequestController {
         request.setTitle(form.getTitle());
         request.setPrice(BigDecimal.ZERO);
         request.setDescription(form.getDescription());
-        request.setLanguage(getLanguageStringForStoreInDB(locale));
+        request.setLanguage(utility.getLanguageStringForStoreInDB(locale));
         return request;
     }
 

@@ -36,7 +36,7 @@ public class Account {
     public Account(String username) { this.username = username; }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public Long getId() { return id; }
 
