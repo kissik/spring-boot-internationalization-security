@@ -8,11 +8,10 @@
 
 <%@page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 
-<c:set var="requestPath" value="/requests/${request.id}" />
-<c:url var="requestJsUrl" value="/js/request.js" />
-<c:url var="requestUrl" value="/${requestPath}" />
+<c:set var="requestPath" value="/workman/requests/${request.id}" />
+<c:url var="requestUrl" value="${requestPath}" />
 
-<c:url var="editRequestUrl" value="${requestPath}/edit.html" />
+<c:url var="editRequestUrl" value="${requestPath}/edit" />
 
 <spring:message var="editRequest" code="request.edit" />
 
@@ -24,7 +23,7 @@
     <div class="container main-content">
         <ol class="breadcrumb">
         	<li class="breadcrumb-item"><a href="${homeUrl}"><spring:message code="home.pageTitle" /></a></li>
-        	<li class="breadcrumb-item active"><a href="${requestsUrl}"><spring:message code="requestsList.pageTitle" /></a></li>
+        	<li class="breadcrumb-item active"><a href="${workmanUrl}"><spring:message code="requestsList.pageTitle" /></a></li>
         </ol>
         <c:if test="${param.saved == true}">
             <div class="info alert"><spring:message code="request.save" /></div>
@@ -62,9 +61,7 @@
 				</div>
 			</div>
 		</div>
-		<security:authorize access="hasAnyRole('MANAGER', 'WORKMAN')">
-		    <a href="${editRequestUrl}" class="btn btn-primary" title="${editRequest}"><spring:message code="request.edit" /></a>
-		</security:authorize>
+		<a href="${editRequestUrl}" class="btn btn-primary" title="${editRequest}"><spring:message code="request.edit" /></a>
     </div>
     </jsp:body>
 </t:generic>

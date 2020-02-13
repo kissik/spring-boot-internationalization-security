@@ -1,4 +1,4 @@
-package ua.org.workshop.web;
+package ua.org.workshop.web.form;
 
 import ua.org.workshop.domain.Request;
 import ua.org.workshop.exception.WorkshopException;
@@ -20,7 +20,7 @@ public class StatusForm {
 
     public String toString() {
         return new StringBuilder()
-                .append(" status:" + status)
+                .append(" status:" + getStatus())
                 .append(" price:" + getPrice().toString())
                 .append(" cause:" + getCause())
                 .toString();

@@ -1,6 +1,6 @@
 .workshop-error-body-class{
 	height: 100vh;
-	background-image: url(/img/binoculars.jpg);
+	background-image: url("/img/binoculars.jpg");
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -10,7 +10,7 @@
 	max-width: 980px;
 	height: 100vh;
 	margin: auto;
-	background-image: url(/img/turbolift_access_denied.jpg);
+	background-image: url("/img/turbolift_access_denied.jpg");
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;

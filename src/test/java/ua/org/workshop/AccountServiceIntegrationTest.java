@@ -104,7 +104,7 @@ public class AccountServiceIntegrationTest {
         account.setPassword("password");
         account.setDateCreated(LocalDate.now());
 
-        lenient().when(accountService.newAccount(account))
+        lenient().when(accountService.registerAccount(account))
                 .thenReturn(true);
 
     }

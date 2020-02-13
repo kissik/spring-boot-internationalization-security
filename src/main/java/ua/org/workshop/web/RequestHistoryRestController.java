@@ -12,14 +12,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import ua.org.workshop.domain.HistoryRequest;
-import ua.org.workshop.service.RequestHistoryService;
+import ua.org.workshop.service.HistoryRequestService;
 
 @Controller
 @RequiredArgsConstructor
 public class RequestHistoryRestController {
 
     @Autowired
-    private RequestHistoryService requestHistoryService;
+    private HistoryRequestService historyRequestService;
 
     @GetMapping(path = "/requests-history-pageable")
     @ResponseBody
@@ -30,6 +30,6 @@ public class RequestHistoryRestController {
                     @SortDefault(sort = "author", direction = Sort.Direction.ASC)
             })
                     Pageable pageable) {
-        return requestHistoryService.findAll(pageable);
+        return historyRequestService.findAll(pageable);
     }
 }

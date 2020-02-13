@@ -1,7 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:set var="accountsPath" value="users" />
-<c:set var="requestsPath" value="requests" />
+<c:set var="adminPath" value="admin/page" />
+<c:set var="managerPath" value="manager/page" />
+<c:set var="workmanPath" value="workman/page" />
+<c:set var="userPath" value="user/page" />
 
 <c:set var="baseGoogleUrl" value="http://ajax.googleapis.com/ajax/libs" />
 

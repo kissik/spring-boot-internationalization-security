@@ -1,18 +1,15 @@
 <!DOCTYPE html>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags/" %>
 
-<%@ include file="/WEB-INF/jsp/urls.jspf" %>
-
-<%@page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
-
 <c:set var="email" value="${account.email}" />
-<c:set var="userPath" value="/users/${account.id}" />
-<c:url var="userJsUrl" value="/js/user.js" />
+<c:set var="userPath" value="/admin/accounts/${account.id}" />
 <c:url var="userUrl" value="/${userPath}" />
-
-<c:url var="editUserUrl" value="${userPath}/edit.html" />
+<c:url var="editUserUrl" value="${userPath}/edit" />
+<c:url var="deleteUserUrl" value="/admin/accounts/${account.id}/delete" />
 
 <spring:message var="editUser" code="user.edit" />
 
@@ -23,14 +20,18 @@
     <jsp:body>
     <div class="container main-content">
         <ol class="breadcrumb">
-        	<li class="breadcrumb-item"><a href="${homeUrl}"><spring:message code="home.pageTitle" /></a></li>
-        	<li class="breadcrumb-item active"><a href="${usersUrl}"><spring:message code="usersList.pageTitle" /></a></li>
+        	<li class="breadcrumb-item"><a href="/"><spring:message code="home.pageTitle" /></a></li>
+        	<li class="breadcrumb-item active"><a href="/admin/page"><spring:message code="usersList.pageTitle" /></a></li>
         </ol>
-        <c:if test="${param.saved == true}">
+        <c:if test="${param.updated == true}">
             <div class="info alert"><spring:message code="user.save" /></div>
         </c:if>
         <h1><c:out value="${account.fullName}" /></h1>
-        <div>
+        <form action="${deleteUserUrl}" method="post">
+		    <input type="text" name=id class="hidden" value=${account.id}>
+		    <input type="submit" class="btn btn-danger" value=<spring:message code="user.delete" /> >
+		</form>
+		<div>
 			<div>
 				<div class="form-group row">
 					<div class="col-sm-2 workshop-field-label"><spring:message code="user.login" /></div>
