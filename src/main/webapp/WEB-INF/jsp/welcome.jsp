@@ -22,7 +22,7 @@
             		</ol>
             		<div class="carousel-inner" role="listbox">
             			<div class="carousel-item active">
-            				<div id="home" class="first-section" style="background-image:url('img/slider-01.jpg');">
+            				<div id="home" class="first-section" style="background-image:url('img/slider-01.jpg');background-size:cover;background-repeat:no-repeat;">
             					<div class="dtab">
             						<div class="container">
             							<div class="row">
@@ -41,7 +41,7 @@
             				</div><!-- end section -->
             			</div>
             			<div class="carousel-item">
-            				<div id="home" class="first-section" style="background-image:url('img/slider-02.jpg');">
+            				<div id="home" class="first-section" style="background-image:url('img/slider-02.jpg');background-size:cover;background-repeat:no-repeat;">
             					<div class="dtab">
             						<div class="container">
             							<div class="row">
@@ -60,7 +60,7 @@
             				</div><!-- end section -->
             			</div>
             			<div class="carousel-item">
-            				<div id="home" class="first-section" style="background-image:url('img/slider-03.jpg');">
+            				<div id="home" class="first-section" style="background-image:url('img/slider-03.jpg');background-size:cover;background-repeat:no-repeat;">
             					<div class="dtab">
             						<div class="container">
             							<div class="row">
