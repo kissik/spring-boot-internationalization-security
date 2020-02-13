@@ -11,7 +11,7 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import ua.org.workshop.domain.RequestHistory;
+import ua.org.workshop.domain.HistoryRequest;
 import ua.org.workshop.service.RequestHistoryService;
 
 @Controller
@@ -23,7 +23,7 @@ public class RequestHistoryRestController {
 
     @GetMapping(path = "/requests-history-pageable")
     @ResponseBody
-    Page<RequestHistory> loadRequestsHistoryPage(
+    Page<HistoryRequest> loadRequestsHistoryPage(
             @PageableDefault(page = 0, size = 5)
             @SortDefault.SortDefaults({
                     @SortDefault(sort = "dateCreated", direction = Sort.Direction.DESC),

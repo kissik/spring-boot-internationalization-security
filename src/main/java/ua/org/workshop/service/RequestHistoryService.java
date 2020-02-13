@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.org.workshop.domain.Account;
-import ua.org.workshop.domain.RequestHistory;
+import ua.org.workshop.domain.HistoryRequest;
 import ua.org.workshop.domain.Status;
 import ua.org.workshop.exception.WorkshopErrors;
 import ua.org.workshop.exception.WorkshopException;
@@ -28,25 +28,25 @@ public class RequestHistoryService {
         this.requestHistoryRepository = requestHistoryRepository;
     }
 
-    public List<RequestHistory> getRequestListHistoryByLanguageAndAuthor(String language, Account author) throws WorkshopException{
+    public List<HistoryRequest> getRequestListHistoryByLanguageAndAuthor(String language, Account author) throws WorkshopException{
         return requestHistoryRepository
                 .getRequestListHistoryByLanguageAndAuthor(language, author)
                 .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_HISTORY_IS_EMPTY_ERROR));
     }
 
-    public List<RequestHistory> getRequestListHistoryByLanguage(String language) throws WorkshopException{
+    public List<HistoryRequest> getRequestListHistoryByLanguage(String language) throws WorkshopException{
         return requestHistoryRepository
                 .getRequestListHistoryByLanguage(language)
                 .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_HISTORY_IS_EMPTY_ERROR));
     }
 
-    public RequestHistory findById(Long id) throws WorkshopException{
+    public HistoryRequest findById(Long id) throws WorkshopException{
         return requestHistoryRepository
                 .findById(id)
                 .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_HISTORY_NOT_FOUND_ERROR));
     }
 
-    public List<RequestHistory> getRequestListHistoryByLanguageAndStatus (
+    public List<HistoryRequest> getRequestListHistoryByLanguageAndStatus (
             String language,
             Status status) throws WorkshopException{
         return requestHistoryRepository
@@ -54,7 +54,7 @@ public class RequestHistoryService {
                 .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_HISTORY_IS_EMPTY_ERROR));
     }
 
-    public List<RequestHistory> getRequestListHistoryByLanguageAndUser(
+    public List<HistoryRequest> getRequestListHistoryByLanguageAndUser(
             String language,
             Account user) throws WorkshopException{
             return requestHistoryRepository
@@ -62,7 +62,7 @@ public class RequestHistoryService {
                     .orElseThrow(() -> new WorkshopException(WorkshopErrors.REQUEST_LIST_HISTORY_IS_EMPTY_ERROR));
         }
 
-    public Page<RequestHistory> findAllPage(Pageable pageable){
+    public Page<HistoryRequest> findAllPage(Pageable pageable){
         return requestHistoryRepository.findAll(pageable);
     }
 }
