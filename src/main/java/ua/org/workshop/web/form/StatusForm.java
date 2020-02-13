@@ -20,7 +20,7 @@ public class StatusForm {
 
     public String toString() {
         return new StringBuilder()
-                .append(" status:" + status)
+                .append(" status:" + getStatus())
                 .append(" price:" + getPrice().toString())
                 .append(" cause:" + getCause())
                 .toString();

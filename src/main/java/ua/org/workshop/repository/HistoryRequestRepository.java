@@ -9,7 +9,7 @@ import ua.org.workshop.domain.HistoryRequest;
 import ua.org.workshop.domain.Status;
 
 @Repository
-public interface RequestHistoryRepository extends JpaRepository<HistoryRequest, Long> {
+public interface HistoryRequestRepository extends JpaRepository<HistoryRequest, Long> {
     Page<HistoryRequest> findByLanguageAndAuthor(
             Pageable page,
             String language,

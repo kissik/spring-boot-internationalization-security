@@ -17,7 +17,7 @@ import ua.org.workshop.exception.WorkshopException;
 public class AccountDetailsService implements UserDetailsService {
 
     private final AccountService accountService;
-    private static final Logger logger = LogManager.getLogger(AccountDetailsService.class);
+    private static final Logger LOGGER = LogManager.getLogger(AccountDetailsService.class);
 
     public AccountDetailsService(AccountService accountService){
         super();
@@ -31,12 +31,10 @@ public class AccountDetailsService implements UserDetailsService {
             account = accountService.getAccountByUsername(username);
         }
         catch(WorkshopException e){
-            logger.error("cannot find username: " + username);
+            LOGGER.error("cannot find username: " + username);
             throw new UsernameNotFoundException("cannot find username: " + username);
         }
-
-        logger.info(account.getFirstName());
-
+        LOGGER.info("loaded account : " + account.getUsername());
         Hibernate.initialize(account.getRoles());
         return new AccountDetails(account);
     }

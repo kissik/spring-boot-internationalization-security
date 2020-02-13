@@ -9,23 +9,9 @@ const makeRow = (rowData, index, callback) => {
 
     tableRow.appendChild(createHiddenRequestDiv(hiddenId, rowData, callback));
 
-    anchor.setAttribute('href', '#');
-    anchor.onclick = () => {
-        let div = document.getElementById(hiddenId);
-        div.style.width = '100vw';
-        div.style.height = '100vh';
-        div.style.display = 'flex';
-        div.style.position = 'absolute';
-        div.style.top = 0;
-        div.style.left = 0;
-        div.style.background = 'rgba(3,3,3,0.7)';
-        div.style.zIndex = 2000;
-    }
+    anchor.setAttribute('href', `/${page}/${requests}/${rowData.id}`);
+    anchor.appendChild(document.createTextNode(rowData.title));
 
-    label.setAttribute('for', 'view-request-modal-window');
-
-    label.appendChild(document.createTextNode(rowData.title));
-    anchor.appendChild(label);
     tableData.appendChild(anchor);
     tableData.style.width = '25%';
     tableRow.appendChild(tableData);

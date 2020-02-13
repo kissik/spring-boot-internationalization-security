@@ -35,7 +35,7 @@ public class MySimpleUrlAuthenticationSuccessHandler
                         HttpServletResponse response, Authentication authentication)
             throws IOException {
 
-        String targetUrl = determineTargetUrl(authentication);
+        String targetUrl = SecurityService.getPathByAuthority();
 
         if (response.isCommitted()) {
             LOGGER.debug(
@@ -45,25 +45,6 @@ public class MySimpleUrlAuthenticationSuccessHandler
         }
 
         redirectStrategy.sendRedirect(request, response, targetUrl);
-    }
-
-    private String determineTargetUrl(Authentication authentication) {
-
-        if (SecurityService.isCurrentUserHasRole("ADMIN")) {
-            return Pages.ADMIN_PAGE;
-        }
-        if (SecurityService.isCurrentUserHasRole("WORKMAN")) {
-            return Pages.WORKMAN_PAGE;
-        }
-        if (SecurityService.isCurrentUserHasRole("MANAGER")) {
-            return Pages.MANAGER_PAGE;
-        }
-        if (SecurityService.isCurrentUserHasRole("USER")) {
-            return Pages.USER_PAGE;
-        }
-
-        throw new IllegalStateException();
-
     }
 
     private void clearAuthenticationAttributes(HttpServletRequest request) {
