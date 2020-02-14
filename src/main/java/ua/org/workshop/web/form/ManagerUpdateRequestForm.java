@@ -1,21 +1,13 @@
 package ua.org.workshop.web.form;
 
-import ua.org.workshop.domain.Request;
-import ua.org.workshop.exception.WorkshopException;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
-public class StatusForm {
+public class ManagerUpdateRequestForm {
     private String status;
     private BigDecimal price;
     private String cause;
-    private Request request;
-
-    public StatusForm(String status) {
-        this.status = status;
-    }
 
     @NotNull(message = "{validation.text.error.required.field}")
     public String getStatus() {
@@ -26,23 +18,7 @@ public class StatusForm {
         this.status = status;
     }
 
-    public String toString() {
-        return new StringBuilder()
-                .append(" status:" + getStatus())
-                .append(" price:" + getPrice().toString())
-                .append(" cause:" + getCause())
-                .toString();
-    }
-
-    public Request getRequest() {
-        return request;
-    }
-
-    public void setRequest(Request request) {
-        this.request = request;
-    }
-
-    public BigDecimal getPrice() throws WorkshopException {
+    public BigDecimal getPrice() {
         return price;
     }
 
@@ -57,5 +33,14 @@ public class StatusForm {
 
     public void setCause(String cause) {
         this.cause = cause;
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder()
+                .append(" status : " + getStatus())
+                .append(" price : " + getPrice())
+                .append(" cause : " + getCause())
+                .toString();
     }
 }

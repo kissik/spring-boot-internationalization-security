@@ -30,10 +30,11 @@ import java.math.BigDecimal;
 import java.util.Locale;
 
 @Controller
+@RequestMapping("/user")
 public class UserRoleController {
 
     private static final Logger LOGGER = LogManager.getLogger(UserRoleController.class);
-
+    private static final String CURRENT_ROLE = "USER";
     @Autowired
     private RequestService requestService;
     @Autowired
@@ -45,13 +46,15 @@ public class UserRoleController {
     @Autowired
     private MessageSource messageSource;
 
-    @GetMapping("user/requests")
+    @GetMapping("/requests")
     @ResponseBody
     public Page<RequestDTO> userRequests(
-            @PageableDefault(page = 0, size = 5)
+            @PageableDefault(
+                    page = ApplicationConstants.Pageable.PAGE_DEFAULT_VALUE,
+                    size = ApplicationConstants.Pageable.SIZE_DEFAULT_VALUE)
             @SortDefault.SortDefaults({
-                    @SortDefault(sort = "dateCreated", direction = Sort.Direction.DESC),
-                    @SortDefault(sort = "title", direction = Sort.Direction.ASC)
+                    @SortDefault(sort = ApplicationConstants.RequestField.DATE_CREATED, direction = Sort.Direction.DESC),
+                    @SortDefault(sort = ApplicationConstants.RequestField.TITLE, direction = Sort.Direction.ASC)
             })
                     Pageable pageable, Locale locale) {
         RequestDTOService requestDTOService = new RequestDTOService(messageSource);
@@ -63,13 +66,15 @@ public class UserRoleController {
         ));
     }
 
-    @GetMapping("user/history-requests")
+    @GetMapping("/history-requests")
     @ResponseBody
     Page<HistoryRequestDTO> userHistoryRequests(
-            @PageableDefault(page = 0, size = 5)
+            @PageableDefault(
+                    page = ApplicationConstants.Pageable.PAGE_DEFAULT_VALUE,
+                    size = ApplicationConstants.Pageable.SIZE_DEFAULT_VALUE)
             @SortDefault.SortDefaults({
-                    @SortDefault(sort = "dateCreated", direction = Sort.Direction.DESC),
-                    @SortDefault(sort = "title", direction = Sort.Direction.ASC)
+                    @SortDefault(sort = ApplicationConstants.RequestField.DATE_CREATED, direction = Sort.Direction.DESC),
+                    @SortDefault(sort = ApplicationConstants.RequestField.TITLE, direction = Sort.Direction.ASC)
             })
                     Pageable pageable, Locale locale) {
         HistoryRequestDTOService historyRequestDTOService = new HistoryRequestDTOService(messageSource);
@@ -81,20 +86,26 @@ public class UserRoleController {
         ));
     }
 
-    @RequestMapping(value = "user/page", method = RequestMethod.GET)
+    @RequestMapping(value = "/page", method = RequestMethod.GET)
     public String getUserPage() {
         return Pages.USER_PAGE;
     }
 
-    @RequestMapping(value = "user/requests/new", method = RequestMethod.GET)
+    @RequestMapping(
+            value = "/requests/new",
+            method = RequestMethod.GET)
     public String getRequestForm(Model model) {
-        model.addAttribute("request", new RequestForm());
+        model.addAttribute(
+                ApplicationConstants.ModelAttribute.REQUEST,
+                new RequestForm());
         return Pages.USER_CREATE_REQUEST_FORM;
     }
 
-    @RequestMapping(value = "user/requests/new", method = RequestMethod.POST)
+    @RequestMapping(
+            value = "/requests/new",
+            method = RequestMethod.POST)
     public String postRequestForm(
-            @ModelAttribute("request") @Valid RequestForm form,
+            @ModelAttribute(ApplicationConstants.ModelAttribute.REQUEST) @Valid RequestForm form,
             BindingResult result,
             Model model,
             Locale locale) {
@@ -110,12 +121,14 @@ public class UserRoleController {
                 request.setAuthor(author);
                 request.setUser(author);
                 request.setClosed(status.isClose());
-                LOGGER.info("new request form creation: " + form.toString());
                 requestService.newRequest(request);
             }
         } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
-            model.addAttribute("message", e.getMessage());
+            model.addAttribute(
+                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    e.getMessage());
+            return Pages.ERROR_PAGE;
         }
         return (result.hasErrors() ? Pages.USER_CREATE_REQUEST_FORM : Pages.USER_PAGE_REDIRECT_NEW_REQUEST_SUCCESS);
     }

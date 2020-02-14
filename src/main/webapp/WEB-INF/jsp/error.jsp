@@ -12,9 +12,19 @@
     	<div class="workshop-error-body-class">
 	        <div class="workshop-error-message-wrapper">
 				<h1><spring:message code="error.title" /></h1>
-				<p>${message}</p>
-				<c:if test="${param.failedconnection == true}"><p><spring:message code="error.dbconnection" /></p></c:if>
-				<p><spring:message code="error.contact.admin" /></p>
+				<p>
+					<c:if test="${message}">
+						<spring:message code="${message}" />
+					</c:if>
+				</p>
+				<c:if test="${param.failedconnection == true}">
+					<p>
+						<spring:message code="error.dbconnection" />
+					</p>
+				</c:if>
+				<p>
+					<spring:message code="error.contact.admin" />
+				</p>
 			</div>
 		</div>
     </jsp:body>

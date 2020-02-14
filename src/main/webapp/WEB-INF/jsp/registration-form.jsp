@@ -1,12 +1,11 @@
 <!DOCTYPE html>
+<%@page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags/" %>
 
 <%@ include file="/WEB-INF/jsp/urls.jspf" %>
-
-<%@page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 
 <t:generic>
     <jsp:attribute name="head">

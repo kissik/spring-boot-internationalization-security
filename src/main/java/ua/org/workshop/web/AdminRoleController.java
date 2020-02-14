@@ -17,7 +17,6 @@ import ua.org.workshop.domain.Account;
 import ua.org.workshop.domain.HistoryRequest;
 import ua.org.workshop.domain.Request;
 import ua.org.workshop.domain.Role;
-import ua.org.workshop.enums.WorkshopError;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.*;
 import ua.org.workshop.web.form.RoleForm;
@@ -27,9 +26,11 @@ import java.util.Collection;
 import java.util.HashSet;
 
 @Controller
+@RequestMapping("/admin")
 public class AdminRoleController {
 
     private static final Logger LOGGER = LogManager.getLogger(AdminRoleController.class);
+    private static final String CURRENT_ROLE = "ADMIN";
 
     @Autowired
     private AccountService accountService;
@@ -45,90 +46,127 @@ public class AdminRoleController {
         binder.setAllowedFields("role");
     }
 
-    @RequestMapping(value = "/admin/page", method = RequestMethod.GET)
+    @RequestMapping(value = "/page", method = RequestMethod.GET)
     public String getUsers(Model model) {
         return Pages.ADMIN_PAGE;
     }
 
-    @GetMapping("/admin/accounts")
+    @GetMapping("/accounts")
     @ResponseBody
     Page<Account> workmanRequests(
-            @PageableDefault(page = 0, size = 5)
+            @PageableDefault(
+                    page = ApplicationConstants.Pageable.PAGE_DEFAULT_VALUE,
+                    size = ApplicationConstants.Pageable.SIZE_DEFAULT_VALUE)
             @SortDefault.SortDefaults({
-                    @SortDefault(sort = "dateCreated", direction = Sort.Direction.DESC),
-                    @SortDefault(sort = "username", direction = Sort.Direction.ASC)
+                    @SortDefault(
+                            sort = ApplicationConstants.AccountField.USERNAME,
+                            direction = Sort.Direction.ASC),
+                    @SortDefault(
+                            sort = ApplicationConstants.AccountField.DATE_CREATED,
+                            direction = Sort.Direction.DESC)
             })
                     Pageable pageable) {
         return accountService.findAll(pageable);
     }
 
-    @GetMapping(path = "/admin/history-requests")
+    @GetMapping(path = "/history-requests")
     @ResponseBody
     Page<HistoryRequest> loadRequestsHistoryPage(
-            @PageableDefault(page = 0, size = 5)
+            @PageableDefault(
+                    page = ApplicationConstants.Pageable.PAGE_DEFAULT_VALUE,
+                    size = ApplicationConstants.Pageable.SIZE_DEFAULT_VALUE)
             @SortDefault.SortDefaults({
-                    @SortDefault(sort = "dateCreated", direction = Sort.Direction.DESC),
-                    @SortDefault(sort = "author", direction = Sort.Direction.ASC)
+                    @SortDefault(
+                            sort = ApplicationConstants.RequestField.DATE_CREATED,
+                            direction = Sort.Direction.DESC),
+                    @SortDefault(
+                            sort = ApplicationConstants.RequestField.TITLE,
+                            direction = Sort.Direction.ASC)
             })
                     Pageable pageable) {
         return historyRequestService.findAll(pageable);
     }
 
-    @GetMapping(path = "/admin/requests")
+    @GetMapping(path = "/requests")
     @ResponseBody
     Page<Request> loadRequestsPage(
-            @PageableDefault(page = 0, size = 5)
+            @PageableDefault(
+                    page = ApplicationConstants.Pageable.PAGE_DEFAULT_VALUE,
+                    size = ApplicationConstants.Pageable.SIZE_DEFAULT_VALUE)
             @SortDefault.SortDefaults({
-                    @SortDefault(sort = "dateCreated", direction = Sort.Direction.DESC),
-                    @SortDefault(sort = "author", direction = Sort.Direction.ASC)
+                    @SortDefault(
+                            sort = ApplicationConstants.RequestField.DATE_CREATED,
+                            direction = Sort.Direction.DESC),
+                    @SortDefault(
+                            sort = ApplicationConstants.RequestField.TITLE,
+                            direction = Sort.Direction.ASC)
             })
                     Pageable pageable) {
         return requestService.findAll(pageable);
     }
 
-    @RequestMapping(value = "/admin/accounts/{id}", method = RequestMethod.GET)
-    public String getAccount(@PathVariable("id") Long id, Model model) {
+    @RequestMapping(
+            value = "/accounts/{" + ApplicationConstants.PathVariable.ID + "}",
+            method = RequestMethod.GET)
+    public String getAccount(
+            @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
+            Model model) {
         try {
-            model.addAttribute("account", accountService.getAccountById(id));
+            model.addAttribute(
+                    ApplicationConstants.ModelAttribute.ACCOUNT,
+                    accountService.getAccountById(id));
         } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
-            model.addAttribute("message", e.getMessage());
-            return "error";
+            model.addAttribute(
+                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    e.getMessage());
+            return Pages.ERROR_PAGE;
         }
         return Pages.ADMIN_ACCOUNT_INFO_PAGE;
     }
 
-    @RequestMapping(value = "/admin/accounts/{id}/edit", method = RequestMethod.GET)
+    @RequestMapping(
+            value = "/accounts/{" + ApplicationConstants.PathVariable.ID + "}/edit",
+            method = RequestMethod.GET)
     public String getEditAccountRoleForm(
-            @PathVariable("id") Long id,
+            @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
             Model model) {
+        Account account = null;
         try {
-            Account account = accountService.getAccountById(id);
-            RoleForm roleForm = new RoleForm();
-
-            String[] roles = account.getRoles()
-                    .stream()
-                    .map(Role::getCode)
-                    .toArray(String[]::new);
-
-            roleForm.setRole(roles);
-            model.addAttribute("account", account);
-            model.addAttribute("rolesList", roleService.findAll());
-            model.addAttribute("role", roleForm);
-            LOGGER.info("form roles:" + roleForm.toString());
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
-            return "access-denied";
+            account = accountService.getAccountById(id);
+            model.addAttribute(
+                    ApplicationConstants.ModelAttribute.ROLES_LIST,
+                    roleService.findAll());
+        } catch (WorkshopException e) {
+            model.addAttribute(
+                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    e.getMessage());
+            return Pages.ERROR_PAGE;
         }
+        RoleForm roleForm = new RoleForm();
+
+        String[] roles = account.getRoles()
+                .stream()
+                .map(Role::getCode)
+                .toArray(String[]::new);
+
+        roleForm.setRole(roles);
+        model.addAttribute(
+                ApplicationConstants.ModelAttribute.ACCOUNT,
+                account);
+        model.addAttribute(
+                ApplicationConstants.ModelAttribute.ROLE,
+                roleForm);
         return Pages.ADMIN_ACCOUNT_EDIT_PAGE;
     }
 
-    @RequestMapping(value = "/admin/accounts/{id}/edit", method = RequestMethod.POST)
+    @RequestMapping(
+            value = "/accounts/{" + ApplicationConstants.PathVariable.ID + "}/edit",
+            method = RequestMethod.POST)
     public String putAccountRoles(
-            @PathVariable("id") Long id,
-            @ModelAttribute("role") @Valid RoleForm roleForm,
+            @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
+            @ModelAttribute(ApplicationConstants.ModelAttribute.ROLE) @Valid RoleForm roleForm,
             BindingResult result) {
-        LOGGER.info(roleForm.getRole());
         if (!result.hasErrors()) {
             Account account = accountService.getAccountById(id);
             Collection<Role> roles = new HashSet<>();
@@ -137,20 +175,21 @@ public class AdminRoleController {
             account.setRoles(roles);
             accountService.update(account);
         }
+        else
+            return Pages.ERROR_PAGE;
         return Pages.ADMIN_PAGE_REDIRECT_UPDATE_ACCOUNT_SUCCESS + id + "?update=true";
     }
 
-    @RequestMapping(value = "/admin/accounts/{id}/delete", method = RequestMethod.POST)
+    @RequestMapping(
+            value = "/accounts/{" + ApplicationConstants.PathVariable.ID + "}/delete",
+            method = RequestMethod.POST)
     public String deleteAccount(
-            @PathVariable("id") Long id) {
+            @PathVariable(ApplicationConstants.PathVariable.ID) Long id) {
+        if (!SecurityService.isCurrentUserHasRole(ApplicationConstants.APP_SUPERUSER_ROLE)) {
+            return Pages.ACCESS_DENIED_PAGE;
+        }
         try {
             Account deleteAccount = accountService.getAccountById(id);
-
-            if (!SecurityService.isCurrentUserHasRole(ApplicationConstants.APP_SUPERUSER_ROLE)) {
-                LOGGER.error("user has no rights to delete accounts!");
-                throw new WorkshopException(WorkshopError.REQUEST_UPDATE_ERROR);
-            }
-            LOGGER.info("try to delete account " + id);
             accountService.delete(deleteAccount.getId());
         } catch (WorkshopException e) {
             LOGGER.error("delect account error : " + e.getMessage());

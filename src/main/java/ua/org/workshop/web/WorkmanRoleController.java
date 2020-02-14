@@ -22,16 +22,17 @@ import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.*;
 import ua.org.workshop.web.dto.RequestDTO;
 import ua.org.workshop.web.dto.service.RequestDTOService;
-import ua.org.workshop.web.form.StatusForm;
+import ua.org.workshop.web.form.WorkmanUpdateRequestForm;
 
 import javax.validation.Valid;
 import java.util.Locale;
-import java.util.Optional;
 
 @Controller
+@RequestMapping("/workman")
 public class WorkmanRoleController {
 
     private static final Logger LOGGER = LogManager.getLogger(WorkmanRoleController.class);
+    private static final String CURRENT_ROLE = "WORKMAN";
 
     @Autowired
     private RequestService requestService;
@@ -49,13 +50,15 @@ public class WorkmanRoleController {
                 "status");
     }
 
-    @GetMapping("workman/requests")
+    @GetMapping("/requests")
     @ResponseBody
     Page<RequestDTO> workmanRequests(
-            @PageableDefault(page = 0, size = 5)
+            @PageableDefault(
+                    page = ApplicationConstants.Pageable.PAGE_DEFAULT_VALUE,
+                    size = ApplicationConstants.Pageable.SIZE_DEFAULT_VALUE)
             @SortDefault.SortDefaults({
-                    @SortDefault(sort = "dateCreated", direction = Sort.Direction.DESC),
-                    @SortDefault(sort = "title", direction = Sort.Direction.ASC)
+                    @SortDefault(sort = ApplicationConstants.RequestField.DATE_CREATED, direction = Sort.Direction.DESC),
+                    @SortDefault(sort = ApplicationConstants.RequestField.TITLE, direction = Sort.Direction.ASC)
             })
                     Pageable pageable, Locale locale) {
         RequestDTOService requestDTOService = new RequestDTOService(messageSource);
@@ -63,95 +66,121 @@ public class WorkmanRoleController {
                 pageable,
                 messageSource.getMessage(
                         ApplicationConstants.BUNDLE_LANGUAGE_FOR_REQUEST, null, locale),
-                statusService.findByCode(ApplicationConstants.REQUEST_WORKMAN_STATUS)
+                statusService.findByCode(ApplicationConstants.UPDATE_REQUEST_WORKMAN_VALID_STATUS)
         ));
     }
 
-    @RequestMapping(value = "workman/page", method = RequestMethod.GET)
+    @RequestMapping(value = "/page", method = RequestMethod.GET)
     public String getWorkmanPage() {
         return Pages.WORKMAN_PAGE;
     }
 
-    @PreAuthorize("hasRole('WORKMAN')")
-    @RequestMapping(value = "workman/requests/{id}", method = RequestMethod.GET)
-    public String getRequest(@PathVariable("id") Long id, Model model) throws IllegalArgumentException {
+    @PreAuthorize("hasRole('" + CURRENT_ROLE + "')")
+    @RequestMapping(
+            value = "/requests/{" + ApplicationConstants.PathVariable.ID + "}",
+            method = RequestMethod.GET)
+    public String getRequest(
+            @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
+            Model model) throws IllegalArgumentException {
         try {
-            if (SecurityService.isCurrentUserHasRole("WORKMAN")) {
+            if (SecurityService.isCurrentUserHasRole(CURRENT_ROLE)) {
                 model.addAttribute(
-                        "request",
+                        ApplicationConstants.ModelAttribute.REQUEST,
                         requestService.findById(id)
                 );
             } else
                 return Pages.ACCESS_DENIED_PAGE_REDIRECT;
         } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
-            model.addAttribute("message", e.getMessage());
+            model.addAttribute(
+                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    e.getMessage());
+            return Pages.ERROR_PAGE;
         }
         return Pages.WORKMAN_REQUEST_PAGE;
     }
 
-    @PreAuthorize("hasRole('WORKMAN')")
-    @RequestMapping(value = "workman/requests/{id}/edit", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('" + CURRENT_ROLE + "')")
+    @RequestMapping(
+            value = "/requests/{" + ApplicationConstants.PathVariable.ID + "}/edit",
+            method = RequestMethod.GET)
     public String getEditRequestStatusForm(
-            @PathVariable("id") Long id,
+            @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
             Model model) {
-        StatusForm statusForm = new StatusForm(ApplicationConstants.REQUEST_WORKMAN_EDIT_DEFAULT_STATUS);
+        Request request;
         try {
-            statusForm.setRequest(requestService.findById(id));
+            request = requestService.findById(id);
         } catch (WorkshopException e) {
-            LOGGER.error("custom error message: " + e.getMessage());
-            model.addAttribute("message", e.getMessage());
+            model.addAttribute(
+                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    e.getMessage()
+            );
+            return Pages.ERROR_PAGE;
         }
-        model.addAttribute("statuses", statusForm);
-        return Pages.WORKMAN_REQUEST_UPDATE_FORM_PAGE;
+        model.addAttribute(
+                ApplicationConstants.ModelAttribute.REQUEST,
+                request);
+        model.addAttribute(
+                ApplicationConstants.ModelAttribute.WORKMAN_UPDATE_REQUEST_FORM,
+                new WorkmanUpdateRequestForm());
+        return Pages.WORKMAN_UPDATE_REQUEST_FORM_PAGE;
     }
 
-    @PreAuthorize("hasRole('WORKMAN')")
-    @RequestMapping(value = "workman/requests/{id}/edit", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('" + CURRENT_ROLE + "')")
+    @RequestMapping(
+            value = "/requests/{" + ApplicationConstants.PathVariable.ID + "}/edit",
+            method = RequestMethod.POST)
     public String editWorkmanRequestStatus(
-            @PathVariable("id") Long id,
-            @ModelAttribute("statuses") @Valid StatusForm statusForm,
+            @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
+            @ModelAttribute(ApplicationConstants.ModelAttribute.WORKMAN_UPDATE_REQUEST_FORM) @Valid WorkmanUpdateRequestForm form,
             BindingResult result,
             Model model) {
-        Request request = requestService.findById(id);
+        Request request;
+        Status newStatus;
+
         try {
-            SecurityService.checkTheAuthorities(request.getStatus().getCode());
+            request = requestService.findById(id);
         } catch (WorkshopException e) {
-            return Pages.ACCESS_DENIED_PAGE_REDIRECT;
+            model.addAttribute(
+                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    e.getMessage()
+            );
+            return Pages.ERROR_PAGE;
         }
-        if (result.hasErrors()) return Pages.WORKMAN_REQUEST_UPDATE_FORM_PAGE;
-        Status newStatus = statusService.findByCode(statusForm.getStatus());
+        model.addAttribute(
+                ApplicationConstants.ModelAttribute.REQUEST,
+                request);
+        LOGGER.info("request after --------------------->" + request.toString());
+        if (result.hasErrors())
+            return Pages.WORKMAN_UPDATE_REQUEST_FORM_PAGE;
         try {
-            request.setPrice(
-                    Optional.ofNullable(statusForm.getPrice())
-                            .orElseThrow(() -> new WorkshopException(WorkshopError.PRICE_NOT_FOUND_ERROR)));
+            SecurityService.checkTheAuthorities(CURRENT_ROLE,
+                    request.getStatus().getCode(),
+                    ApplicationConstants.UPDATE_REQUEST_WORKMAN_VALID_STATUS);
+            newStatus = statusService.findByCode(form.getStatus());
+            request.setUser(accountService.getAccountByUsername(SecurityService.getCurrentUsername()));
         } catch (WorkshopException e) {
-            LOGGER.error("custom error message: " + e.getMessage());
-        }
-        try {
-            request.setCause(
-                    Optional.ofNullable(statusForm.getCause())
-                            .orElseThrow(() -> new WorkshopException(WorkshopError.CAUSE_NOT_FOUND_ERROR)));
-        } catch (WorkshopException e) {
-            LOGGER.error("custom error message: " + e.getMessage());
+            LOGGER.error(e.getMessage());
+            model.addAttribute(
+                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    e.getMessage()
+            );
+            if (e.getErrorCode().equals(WorkshopError.RIGHT_VIOLATION_ERROR.code()))
+                return Pages.ACCESS_DENIED_PAGE_REDIRECT;
+            return Pages.ERROR_PAGE;
         }
         request.setStatus(newStatus);
-        request.setUser(accountService.getAccountByUsername(SecurityService.getCurrentUsername()));
         request.setClosed(newStatus.isClose());
-        if (!result.hasErrors())
-            try {
-                requestService.setRequestInfo(request);
-            } catch (WorkshopException e) {
-                LOGGER.error("custom error message: " + e.getMessage());
-                model.addAttribute("message", e.getMessage());
-            }
         try {
-            statusForm.setRequest(requestService.findById(id));
+            LOGGER.info(request);
+            requestService.setRequestInfo(request);
         } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
-            model.addAttribute("message", e.getMessage());
+            model.addAttribute(
+                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    e.getMessage());
+            return Pages.ERROR_PAGE;
         }
-        model.addAttribute("statuses", statusForm);
-        return (result.hasErrors() ? Pages.WORKMAN_REQUEST_UPDATE_FORM_PAGE : SecurityService.getPathByAuthority());
+        return SecurityService.getPathByAuthority();
     }
 }
