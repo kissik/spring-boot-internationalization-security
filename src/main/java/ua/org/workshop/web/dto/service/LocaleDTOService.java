@@ -33,10 +33,19 @@ public class LocaleDTOService {
         String result = messageSource
                 .getMessage(ApplicationConstants.BUNDLE_CURRENCY_STRING,
                         null, locale);
-        Integer rate = tryParseInteger(messageSource.getMessage(ApplicationConstants.BUNDLE_CURRENCY_RATE_INTEGER, null, locale),
-                ApplicationConstants.APP_DEFAULT_PRICE);
-        result = price.multiply(BigDecimal.valueOf(rate)) + " " + result;
+        BigDecimal rate = tryParseBigDecimal(messageSource.getMessage(ApplicationConstants.BUNDLE_CURRENCY_RATE_INTEGER, null, locale),
+                ApplicationConstants.APP_DEFAULT_RATING_VALUE);
+        result = price.multiply(rate) + " " + result;
         return result;
+    }
+
+    private static BigDecimal tryParseBigDecimal(String value, BigDecimal defaultValue) {
+        try {
+            return BigDecimal.valueOf(Double.parseDouble(value));
+        } catch (NumberFormatException e) {
+            LOGGER.error("Number format exception : " + e.getMessage());
+        }
+        return defaultValue;
     }
 
     private static Integer tryParseInteger(String value, Integer defaultValue) {

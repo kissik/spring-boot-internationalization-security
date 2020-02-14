@@ -105,7 +105,7 @@
             		<li class="nav-item">
                         <security:authorize access="isAuthenticated()">
                             <div class="workshop-sessionInfo">
-                                <security:authentication property="principal.username" />.
+                                <security:authentication property="principal.username" />
                                 <a class="workshop-login-logout-btn" href="${logoutUrl}"><spring:message code="subhead.logout" /></a>
                             </div>
                         </security:authorize>

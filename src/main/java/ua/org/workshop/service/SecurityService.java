@@ -27,11 +27,9 @@ public class SecurityService {
         return getPrincipal().getUsername();
     }
 
-    public static void checkTheAuthorities(String status) throws WorkshopException {
+    public static void checkTheAuthorities(String role, String status, String statusCheck) throws WorkshopException {
         boolean check = true;
-        if (SecurityService.isCurrentUserHasRole("MANAGER") && status.equals(ApplicationConstants.REQUEST_MANAGER_STATUS))
-            check = false;
-        if (SecurityService.isCurrentUserHasRole("WORKMAN") && status.equals(ApplicationConstants.REQUEST_WORKMAN_STATUS))
+        if (SecurityService.isCurrentUserHasRole(role) && status.equals(statusCheck))
             check = false;
 
         if (check) throw new WorkshopException(WorkshopError.RIGHT_VIOLATION_ERROR);

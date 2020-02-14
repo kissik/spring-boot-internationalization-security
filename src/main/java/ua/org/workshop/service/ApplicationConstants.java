@@ -1,6 +1,41 @@
 package ua.org.workshop.service;
 
+import java.math.BigDecimal;
+
 public interface ApplicationConstants {
+
+    interface Pageable {
+        int PAGE_DEFAULT_VALUE = 0;
+        String PAGE_ATTRIBUTE = "page";
+        String SEARCH_ATTRIBUTE = "search";
+        int SIZE_DEFAULT_VALUE = 5;
+        String SIZE_ATTRIBUTE = "size";
+        String SORTING_ATTRIBUTE = "sorting";
+    }
+
+    interface PathVariable {
+        String ID = "id";
+    }
+
+    interface ModelAttribute {
+        String MANAGER_UPDATE_REQUEST_FORM = "requestForm";
+        String WORKMAN_UPDATE_REQUEST_FORM = "requestForm";
+        String REQUEST = "request";
+        String MESSAGE = "message";
+        String ACCOUNT = "account";
+        String ROLES_LIST = "rolesList";
+        String ROLE = "role";
+    }
+
+    interface RequestField {
+        String TITLE = "title";
+        String DATE_CREATED = "dateCreated";
+    }
+
+    interface AccountField{
+        String USERNAME = "username";
+        String DATE_CREATED = "dateCreated";
+    }
 
     interface RequestAttributes {
         String ACCOUNT_CONFIRM_PASSWORD_ATTRIBUTE = "confirmPassword";
@@ -14,7 +49,6 @@ public interface ApplicationConstants {
         String APP_ERROR_ATTRIBUTE = "error";
         String APP_LOGGED_USERS_HASH_SET_ATTRIBUTE = "loggedUsers";
         String APP_LANG_ATTRIBUTE = "lang";
-        String APP_MESSAGE_ATTRIBUTE = "message";
         String APP_PASSWORD_ATTRIBUTE = "password";
         String APP_USER_ATTRIBUTE = "user";
         String APP_USERNAME_ATTRIBUTE = "username";
@@ -36,8 +70,8 @@ public interface ApplicationConstants {
 
     String APP_DEFAULT_LANGUAGE = "en";
     Long APP_DEFAULT_ID = -1L;
-    Integer APP_DEFAULT_PRICE = 0;
-    Long APP_DEFAULT_RATING_VALUE = 1L;
+    BigDecimal APP_DEFAULT_PRICE = BigDecimal.ZERO;
+    BigDecimal APP_DEFAULT_RATING_VALUE = BigDecimal.ONE;
 
     String APP_MESSAGES_BUNDLE_NAME = "messages";
     String APP_PATH_REG_EXP = ".*/app/";
@@ -61,8 +95,8 @@ public interface ApplicationConstants {
     String BUNDLE_REQUEST_STATUS_PREFIX = "app.request.";
 
     String REQUEST_DEFAULT_STATUS = "REGISTER";
-    String REQUEST_MANAGER_STATUS = "REGISTER";
-    String REQUEST_WORKMAN_STATUS = "ACCEPT";
+    String UPDATE_REQUEST_MANAGER_VALID_STATUS = "REGISTER";
+    String UPDATE_REQUEST_WORKMAN_VALID_STATUS = "ACCEPT";
     String REQUEST_WORKMAN_EDIT_DEFAULT_STATUS = "DONE";
     String REQUEST_MANAGER_EDIT_DEFAULT_STATUS = "ACCEPT";
 

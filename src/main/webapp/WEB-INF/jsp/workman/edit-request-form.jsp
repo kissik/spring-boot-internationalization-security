@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -9,8 +10,6 @@
 <c:url var="requestUrl" value="/workman/requests/${statuses.request.id}" />
 
 <spring:message var="saveLabel" code="editRequest.label.submit" />
-
-<%@page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 
 <t:generic>
     <jsp:attribute name="head">
@@ -28,25 +27,25 @@
 		<c:if test="${param.saved == true}">
 			<div class="info alert"><spring:message code="editRequest.request.save" /><a href="${requestUrl}"><spring:message code="editRequest.request.view" /></a></div>
 		</c:if>
+		<div class="form-group">
+            <label>
+        	    ${request.title}
+        	</label>
+        </div>
+        <div class="form-group">
+            <label>
+        	    ${request.description}
+        	</label>
+        </div>
 
-        <form:form cssClass="main" modelAttribute="statuses" method="post">
-            <div class="form-group">
-        	    <label>
-        		    ${statuses.request.title}
-        		</label>
-        	</div>
-            <div class="form-group">
-        	    <label>
-        		    ${statuses.request.description}
-        		</label>
-        	</div>
+        <form:form cssClass="main" modelAttribute="requestForm" method="post">
             <div class="form-group">
                 <label for="status" class="workshop-field-label">
                     <spring:message code="editRequest.label.status" />
                 </label>
                 <form:select path="status" class="form-control" id="status" >
-                    <c:forEach items="${statuses.request.status.nextStatuses}" var="st">
-                        <form:option value="${st.code}">${st.code}</form:option>
+                    <c:forEach items="${request.status.nextStatuses}" var="nextStatus">
+                        <form:option value="${nextStatus.code}">${nextStatus.code}</form:option>
                     </c:forEach>
                 </form:select>
                 <c:set var="statusErrors"><form:errors path="status"/></c:set>

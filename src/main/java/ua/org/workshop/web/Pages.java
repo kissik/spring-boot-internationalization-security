@@ -20,6 +20,8 @@ public interface Pages {
     String ADMIN_ACCOUNT_INFO_PAGE = "admin/user";
     String ADMIN_ACCOUNT_EDIT_PAGE = "admin/edit-user-form";
 
+    String ERROR_PAGE = "/error";
+
     String FIRST_PAGE = REDIRECT + "/";
 
     String LOGIN_PAGE = "login";
@@ -30,7 +32,7 @@ public interface Pages {
     String MANAGER_PAGE_REDIRECT_UPDATE_REQUEST_SUCCESS =
             REDIRECT + "/manager/page?updated=true";
     String MANAGER_REQUEST_PAGE = "manager/request";
-    String MANAGER_REQUEST_UPDATE_FORM_PAGE = "manager/edit-request-form";
+    String MANAGER_UPDATE_REQUEST_FORM_PAGE = "manager/edit-request-form";
 
     String REGISTRATION_FORM_REDIRECT_SUCCESS =
             REDIRECT + "/login";
@@ -51,6 +53,6 @@ public interface Pages {
     String WORKMAN_PAGE_REDIRECT_UPDATE_REQUEST_SUCCESS =
             REDIRECT + "/workman/page?updated=true";
     String WORKMAN_REQUEST_PAGE = "workman/request";
-    String WORKMAN_REQUEST_UPDATE_FORM_PAGE = "workman/edit-request-form";
+    String WORKMAN_UPDATE_REQUEST_FORM_PAGE = "workman/edit-request-form";
 
 }

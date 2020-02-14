@@ -114,10 +114,6 @@ public class Request {
         this.cause = cause;
     }
 
-    public String toString() {
-        return this.title + ": " + this.description;
-    }
-
     @NotNull(message = "{validation.text.error.required.field}")
     @Column(name = "slang")
     public String getLanguage() {
@@ -151,5 +147,19 @@ public class Request {
     @Transient
     public String getClosedLiteral() {
         return "app.literal." + String.valueOf(closed);
+    }
+
+    @Override
+    public String toString() {
+        return " id : " + this.id
+                + " title : " + this.title
+                + " desc : " + this.description
+                + " status: " + this.status
+                + " autor: " + this.author
+                + " user: " + this.user
+                + " cause: " + this.cause
+                + " price: " + this.price
+                + " language: " + this.language
+                + " closed: " + this.closed;
     }
 }

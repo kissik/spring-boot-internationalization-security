@@ -42,13 +42,11 @@ public class RoleService {
     }
 
     public List<Role> findAll() throws WorkshopException {
-        List<Role> roles = null;
         try {
-            roles = roleRepository
+            return roleRepository
                     .findAll();
         } catch (Exception e) {
             throw new WorkshopException(WorkshopError.ROLE_LIST_IS_EMPTY_ERROR);
         }
-        return roles;
     }
 }

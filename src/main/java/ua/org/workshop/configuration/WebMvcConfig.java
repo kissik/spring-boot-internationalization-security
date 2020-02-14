@@ -11,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import ua.org.workshop.filter.CharsetFilter;
+import ua.org.workshop.service.ApplicationConstants;
 
 @Configuration
 @EnableWebMvc
@@ -40,8 +41,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Bean("messageSource")
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("classpath:/messages");
-        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setBasename("classpath:/"+ ApplicationConstants.APP_MESSAGES_BUNDLE_NAME);
+        messageSource.setDefaultEncoding(ApplicationConstants.APP_ENCODING);
         messageSource.setUseCodeAsDefaultMessage(false);
         messageSource.setCacheSeconds(0);
         return messageSource;
@@ -63,7 +64,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
 
         LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-        localeChangeInterceptor.setParamName("lang");
+        localeChangeInterceptor.setParamName(
+                ApplicationConstants.RequestAttributes.APP_LANG_ATTRIBUTE);
         registry.addInterceptor(localeChangeInterceptor);
     }
 }
