@@ -1,4 +1,5 @@
 package ua.org.workshop.web;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,13 @@ import ua.org.workshop.domain.Status;
 import ua.org.workshop.enums.WorkshopError;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.*;
+import ua.org.workshop.web.dto.RequestDTO;
+import ua.org.workshop.web.dto.service.RequestDTOService;
 import ua.org.workshop.web.form.StatusForm;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.Locale;
+import java.util.Optional;
 
 @Controller
 public class WorkmanRoleController {
@@ -39,41 +43,47 @@ public class WorkmanRoleController {
     @Autowired
     private MessageSource messageSource;
 
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.setAllowedFields(
+                "status");
+    }
+
     @GetMapping("workman/requests")
     @ResponseBody
-    Page<Request> workmanRequests(
+    Page<RequestDTO> workmanRequests(
             @PageableDefault(page = 0, size = 5)
             @SortDefault.SortDefaults({
                     @SortDefault(sort = "dateCreated", direction = Sort.Direction.DESC),
                     @SortDefault(sort = "title", direction = Sort.Direction.ASC)
             })
-                    Pageable pageable, Locale locale){
-        return requestService.findAllByLanguageAndStatus(
+                    Pageable pageable, Locale locale) {
+        RequestDTOService requestDTOService = new RequestDTOService(messageSource);
+        return requestDTOService.createDTOPage(pageable, locale, requestService.findAllByLanguageAndStatus(
                 pageable,
                 messageSource.getMessage(
                         ApplicationConstants.BUNDLE_LANGUAGE_FOR_REQUEST, null, locale),
                 statusService.findByCode(ApplicationConstants.REQUEST_WORKMAN_STATUS)
-        );
+        ));
     }
 
     @RequestMapping(value = "workman/page", method = RequestMethod.GET)
-    public String getWorkmanPage(){
+    public String getWorkmanPage() {
         return Pages.WORKMAN_PAGE;
     }
 
     @PreAuthorize("hasRole('WORKMAN')")
     @RequestMapping(value = "workman/requests/{id}", method = RequestMethod.GET)
-    public String getRequest(@PathVariable("id") Long id, Model model) throws IllegalArgumentException{
-        try{
-            if (SecurityService.isCurrentUserHasRole("WORKMAN")){
+    public String getRequest(@PathVariable("id") Long id, Model model) throws IllegalArgumentException {
+        try {
+            if (SecurityService.isCurrentUserHasRole("WORKMAN")) {
                 model.addAttribute(
                         "request",
                         requestService.findById(id)
                 );
-            }
-            else
+            } else
                 return Pages.ACCESS_DENIED_PAGE_REDIRECT;
-        }catch(WorkshopException e){
+        } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
             model.addAttribute("message", e.getMessage());
         }
@@ -85,10 +95,10 @@ public class WorkmanRoleController {
     public String getEditRequestStatusForm(
             @PathVariable("id") Long id,
             Model model) {
-        StatusForm statusForm = new StatusForm();
-        try{
+        StatusForm statusForm = new StatusForm(ApplicationConstants.REQUEST_WORKMAN_EDIT_DEFAULT_STATUS);
+        try {
             statusForm.setRequest(requestService.findById(id));
-        }catch(WorkshopException e){
+        } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
             model.addAttribute("message", e.getMessage());
         }
@@ -106,8 +116,7 @@ public class WorkmanRoleController {
         Request request = requestService.findById(id);
         try {
             SecurityService.checkTheAuthorities(request.getStatus().getCode());
-        }
-        catch (WorkshopException e) {
+        } catch (WorkshopException e) {
             return Pages.ACCESS_DENIED_PAGE_REDIRECT;
         }
         if (result.hasErrors()) return Pages.WORKMAN_REQUEST_UPDATE_FORM_PAGE;
@@ -116,39 +125,33 @@ public class WorkmanRoleController {
             request.setPrice(
                     Optional.ofNullable(statusForm.getPrice())
                             .orElseThrow(() -> new WorkshopException(WorkshopError.PRICE_NOT_FOUND_ERROR)));
-        }catch(WorkshopException e){
+        } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
         }
         try {
             request.setCause(
                     Optional.ofNullable(statusForm.getCause())
                             .orElseThrow(() -> new WorkshopException(WorkshopError.CAUSE_NOT_FOUND_ERROR)));
-        }catch(WorkshopException e){
+        } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
         }
         request.setStatus(newStatus);
         request.setUser(accountService.getAccountByUsername(SecurityService.getCurrentUsername()));
         request.setClosed(newStatus.isClose());
         if (!result.hasErrors())
-            try{
+            try {
                 requestService.setRequestInfo(request);
-            }catch(WorkshopException e){
+            } catch (WorkshopException e) {
                 LOGGER.error("custom error message: " + e.getMessage());
                 model.addAttribute("message", e.getMessage());
             }
-        try{
+        try {
             statusForm.setRequest(requestService.findById(id));
-        }catch(WorkshopException e){
+        } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
             model.addAttribute("message", e.getMessage());
         }
         model.addAttribute("statuses", statusForm);
         return (result.hasErrors() ? Pages.WORKMAN_REQUEST_UPDATE_FORM_PAGE : SecurityService.getPathByAuthority());
-    }
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.setAllowedFields(
-                "status");
     }
 }

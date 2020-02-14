@@ -223,12 +223,14 @@ a.page-btn:hover{
     0 1px 3px 1px rgba(60,64,67,0.149);
     border-radius: 24px;
     display: inline-flex;
+    margin-bottom: 3px;
 }
 
 #asc:checked ~ [for="asc"],
 #desc:checked ~ [for="desc"],
 .workshop-create-request-btn:hover{
     color: white;
+    text-decoration: none;
     background: rgba(47,164, 231,0.5);
 }
 

@@ -8,7 +8,6 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import ua.org.workshop.service.SecurityService;
-import ua.org.workshop.web.Pages;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,6 +57,7 @@ public class MySimpleUrlAuthenticationSuccessHandler
     public void setRedirectStrategy(RedirectStrategy redirectStrategy) {
         this.redirectStrategy = redirectStrategy;
     }
+
     public RedirectStrategy getRedirectStrategy() {
         return redirectStrategy;
     }

@@ -3,8 +3,8 @@ package ua.org.workshop.domain;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "request_list")
@@ -57,7 +57,7 @@ public class Request {
 
     @NotNull(message = "{validation.text.error.required.field}")
     @ManyToOne
-    @JoinColumn(name="nstatus", referencedColumnName = "id")
+    @JoinColumn(name = "nstatus", referencedColumnName = "id")
     public Status getStatus() {
         return status;
     }
@@ -68,7 +68,7 @@ public class Request {
 
     @NotNull(message = "{validation.text.error.required.field}")
     @ManyToOne
-    @JoinColumn(name="nuser", referencedColumnName = "id")
+    @JoinColumn(name = "nuser", referencedColumnName = "id")
     public Account getUser() {
         return user;
     }
@@ -114,7 +114,7 @@ public class Request {
         this.cause = cause;
     }
 
-    public String toString(){
+    public String toString() {
         return this.title + ": " + this.description;
     }
 
@@ -130,7 +130,7 @@ public class Request {
 
     @NotNull(message = "{validation.text.error.required.field}")
     @ManyToOne
-    @JoinColumn(name="nauthor", referencedColumnName = "id")
+    @JoinColumn(name = "nauthor", referencedColumnName = "id")
     public Account getAuthor() {
         return author;
     }
@@ -149,7 +149,7 @@ public class Request {
     }
 
     @Transient
-    public String getClosedLiteral(){
+    public String getClosedLiteral() {
         return "app.literal." + String.valueOf(closed);
     }
 }

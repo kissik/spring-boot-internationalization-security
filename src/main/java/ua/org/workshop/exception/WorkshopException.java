@@ -2,7 +2,7 @@ package ua.org.workshop.exception;
 
 import ua.org.workshop.enums.WorkshopError;
 
-public class WorkshopException extends RuntimeException{
+public class WorkshopException extends RuntimeException {
     private WorkshopError workshopError;
 
     public WorkshopException(WorkshopError workshopError) {
@@ -19,7 +19,7 @@ public class WorkshopException extends RuntimeException{
         return workshopError.code();
     }
 
-    public WorkshopError getWorkshopError(){
+    public WorkshopError getWorkshopError() {
         return workshopError;
     }
 }

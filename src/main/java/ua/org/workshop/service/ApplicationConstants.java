@@ -2,7 +2,7 @@ package ua.org.workshop.service;
 
 public interface ApplicationConstants {
 
-    interface RequestAttributes{
+    interface RequestAttributes {
         String ACCOUNT_CONFIRM_PASSWORD_ATTRIBUTE = "confirmPassword";
         String ACCOUNT_FIRST_NAME_ATTRIBUTE = "firstName";
         String ACCOUNT_FIRST_NAME_ORIGIN_ATTRIBUTE = "firstNameOrigin";
@@ -63,6 +63,8 @@ public interface ApplicationConstants {
     String REQUEST_DEFAULT_STATUS = "REGISTER";
     String REQUEST_MANAGER_STATUS = "REGISTER";
     String REQUEST_WORKMAN_STATUS = "ACCEPT";
+    String REQUEST_WORKMAN_EDIT_DEFAULT_STATUS = "DONE";
+    String REQUEST_MANAGER_EDIT_DEFAULT_STATUS = "ACCEPT";
 
     Integer MYSQL_DEFAULT_MAX_OPEN_PREPARED_STATEMENTS = 100;
     Integer MYSQL_DEFAULT_MAX_IDLE = 10;

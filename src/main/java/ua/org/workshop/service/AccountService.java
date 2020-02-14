@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import ua.org.workshop.domain.Account;
 import ua.org.workshop.enums.WorkshopError;
 import ua.org.workshop.exception.WorkshopException;
@@ -19,14 +18,14 @@ import ua.org.workshop.repository.AccountRepository;
  */
 @Service
 @Transactional(readOnly = true)
-public class AccountService{
+public class AccountService {
 
     @Autowired
     private RoleService roleService;
 
     private final AccountRepository accountRepository;
 
-    public AccountService(AccountRepository accountRepository){
+    public AccountService(AccountRepository accountRepository) {
         super();
         this.accountRepository = accountRepository;
     }
@@ -37,7 +36,7 @@ public class AccountService{
     public boolean registerAccount(Account account) throws WorkshopException {
         try {
             accountRepository.save(account);
-        }catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("error: " + e.getMessage());
             throw new WorkshopException(WorkshopError.ACCOUNT_CREATE_NEW_ERROR);
         }
@@ -47,9 +46,9 @@ public class AccountService{
 
     @Transactional(readOnly = false)
     public void update(Account account) {
-        try{
+        try {
             accountRepository.saveAndFlush(account);
-        }catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("error: " + e.getMessage());
             throw new WorkshopException(WorkshopError.ACCOUNT_UPDATE_ERROR);
         }
@@ -60,8 +59,7 @@ public class AccountService{
     public void delete(Long id) throws WorkshopException {
         try {
             accountRepository.deleteById(id);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             LOGGER.error("delete account error : " + e.getMessage());
             throw new WorkshopException(WorkshopError.ACCOUNT_DELETE_ERROR);
         }

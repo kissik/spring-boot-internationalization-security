@@ -56,7 +56,7 @@ public class HistoryRequest {
 
     @NotNull(message = "{validation.text.error.required.field}")
     @ManyToOne
-    @JoinColumn(name="nstatus", referencedColumnName = "id")
+    @JoinColumn(name = "nstatus", referencedColumnName = "id")
     public Status getStatus() {
         return status;
     }
@@ -67,7 +67,7 @@ public class HistoryRequest {
 
     @NotNull(message = "{validation.text.error.required.field}")
     @ManyToOne
-    @JoinColumn(name="nuser", referencedColumnName = "id")
+    @JoinColumn(name = "nuser", referencedColumnName = "id")
     public Account getUser() {
         return user;
     }
@@ -112,7 +112,7 @@ public class HistoryRequest {
         this.cause = cause;
     }
 
-    public String toString(){
+    public String toString() {
         return this.title + ": " + this.description;
     }
 
@@ -128,7 +128,7 @@ public class HistoryRequest {
 
     @NotNull(message = "{validation.text.error.required.field}")
     @ManyToOne
-    @JoinColumn(name="nauthor", referencedColumnName = "id")
+    @JoinColumn(name = "nauthor", referencedColumnName = "id")
     public Account getAuthor() {
         return author;
     }
@@ -138,7 +138,7 @@ public class HistoryRequest {
     }
 
     @Column(name = "sreview")
-    @Size(max=255, message="{validation.text.error.more.than.two.five.five}")
+    @Size(max = 255, message = "{validation.text.error.more.than.two.five.five}")
     public String getReview() {
         return review;
     }

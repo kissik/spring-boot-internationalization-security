@@ -29,7 +29,7 @@
 			<div class="info alert"><spring:message code="editRequest.request.save" /><a href="${requestUrl}"><spring:message code="editRequest.request.view" /></a></div>
 		</c:if>
 
-        <form:form cssClass="main" modelAttribute="statuses" method="POST">
+        <form:form cssClass="main" modelAttribute="statuses" method="post">
             <div class="form-group">
         	    <label>
         		    ${statuses.request.title}
