@@ -5,13 +5,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import ua.org.workshop.domain.Account;
 
 import java.util.Collection;
-import java.util.Collections;
 
 public class AccountDetails implements UserDetails {
 
     private Account account;
 
-    public AccountDetails(Account account){
+    public AccountDetails(Account account) {
         this.account = account;
     }
 
@@ -22,7 +21,7 @@ public class AccountDetails implements UserDetails {
 
     }
 
-    public boolean hasRole(String role){
+    public boolean hasRole(String role) {
         return account.hasRole(role);
     }
 

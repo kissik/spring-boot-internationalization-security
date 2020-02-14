@@ -19,9 +19,10 @@ import ua.org.workshop.domain.Request;
 import ua.org.workshop.domain.Status;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.*;
+import ua.org.workshop.web.dto.RequestDTO;
+import ua.org.workshop.web.dto.service.RequestDTOService;
 import ua.org.workshop.web.form.RequestForm;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.Locale;
@@ -42,23 +43,24 @@ public class UserRoleController {
 
     @GetMapping("user/requests")
     @ResponseBody
-    public Page<Request> userRequests(
+    public Page<RequestDTO> userRequests(
             @PageableDefault(page = 0, size = 5)
             @SortDefault.SortDefaults({
                     @SortDefault(sort = "dateCreated", direction = Sort.Direction.DESC),
                     @SortDefault(sort = "title", direction = Sort.Direction.ASC)
             })
-                    Pageable pageable, Locale locale){
-        return requestService.findAllByLanguageAndAuthor(
+                    Pageable pageable, Locale locale) {
+        RequestDTOService requestDTOService = new RequestDTOService(messageSource);
+        return requestDTOService.createDTOPage(pageable, locale, requestService.findAllByLanguageAndAuthor(
                 pageable,
                 messageSource.getMessage(
                         ApplicationConstants.BUNDLE_LANGUAGE_FOR_REQUEST, null, locale),
                 accountService.getAccountByUsername(SecurityService.getCurrentUsername())
-        );
+        ));
     }
 
     @RequestMapping(value = "user/page", method = RequestMethod.GET)
-    public String getUserPage(){
+    public String getUserPage() {
         return Pages.USER_PAGE;
     }
 
@@ -89,10 +91,9 @@ public class UserRoleController {
                 LOGGER.info("new request form creation: " + form.toString());
                 requestService.newRequest(request);
             }
-        }
-        catch(WorkshopException e){
-                LOGGER.error("custom error message: " + e.getMessage());
-                model.addAttribute("message", e.getMessage());
+        } catch (WorkshopException e) {
+            LOGGER.error("custom error message: " + e.getMessage());
+            model.addAttribute("message", e.getMessage());
         }
         return (result.hasErrors() ? Pages.USER_CREATE_REQUEST_FORM : Pages.USER_PAGE_REDIRECT_NEW_REQUEST_SUCCESS);
     }
@@ -110,7 +111,7 @@ public class UserRoleController {
         request.setPrice(BigDecimal.ZERO);
         request.setDescription(form.getDescription());
         request.setLanguage(messageSource.getMessage(
-                        ApplicationConstants.BUNDLE_LANGUAGE_FOR_REQUEST, null, locale));
+                ApplicationConstants.BUNDLE_LANGUAGE_FOR_REQUEST, null, locale));
         return request;
     }
 }

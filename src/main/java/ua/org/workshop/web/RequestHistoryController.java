@@ -10,7 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import ua.org.workshop.domain.HistoryRequest;
 import ua.org.workshop.service.AccountService;
 import ua.org.workshop.service.ApplicationConstants;
@@ -39,7 +40,7 @@ public class RequestHistoryController {
                     @SortDefault(sort = "dateCreated", direction = Sort.Direction.DESC),
                     @SortDefault(sort = "title", direction = Sort.Direction.ASC)
             })
-                    Pageable pageable, Locale locale){
+                    Pageable pageable, Locale locale) {
         return historyRequestService.findByLanguageAndAuthor(
                 pageable,
                 messageSource.getMessage(

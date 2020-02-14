@@ -10,16 +10,19 @@ import ua.org.workshop.web.Pages;
 
 public class SecurityService {
 
-    public static boolean isCurrentUserHasRole(String role){
+    public static boolean isCurrentUserHasRole(String role) {
         return getPrincipal().hasRole(role);
     }
-    private static Authentication getAuthentication(){
+
+    private static Authentication getAuthentication() {
         SecurityContext securityCtx = SecurityContextHolder.getContext();
         return securityCtx.getAuthentication();
     }
-    private static AccountDetails getPrincipal(){
+
+    private static AccountDetails getPrincipal() {
         return (AccountDetails) getAuthentication().getPrincipal();
     }
+
     public static String getCurrentUsername() {
         return getPrincipal().getUsername();
     }

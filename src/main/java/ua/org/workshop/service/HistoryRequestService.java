@@ -21,7 +21,7 @@ public class HistoryRequestService {
 
     private final HistoryRequestRepository historyRequestRepository;
 
-    public HistoryRequestService(HistoryRequestRepository historyRequestRepository){
+    public HistoryRequestService(HistoryRequestRepository historyRequestRepository) {
         super();
         this.historyRequestRepository = historyRequestRepository;
     }
@@ -37,16 +37,16 @@ public class HistoryRequestService {
                 .findByLanguage(pageable, language);
     }
 
-    public HistoryRequest findById(Long id) throws WorkshopException{
+    public HistoryRequest findById(Long id) throws WorkshopException {
         return historyRequestRepository
                 .findById(id)
                 .orElseThrow(() -> new WorkshopException(WorkshopError.REQUEST_HISTORY_NOT_FOUND_ERROR));
     }
 
-    public Page<HistoryRequest> findByLanguageAndStatus (
+    public Page<HistoryRequest> findByLanguageAndStatus(
             Pageable pageable,
             String language,
-            Status status){
+            Status status) {
         return historyRequestRepository
                 .findByLanguageAndStatus(pageable, language, status);
     }
@@ -54,12 +54,12 @@ public class HistoryRequestService {
     public Page<HistoryRequest> findByLanguageAndUser(
             Pageable pageable,
             String language,
-            Account user) throws WorkshopException{
-            return historyRequestRepository
-                    .findByLanguageAndUser(pageable, language, user);
-        }
+            Account user) throws WorkshopException {
+        return historyRequestRepository
+                .findByLanguageAndUser(pageable, language, user);
+    }
 
-    public Page<HistoryRequest> findAll(Pageable pageable){
+    public Page<HistoryRequest> findAll(Pageable pageable) {
         return historyRequestRepository.findAll(pageable);
     }
 }

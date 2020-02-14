@@ -1,16 +1,15 @@
 package ua.org.workshop.configuration;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-
 import ua.org.workshop.filter.CharsetFilter;
 
 @Configuration
@@ -21,6 +20,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void configureViewResolvers(ViewResolverRegistry registry) {
         registry.jsp("/WEB-INF/jsp/", ".jsp");
     }
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
@@ -30,7 +30,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
     public FilterRegistrationBean charsetFilterRegistration() {
-        
+
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(new CharsetFilter());
         registration.addUrlPatterns("/*");
@@ -39,7 +39,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean("messageSource")
     public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource messageSource=new ReloadableResourceBundleMessageSource();
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:/messages");
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setUseCodeAsDefaultMessage(false);

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ua.org.workshop.domain.Account;
 import ua.org.workshop.domain.Request;
 import ua.org.workshop.domain.Status;
@@ -13,11 +14,9 @@ import ua.org.workshop.enums.WorkshopError;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.repository.RequestRepository;
 
-import org.springframework.transaction.annotation.Transactional;
-
 @Service
 @Transactional(readOnly = true)
-public class RequestService  {
+public class RequestService {
 
     private static final Logger logger = LogManager.getLogger(RequestService.class);
 
@@ -28,7 +27,7 @@ public class RequestService  {
     @Autowired
     private AccountService accountService;
 
-    public RequestService(RequestRepository requestRepository){
+    public RequestService(RequestRepository requestRepository) {
         super();
         this.requestRepository = requestRepository;
     }
@@ -39,60 +38,58 @@ public class RequestService  {
 
         try {
             requestRepository.save(request);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             logger.error(WorkshopError.DATABASE_CONNECTION_ERROR.message());
             throw new WorkshopException(WorkshopError.DATABASE_CONNECTION_ERROR);
-            }
+        }
         logger.info("New request was created: " + request.toString());
     }
 
-    public Page<Request> findAllByLanguageAndAuthor(Pageable pageable, String language, Account author){
+    public Page<Request> findAllByLanguageAndAuthor(Pageable pageable, String language, Account author) {
         return requestRepository
                 .findAllByLanguageAndAuthor(pageable, language, author);
     }
 
-    public Page<Request> findAllByLanguage(Pageable pageable, String language){
+    public Page<Request> findAllByLanguage(Pageable pageable, String language) {
         return requestRepository
                 .findAllByLanguage(pageable, language);
     }
 
-    public Request findById(Long id) throws WorkshopException{
+    public Request findById(Long id) throws WorkshopException {
         return requestRepository
                 .findById(id)
                 .orElseThrow(() -> new WorkshopException(WorkshopError.REQUEST_NOT_FOUND_ERROR));
     }
 
     @Transactional(readOnly = false)
-    public void setRequestInfo(Request request) throws WorkshopException{
-        try{
+    public void setRequestInfo(Request request) throws WorkshopException {
+        try {
             requestRepository.saveAndFlush(request);
             logger.info("Request was changed: " + request.toString());
             if (request.getStatus().isClose())
                 requestRepository.delete(request);
             logger.info("Request was deleted");
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage());
             throw new WorkshopException(WorkshopError.DATABASE_CONNECTION_ERROR);
         }
     }
 
-    public Page<Request> findAllByLanguageAndStatus (
+    public Page<Request> findAllByLanguageAndStatus(
             Pageable page,
             String language,
-            Status status){
+            Status status) {
         return requestRepository
                 .findAllByLanguageAndStatus(page, language, status);
     }
 
-    public Request findByIdAndAuthor(Long id, Account author) throws WorkshopException{
+    public Request findByIdAndAuthor(Long id, Account author) throws WorkshopException {
         return requestRepository
                 .findByIdAndAuthor(id, author)
                 .orElseThrow(() -> new WorkshopException(WorkshopError.REQUEST_NOT_FOUND_ERROR));
     }
 
-    public Page<Request> findAll(Pageable pageable){
+    public Page<Request> findAll(Pageable pageable) {
         return requestRepository.findAll(pageable);
     }
 }

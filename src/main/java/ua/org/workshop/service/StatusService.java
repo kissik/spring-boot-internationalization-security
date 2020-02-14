@@ -1,19 +1,18 @@
 package ua.org.workshop.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ua.org.workshop.domain.Status;
 import ua.org.workshop.enums.WorkshopError;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.repository.StatusRepository;
 
-import org.springframework.transaction.annotation.Transactional;
-
 @Service
 @Transactional(readOnly = true)
-public class StatusService  {
+public class StatusService {
     private final StatusRepository statusRepository;
 
-    public StatusService(StatusRepository statusRepository){
+    public StatusService(StatusRepository statusRepository) {
         super();
         this.statusRepository = statusRepository;
     }
