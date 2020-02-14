@@ -3,9 +3,9 @@ package ua.org.workshop.web;
 public interface Pages {
 
     String REDIRECT = "redirect:";
-    
+
     String ACCESS_DENIED_PAGE = "access-denied";
-    String ACCESS_DENIED_PAGE_REDIRECT = 
+    String ACCESS_DENIED_PAGE_REDIRECT =
             REDIRECT + "/access-denied";
 
     String ADMIN_PAGE = "admin/page";

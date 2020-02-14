@@ -19,7 +19,7 @@ public class AccountDetailsService implements UserDetailsService {
     private final AccountService accountService;
     private static final Logger LOGGER = LogManager.getLogger(AccountDetailsService.class);
 
-    public AccountDetailsService(AccountService accountService){
+    public AccountDetailsService(AccountService accountService) {
         super();
         this.accountService = accountService;
     }
@@ -29,8 +29,7 @@ public class AccountDetailsService implements UserDetailsService {
         Account account;
         try {
             account = accountService.getAccountByUsername(username);
-        }
-        catch(WorkshopException e){
+        } catch (WorkshopException e) {
             LOGGER.error("cannot find username: " + username);
             throw new UsernameNotFoundException("cannot find username: " + username);
         }

@@ -13,10 +13,18 @@ public class StatusForm {
     private String cause;
     private Request request;
 
-    @NotNull(message = "{validation.text.error.required.field}")
-    public String getStatus() { return status; }
+    public StatusForm(String status) {
+        this.status = status;
+    }
 
-    public void setStatus(String status) { this.status = status; }
+    @NotNull(message = "{validation.text.error.required.field}")
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String toString() {
         return new StringBuilder()

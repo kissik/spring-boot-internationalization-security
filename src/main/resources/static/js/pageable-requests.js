@@ -7,11 +7,27 @@ const makeRow = (rowData, index, callback) => {
     let label = document.createElement('label');
     let hiddenId = `hidden-request-data-${index}`;
 
-    tableRow.appendChild(createHiddenRequestDiv(hiddenId, rowData, callback));
-
-    anchor.setAttribute('href', `/${page}/${requests}/${rowData.id}`);
-    anchor.appendChild(document.createTextNode(rowData.title));
-
+    if (callback){
+        tableRow.appendChild(createHiddenRequestDiv(hiddenId, rowData, callback));
+        anchor.setAttribute('href', '#');
+        anchor.onclick = () => {
+            let div = document.getElementById(hiddenId);
+            div.style.width = '100vw';
+            div.style.height = '100vh';
+            div.style.display = 'flex';
+            div.style.position = 'absolute';
+            div.style.top = 0;
+            div.style.left = 0;
+            div.style.background = 'rgba(3,3,3,0.7)';
+            div.style.zIndex = 2000;
+        }
+        label.setAttribute('for', 'view-request-modal-window');
+        label.appendChild(document.createTextNode(rowData.title));
+        anchor.appendChild(label);
+    }else{
+        anchor.setAttribute('href', `/${page}/${requests}/${rowData.id}`);
+        anchor.appendChild(document.createTextNode(rowData.title));
+    }
     tableData.appendChild(anchor);
     tableData.style.width = '25%';
     tableRow.appendChild(tableData);
@@ -34,7 +50,7 @@ const makeRow = (rowData, index, callback) => {
     tableData.appendChild(
         document
             .createTextNode(
-            language === 'uk' ? rowData.author.fullNameOrigin : rowData.author.fullName))
+            rowData.language === 'uk_UA' ? rowData.author.fullNameOrigin : rowData.author.fullName))
     tableRow.appendChild(tableData);
     return tableRow;
 }
@@ -76,8 +92,12 @@ const createHiddenRequestDiv = (hiddenId, rowData, callback) => {
     }
     hiddenDesk.appendChild(fieldHeading);
 
+    let field = document.createElement('em');
+    field.appendChild(document.createTextNode(rowData.dateUpdated));
+    hiddenDesk.appendChild(field);
+
     fieldHeading = document.createElement('h2');
-    let field = document.createElement('span');
+    field = document.createElement('span');
     field.appendChild(document.createTextNode(rowData.status.value));
     field.setAttribute('class','badge badge-info');
     fieldHeading.appendChild(field);

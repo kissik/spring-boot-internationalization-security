@@ -30,9 +30,9 @@
             									<div class="big-tagline">
             										<h2><strong><spring:message code="app.pageTitle" /></strong> <spring:message code="app.page.header.company" /></h2>
             										<p class="lead"><spring:message code="app.slogan" /></p>
-            											<a href="/app/registration" class="workshop-index-page-btn"><spring:message code="app.registration"/></a>
+            											<a href="/registration" class="workshop-index-page-btn"><spring:message code="app.registration"/></a>
             											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            											<a href="/app/login" class="workshop-index-page-btn"><spring:message code="subhead.login" /></a>
+            											<a href="/login" class="workshop-index-page-btn"><spring:message code="subhead.login" /></a>
             									</div>
             								</div>
             							</div><!-- end row -->
@@ -49,9 +49,9 @@
             									<div class="big-tagline">
             										<h2 data-animation="animated zoomInRight"><spring:message code="app.find.company" /> <strong><spring:message code="app.pageTitle" /></strong></h2>
             										<p class="lead" data-animation="animated fadeInLeft"><spring:message code="app.slogan" /></p>
-            											<a href="/app/registration" class="workshop-index-page-btn"><spring:message code="app.registration"/></a>
+            											<a href="/registration" class="workshop-index-page-btn"><spring:message code="app.registration"/></a>
             											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            											<a href="/app/login" class="workshop-index-page-btn"><spring:message code="subhead.login" /></a>
+            											<a href="/login" class="workshop-index-page-btn"><spring:message code="subhead.login" /></a>
             									</div>
             								</div>
             							</div><!-- end row -->
@@ -68,9 +68,9 @@
             									<div class="big-tagline">
             										<h2 data-animation="animated zoomInRight"><strong><spring:message code="app.pageTitle" /></strong> <spring:message code="app.page.header.company" /></h2>
             										<p class="lead" data-animation="animated fadeInLeft"><spring:message code="app.slogan" /></p>
-            											<a href="/app/registration" class="workshop-index-page-btn"><spring:message code="app.registration"/></a>
+            											<a href="/registration" class="workshop-index-page-btn"><spring:message code="app.registration"/></a>
             											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            											<a href="/app/login" class="workshop-index-page-btn"><spring:message code="subhead.login" /></a>
+            											<a href="/login" class="workshop-index-page-btn"><spring:message code="subhead.login" /></a>
             									</div>
             								</div>
             							</div><!-- end row -->

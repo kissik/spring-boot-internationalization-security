@@ -3,14 +3,18 @@ var urlPath = `/${page}/${requests}`;
 var urlPathHistory = `/${page}/history-${requests}`;
 var urlEditHistoryRequest = `/${page}/edit-history-request`;
 
+const doTheStuff = () => {
+    wizard(urlPath, "on work");
+}
+
 window.onload = () => {
-    wizard(urlPath);
+    doTheStuff();
 }
 
 const onWork = () => {
     setSize();
     clearTextFields();
-    wizard(urlPath);
+    doTheStuff();
 }
 
 const closed = () => {

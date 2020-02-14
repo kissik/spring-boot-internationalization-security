@@ -1,16 +1,16 @@
 package ua.org.workshop.domain;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.springframework.security.core.GrantedAuthority;
 /**
  * @author kissik
  */
@@ -32,22 +32,34 @@ public class Account {
     private LocalDate dateCreated;
     private Collection<Role> roles = new HashSet<>();
 
-    public Account(){}
-    public Account(String username) { this.username = username; }
+    public Account() {
+    }
+
+    public Account(String username) {
+        this.username = username;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    private void setId(Long id) { this.id = id; }
+    private void setId(Long id) {
+        this.id = id;
+    }
 
     @NotNull(message = "{validation.text.error.required.field}")
     @Size(min = 6, max = 50, message = "{validation.text.error.from.six.to.fifty}")
     @Column(name = "slogin")
-    public String getUsername() { return username; }
+    public String getUsername() {
+        return username;
+    }
 
-    public void setUsername(String username) { this.username = username; }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     @NotNull(message = "{validation.text.error.required.field}")
     @Column(name = "spassword")
@@ -62,9 +74,13 @@ public class Account {
     @NotNull(message = "{validation.text.error.required.field}")
     @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
     @Column(name = "sfirst_name")
-    public String getFirstName() { return firstName; }
+    public String getFirstName() {
+        return firstName;
+    }
 
-    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
     @NotNull(message = "{validation.text.error.required.field}")
     @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
@@ -91,48 +107,76 @@ public class Account {
     @NotNull(message = "{validation.text.error.required.field}")
     @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
     @Column(name = "slast_name")
-    public String getLastName() { return lastName; }
+    public String getLastName() {
+        return lastName;
+    }
 
-    public void setLastName(String lastName) { this.lastName = lastName; }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
     @Transient
-    public String getFullName() { return this.firstName + " " + this.lastName;}
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
 
     @Transient
-    public String getFullNameOrigin() { return this.firstNameOrigin + " " + this.lastNameOrigin;}
+    public String getFullNameOrigin() {
+        return this.firstNameOrigin + " " + this.lastNameOrigin;
+    }
 
     @NotNull(message = "{validation.text.error.required.field}")
     @Size(min = 6, max = 50, message = "{validation.text.error.from.six.to.fifty}")
     @Column(name = "semail")
-    public String getEmail() { return email; }
+    public String getEmail() {
+        return email;
+    }
 
-    public void setEmail(String email) { this.email = email; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Pattern(regexp="\\+\\d{12}", message="+380001112233")
+    @Pattern(regexp = "\\+\\d{12}", message = "+380001112233")
     @Column(name = "sphone")
-    public String getPhone() { return phone; }
+    public String getPhone() {
+        return phone;
+    }
 
-    public void setPhone(String phone) { this.phone = phone; }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
     @Column(name = "benabled")
-    public boolean isEnabled() { return enabled; }
+    public boolean isEnabled() {
+        return enabled;
+    }
 
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     @ManyToMany
     @JoinTable(
             name = "user_role",
-            joinColumns = { @JoinColumn(name = "nuser", referencedColumnName = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "nrole", referencedColumnName = "id") })
-    public Collection<Role> getRoles() { return roles; }
+            joinColumns = {@JoinColumn(name = "nuser", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "nrole", referencedColumnName = "id")})
+    public Collection<Role> getRoles() {
+        return roles;
+    }
 
-    public void setRoles(Collection<Role> roles) { this.roles = roles; }
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
+    }
 
     @Column(name = "ddate_created")
-    public LocalDate getDateCreated() { return dateCreated; }
+    public LocalDate getDateCreated() {
+        return dateCreated;
+    }
 
-    public void setDateCreated(LocalDate dateCreated) { this.dateCreated = dateCreated; }
+    public void setDateCreated(LocalDate dateCreated) {
+        this.dateCreated = dateCreated;
+    }
 
     /* (non-Javadoc)
      * @see org.springframework.security.core.userdetails.UserDetails#getAuthorities()
@@ -144,13 +188,15 @@ public class Account {
         return authorities;
     }
 
-    public boolean hasRole(String role){
+    public boolean hasRole(String role) {
         for (Role r : getRoles()) {
             if (r.getCode().equals(role)) return true;
         }
         return false;
     }
 
-    public String toString() { return username; }
+    public String toString() {
+        return username;
+    }
 
 }

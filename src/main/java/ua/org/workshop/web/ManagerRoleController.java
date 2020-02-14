@@ -20,6 +20,8 @@ import ua.org.workshop.domain.Status;
 import ua.org.workshop.enums.WorkshopError;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.*;
+import ua.org.workshop.web.dto.RequestDTO;
+import ua.org.workshop.web.dto.service.RequestDTOService;
 import ua.org.workshop.web.form.StatusForm;
 
 import javax.validation.Valid;
@@ -50,38 +52,38 @@ public class ManagerRoleController {
 
     @GetMapping("manager/requests")
     @ResponseBody
-    Page<Request> managerRequests(
+    Page<RequestDTO> managerRequests(
             @PageableDefault(page = 0, size = 5)
             @SortDefault.SortDefaults({
                     @SortDefault(sort = "dateCreated", direction = Sort.Direction.DESC),
                     @SortDefault(sort = "title", direction = Sort.Direction.ASC)
             })
-                    Pageable pageable, Locale locale){
-        return requestService.findAllByLanguageAndStatus(
+                    Pageable pageable, Locale locale) {
+        RequestDTOService requestDTOService = new RequestDTOService(messageSource);
+        return requestDTOService.createDTOPage(pageable, locale, requestService.findAllByLanguageAndStatus(
                 pageable,
                 messageSource.getMessage(
                         ApplicationConstants.BUNDLE_LANGUAGE_FOR_REQUEST, null, locale),
-                statusService.findByCode(ApplicationConstants.REQUEST_MANAGER_STATUS)
+                statusService.findByCode(ApplicationConstants.REQUEST_MANAGER_STATUS))
         );
     }
 
     @RequestMapping(value = "manager/page", method = RequestMethod.GET)
-    public String getManagerPage(){
+    public String getManagerPage() {
         return Pages.MANAGER_PAGE;
     }
 
     @RequestMapping(value = "manager/requests/{id}", method = RequestMethod.GET)
-    public String getRequest(@PathVariable("id") Long id, Model model) throws IllegalArgumentException{
-        try{
-            if (SecurityService.isCurrentUserHasRole("MANAGER")){
+    public String getRequest(@PathVariable("id") Long id, Model model) throws IllegalArgumentException {
+        try {
+            if (SecurityService.isCurrentUserHasRole("MANAGER")) {
                 model.addAttribute(
                         "request",
                         requestService.findById(id)
                 );
-            }
-            else
+            } else
                 return Pages.ACCESS_DENIED_PAGE_REDIRECT;
-        }catch(WorkshopException e){
+        } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
             model.addAttribute("message", e.getMessage());
         }
@@ -93,10 +95,10 @@ public class ManagerRoleController {
     public String getEditRequestStatusForm(
             @PathVariable("id") Long id,
             Model model) {
-        StatusForm statusForm = new StatusForm();
-        try{
+        StatusForm statusForm = new StatusForm(ApplicationConstants.REQUEST_MANAGER_EDIT_DEFAULT_STATUS);
+        try {
             statusForm.setRequest(requestService.findById(id));
-        }catch(WorkshopException e){
+        } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
             model.addAttribute("message", e.getMessage());
         }
@@ -114,42 +116,40 @@ public class ManagerRoleController {
         Request request = requestService.findById(id);
         try {
             SecurityService.checkTheAuthorities(request.getStatus().getCode());
-        }
-        catch (WorkshopException e) {
+        } catch (WorkshopException e) {
             return Pages.ACCESS_DENIED_PAGE_REDIRECT;
         }
         if (result.hasErrors()) return Pages.MANAGER_REQUEST_UPDATE_FORM_PAGE;
 
-        LOGGER.info(statusForm.toString());
         validateFields(statusForm, result);
         Status newStatus = statusService.findByCode(statusForm.getStatus());
         try {
             request.setPrice(
                     Optional.ofNullable(statusForm.getPrice())
                             .orElseThrow(() -> new WorkshopException(WorkshopError.PRICE_NOT_FOUND_ERROR)));
-        }catch(WorkshopException e){
+        } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
         }
         try {
             request.setCause(
                     Optional.ofNullable(statusForm.getCause())
                             .orElseThrow(() -> new WorkshopException(WorkshopError.CAUSE_NOT_FOUND_ERROR)));
-        }catch(WorkshopException e){
+        } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
         }
         request.setStatus(newStatus);
         request.setUser(accountService.getAccountByUsername(SecurityService.getCurrentUsername()));
         request.setClosed(newStatus.isClose());
         if (!result.hasErrors())
-            try{
+            try {
                 requestService.setRequestInfo(request);
-            }catch(WorkshopException e){
+            } catch (WorkshopException e) {
                 LOGGER.error("custom error message: " + e.getMessage());
                 model.addAttribute("message", e.getMessage());
             }
-        try{
+        try {
             statusForm.setRequest(requestService.findById(id));
-        }catch(WorkshopException e){
+        } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
             model.addAttribute("message", e.getMessage());
         }

@@ -21,22 +21,34 @@ public class Status {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
     @SuppressWarnings("unused")
-    private void setId(Long id) { this.id = id; }
+    private void setId(Long id) {
+        this.id = id;
+    }
 
     @NotNull(message = "{validation.text.error.required.field}")
     @Column(name = "scode")
-    public String getCode() { return code; }
+    public String getCode() {
+        return code;
+    }
 
-    public void setCode(String code) { this.code = code; }
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     @NotNull(message = "{validation.text.error.required.field}")
     @Column(name = "sname")
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
     @NotNull(message = "{validation.text.error.required.field}")
     @Column(name = "bclose")
@@ -47,20 +59,25 @@ public class Status {
     public void setClose(boolean close) {
         this.close = close;
     }
+
     @ManyToMany
     @JoinTable(
             name = "next_statuses",
-            joinColumns = { @JoinColumn(name = "nstatus", referencedColumnName = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "nnextstatus", referencedColumnName = "id") })
-    public Collection<Status> getNextStatuses() { return nextStatuses; }
+            joinColumns = {@JoinColumn(name = "nstatus", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "nnextstatus", referencedColumnName = "id")})
+    public Collection<Status> getNextStatuses() {
+        return nextStatuses;
+    }
 
-    public void setNextStatuses(Collection<Status> nextStatuses) { this.nextStatuses = nextStatuses; }
+    public void setNextStatuses(Collection<Status> nextStatuses) {
+        this.nextStatuses = nextStatuses;
+    }
 
     public int hashCode() {
         return getCode().hashCode();
     }
 
-    public String toString(){
+    public String toString() {
         return this.code + " " + this.name + ": " + this.nextStatuses.toArray().toString();
     }
 }
