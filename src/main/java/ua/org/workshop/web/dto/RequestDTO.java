@@ -1,7 +1,7 @@
 package ua.org.workshop.web.dto;
 
+import ua.org.workshop.configuration.ApplicationConstants;
 import ua.org.workshop.domain.Request;
-import ua.org.workshop.service.ApplicationConstants;
 
 /**
  * @author kissik

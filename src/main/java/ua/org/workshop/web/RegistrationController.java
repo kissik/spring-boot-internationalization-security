@@ -10,11 +10,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import ua.org.workshop.configuration.ApplicationConstants;
 import ua.org.workshop.domain.Account;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.AccountService;
-import ua.org.workshop.service.ApplicationConstants;
 import ua.org.workshop.service.RoleService;
 import ua.org.workshop.web.form.AccountForm;
 
@@ -22,9 +25,10 @@ import javax.validation.Valid;
 import java.util.Collections;
 
 @Controller
-public class WelcomeController {
+@RequestMapping("/registration")
+public class RegistrationController {
 
-    private static final Logger LOGGER = LogManager.getLogger(WelcomeController.class);
+    private static final Logger LOGGER = LogManager.getLogger(RegistrationController.class);
 
     @Autowired
     private AccountService accountService;
@@ -33,23 +37,33 @@ public class WelcomeController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @GetMapping("/")
-    public String welcome() {
-        return "welcome";
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.setAllowedFields(
+                "username",
+                "password",
+                "confirmPassword",
+                "firstName",
+                "lastName",
+                "firstNameOrigin",
+                "lastNameOrigin",
+                "email",
+                "phone");
     }
 
-    @RequestMapping(value = "/registration", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public String getRegistrationForm(Model model) {
         AccountForm accountForm = new AccountForm();
         accountForm.setRole(new String[]{ApplicationConstants.APP_DEFAULT_ROLE});
-        model.addAttribute("account", accountForm);
-
+        model.addAttribute(
+                ApplicationConstants.ModelAttribute.Form.ACCOUNT_FORM,
+                accountForm);
         return Pages.REGISTRATION_FORM_PAGE;
     }
 
-    @RequestMapping(value = "/registration", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public String postRegistrationForm(
-            @ModelAttribute("account") @Valid AccountForm form,
+            @ModelAttribute(ApplicationConstants.ModelAttribute.Form.ACCOUNT_FORM) @Valid AccountForm form,
             BindingResult result, Model model) {
 
         convertError(result);
@@ -70,16 +84,11 @@ public class WelcomeController {
                 LOGGER.error("New account error: " + e.getMessage());
             }
 
-        model.addAttribute("username", form.getUsername());
+        model.addAttribute(
+                ApplicationConstants.ModelAttribute.Form.LOGIN_USERNAME,
+                form.getUsername());
 
         return (result.hasErrors() ? Pages.REGISTRATION_FORM_PAGE : Pages.REGISTRATION_FORM_REDIRECT_SUCCESS);
-    }
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.setAllowedFields("username", "password", "confirmPassword", "firstName", "lastName",
-                "firstNameOrigin", "lastNameOrigin",
-                "email", "phone");
     }
 
     private static void convertError(BindingResult result) {

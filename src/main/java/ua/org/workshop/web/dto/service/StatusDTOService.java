@@ -1,8 +1,8 @@
 package ua.org.workshop.web.dto.service;
 
 import org.springframework.context.MessageSource;
+import ua.org.workshop.configuration.ApplicationConstants;
 import ua.org.workshop.domain.Status;
-import ua.org.workshop.service.ApplicationConstants;
 import ua.org.workshop.web.dto.StatusDTO;
 
 import java.util.AbstractMap;

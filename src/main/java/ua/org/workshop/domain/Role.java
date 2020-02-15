@@ -1,6 +1,7 @@
 package ua.org.workshop.domain;
 
 import org.springframework.security.core.GrantedAuthority;
+import ua.org.workshop.configuration.ApplicationConstants;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -8,9 +9,8 @@ import javax.validation.constraints.NotNull;
 /**
  * @author kissik
  */
-@SuppressWarnings("serial")
 @Entity
-@Table(name = "role")
+@Table(name = ApplicationConstants.Role.TABLE_NAME)
 public class Role implements GrantedAuthority {
     private Long id;
     private String code;
@@ -18,18 +18,17 @@ public class Role implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = ApplicationConstants.Role.COLUMN_ID)
     public Long getId() {
         return id;
     }
 
-    @SuppressWarnings("unused")
     public void setId(Long id) {
         this.id = id;
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Column(name = "scode")
+    @Column(name = ApplicationConstants.Role.COLUMN_CODE)
     public String getCode() {
         return code;
     }
@@ -39,7 +38,7 @@ public class Role implements GrantedAuthority {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Column(name = "sname")
+    @Column(name = ApplicationConstants.Role.COLUMN_NAME)
     public String getName() {
         return name;
     }

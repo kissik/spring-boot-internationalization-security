@@ -4,8 +4,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import ua.org.workshop.configuration.ApplicationConstants;
 import ua.org.workshop.domain.HistoryRequest;
-import ua.org.workshop.service.ApplicationConstants;
 import ua.org.workshop.web.dto.HistoryRequestDTO;
 
 import java.util.List;

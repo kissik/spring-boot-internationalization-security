@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -14,13 +13,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import ua.org.workshop.configuration.ApplicationConstants;
 import ua.org.workshop.domain.Account;
 import ua.org.workshop.domain.Request;
 import ua.org.workshop.domain.Status;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.*;
-import ua.org.workshop.web.dto.HistoryRequestDTO;
-import ua.org.workshop.web.dto.RequestDTO;
 import ua.org.workshop.web.dto.service.HistoryRequestDTOService;
 import ua.org.workshop.web.dto.service.RequestDTOService;
 import ua.org.workshop.web.form.RequestForm;
@@ -46,15 +44,26 @@ public class UserRoleController {
     @Autowired
     private MessageSource messageSource;
 
+    @InitBinder
+    private void initBinder(WebDataBinder binder) {
+        binder.setAllowedFields(
+                "title",
+                "description");
+    }
+
     @GetMapping("/requests")
     @ResponseBody
-    public Page<RequestDTO> userRequests(
+    public org.springframework.data.domain.Page userRequests(
             @PageableDefault(
-                    page = ApplicationConstants.Pageable.PAGE_DEFAULT_VALUE,
-                    size = ApplicationConstants.Pageable.SIZE_DEFAULT_VALUE)
+                    page = ApplicationConstants.Page.PAGE_DEFAULT_VALUE,
+                    size = ApplicationConstants.Page.SIZE_DEFAULT_VALUE)
             @SortDefault.SortDefaults({
-                    @SortDefault(sort = ApplicationConstants.RequestField.DATE_CREATED, direction = Sort.Direction.DESC),
-                    @SortDefault(sort = ApplicationConstants.RequestField.TITLE, direction = Sort.Direction.ASC)
+                    @SortDefault(
+                            sort = ApplicationConstants.Request.Sort.DATE_CREATED,
+                            direction = Sort.Direction.DESC),
+                    @SortDefault(
+                            sort = ApplicationConstants.Request.Sort.TITLE,
+                            direction = Sort.Direction.ASC)
             })
                     Pageable pageable, Locale locale) {
         RequestDTOService requestDTOService = new RequestDTOService(messageSource);
@@ -68,13 +77,17 @@ public class UserRoleController {
 
     @GetMapping("/history-requests")
     @ResponseBody
-    Page<HistoryRequestDTO> userHistoryRequests(
+    org.springframework.data.domain.Page userHistoryRequests(
             @PageableDefault(
-                    page = ApplicationConstants.Pageable.PAGE_DEFAULT_VALUE,
-                    size = ApplicationConstants.Pageable.SIZE_DEFAULT_VALUE)
+                    page = ApplicationConstants.Page.PAGE_DEFAULT_VALUE,
+                    size = ApplicationConstants.Page.SIZE_DEFAULT_VALUE)
             @SortDefault.SortDefaults({
-                    @SortDefault(sort = ApplicationConstants.RequestField.DATE_CREATED, direction = Sort.Direction.DESC),
-                    @SortDefault(sort = ApplicationConstants.RequestField.TITLE, direction = Sort.Direction.ASC)
+                    @SortDefault(
+                            sort = ApplicationConstants.HistoryRequest.Sort.DATE_CREATED,
+                            direction = Sort.Direction.DESC),
+                    @SortDefault(
+                            sort = ApplicationConstants.HistoryRequest.Sort.TITLE,
+                            direction = Sort.Direction.ASC)
             })
                     Pageable pageable, Locale locale) {
         HistoryRequestDTOService historyRequestDTOService = new HistoryRequestDTOService(messageSource);
@@ -86,7 +99,9 @@ public class UserRoleController {
         ));
     }
 
-    @RequestMapping(value = "/page", method = RequestMethod.GET)
+    @RequestMapping(
+            value = "/page",
+            method = RequestMethod.GET)
     public String getUserPage() {
         return Pages.USER_PAGE;
     }
@@ -96,7 +111,7 @@ public class UserRoleController {
             method = RequestMethod.GET)
     public String getRequestForm(Model model) {
         model.addAttribute(
-                ApplicationConstants.ModelAttribute.REQUEST,
+                ApplicationConstants.ModelAttribute.Form.REQUEST_FORM,
                 new RequestForm());
         return Pages.USER_CREATE_REQUEST_FORM;
     }
@@ -105,7 +120,7 @@ public class UserRoleController {
             value = "/requests/new",
             method = RequestMethod.POST)
     public String postRequestForm(
-            @ModelAttribute(ApplicationConstants.ModelAttribute.REQUEST) @Valid RequestForm form,
+            @ModelAttribute(ApplicationConstants.ModelAttribute.Form.REQUEST_FORM) @Valid RequestForm form,
             BindingResult result,
             Model model,
             Locale locale) {
@@ -120,24 +135,17 @@ public class UserRoleController {
                 request.setStatus(status);
                 request.setAuthor(author);
                 request.setUser(author);
-                request.setClosed(status.isClose());
+                request.setClosed(status.isClosed());
                 requestService.newRequest(request);
             }
         } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
             model.addAttribute(
-                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
                     e.getMessage());
             return Pages.ERROR_PAGE;
         }
         return (result.hasErrors() ? Pages.USER_CREATE_REQUEST_FORM : Pages.USER_PAGE_REDIRECT_NEW_REQUEST_SUCCESS);
-    }
-
-    @InitBinder
-    private void initBinder(WebDataBinder binder) {
-        binder.setAllowedFields(
-                "title",
-                "description");
     }
 
     private Request toRequest(RequestForm form, Locale locale) {

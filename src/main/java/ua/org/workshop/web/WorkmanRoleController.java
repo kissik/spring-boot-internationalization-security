@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -15,12 +14,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import ua.org.workshop.configuration.ApplicationConstants;
 import ua.org.workshop.domain.Request;
 import ua.org.workshop.domain.Status;
 import ua.org.workshop.enums.WorkshopError;
 import ua.org.workshop.exception.WorkshopException;
-import ua.org.workshop.service.*;
-import ua.org.workshop.web.dto.RequestDTO;
+import ua.org.workshop.service.AccountService;
+import ua.org.workshop.service.RequestService;
+import ua.org.workshop.service.SecurityService;
+import ua.org.workshop.service.StatusService;
 import ua.org.workshop.web.dto.service.RequestDTOService;
 import ua.org.workshop.web.form.WorkmanUpdateRequestForm;
 
@@ -52,13 +54,17 @@ public class WorkmanRoleController {
 
     @GetMapping("/requests")
     @ResponseBody
-    Page<RequestDTO> workmanRequests(
+    org.springframework.data.domain.Page workmanRequests(
             @PageableDefault(
-                    page = ApplicationConstants.Pageable.PAGE_DEFAULT_VALUE,
-                    size = ApplicationConstants.Pageable.SIZE_DEFAULT_VALUE)
+                    page = ApplicationConstants.Page.PAGE_DEFAULT_VALUE,
+                    size = ApplicationConstants.Page.SIZE_DEFAULT_VALUE)
             @SortDefault.SortDefaults({
-                    @SortDefault(sort = ApplicationConstants.RequestField.DATE_CREATED, direction = Sort.Direction.DESC),
-                    @SortDefault(sort = ApplicationConstants.RequestField.TITLE, direction = Sort.Direction.ASC)
+                    @SortDefault(
+                            sort = ApplicationConstants.Request.Sort.DATE_CREATED,
+                            direction = Sort.Direction.DESC),
+                    @SortDefault(
+                            sort = ApplicationConstants.Request.Sort.TITLE,
+                            direction = Sort.Direction.ASC)
             })
                     Pageable pageable, Locale locale) {
         RequestDTOService requestDTOService = new RequestDTOService(messageSource);
@@ -83,17 +89,14 @@ public class WorkmanRoleController {
             @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
             Model model) throws IllegalArgumentException {
         try {
-            if (SecurityService.isCurrentUserHasRole(CURRENT_ROLE)) {
-                model.addAttribute(
-                        ApplicationConstants.ModelAttribute.REQUEST,
-                        requestService.findById(id)
-                );
-            } else
-                return Pages.ACCESS_DENIED_PAGE_REDIRECT;
+            model.addAttribute(
+                    ApplicationConstants.ModelAttribute.View.REQUEST,
+                    requestService.findById(id)
+            );
         } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
             model.addAttribute(
-                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
                     e.getMessage());
             return Pages.ERROR_PAGE;
         }
@@ -112,16 +115,16 @@ public class WorkmanRoleController {
             request = requestService.findById(id);
         } catch (WorkshopException e) {
             model.addAttribute(
-                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
                     e.getMessage()
             );
             return Pages.ERROR_PAGE;
         }
         model.addAttribute(
-                ApplicationConstants.ModelAttribute.REQUEST,
+                ApplicationConstants.ModelAttribute.View.REQUEST,
                 request);
         model.addAttribute(
-                ApplicationConstants.ModelAttribute.WORKMAN_UPDATE_REQUEST_FORM,
+                ApplicationConstants.ModelAttribute.Form.WORKMAN_UPDATE_REQUEST_FORM,
                 new WorkmanUpdateRequestForm());
         return Pages.WORKMAN_UPDATE_REQUEST_FORM_PAGE;
     }
@@ -132,7 +135,7 @@ public class WorkmanRoleController {
             method = RequestMethod.POST)
     public String editWorkmanRequestStatus(
             @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
-            @ModelAttribute(ApplicationConstants.ModelAttribute.WORKMAN_UPDATE_REQUEST_FORM) @Valid WorkmanUpdateRequestForm form,
+            @ModelAttribute(ApplicationConstants.ModelAttribute.Form.WORKMAN_UPDATE_REQUEST_FORM) @Valid WorkmanUpdateRequestForm form,
             BindingResult result,
             Model model) {
         Request request;
@@ -142,13 +145,13 @@ public class WorkmanRoleController {
             request = requestService.findById(id);
         } catch (WorkshopException e) {
             model.addAttribute(
-                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
                     e.getMessage()
             );
             return Pages.ERROR_PAGE;
         }
         model.addAttribute(
-                ApplicationConstants.ModelAttribute.REQUEST,
+                ApplicationConstants.ModelAttribute.View.REQUEST,
                 request);
         LOGGER.info("request after --------------------->" + request.toString());
         if (result.hasErrors())
@@ -162,7 +165,7 @@ public class WorkmanRoleController {
         } catch (WorkshopException e) {
             LOGGER.error(e.getMessage());
             model.addAttribute(
-                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
                     e.getMessage()
             );
             if (e.getErrorCode().equals(WorkshopError.RIGHT_VIOLATION_ERROR.code()))
@@ -170,14 +173,14 @@ public class WorkmanRoleController {
             return Pages.ERROR_PAGE;
         }
         request.setStatus(newStatus);
-        request.setClosed(newStatus.isClose());
+        request.setClosed(newStatus.isClosed());
         try {
             LOGGER.info(request);
             requestService.setRequestInfo(request);
         } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
             model.addAttribute(
-                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
                     e.getMessage());
             return Pages.ERROR_PAGE;
         }

@@ -15,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import ua.org.workshop.service.AccountDetailsService;
-import ua.org.workshop.service.ApplicationConstants;
 
 @Configuration
 @EnableWebSecurity
@@ -26,7 +25,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(ApplicationConstants.APP_BCRYPT_SALT);
+        return new BCryptPasswordEncoder(
+                ApplicationConstants.InitParameters.APP_BCRYPT_SALT
+        );
     }
 
     @Bean

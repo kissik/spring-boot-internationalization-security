@@ -1,6 +1,8 @@
 package ua.org.workshop.web.form;
 
 
+import ua.org.workshop.configuration.ApplicationConstants;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -10,7 +12,10 @@ public class RequestForm {
     private String description;
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Size(min = 6, max = 50, message = "{validation.text.error.from.six.to.fifty}")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_6,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_50,
+            message = "{validation.text.error.from.six.to.fifty}")
     public String getTitle() {
         return title;
     }
@@ -20,7 +25,10 @@ public class RequestForm {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Size(min = 6, max = 255, message = "{validation.text.error.from.six.to.two.five.five}")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_6,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_255,
+            message = "{validation.text.error.from.six.to.two.five.five}")
     public String getDescription() {
         return description;
     }
@@ -30,9 +38,7 @@ public class RequestForm {
     }
 
     public String toString() {
-        return new StringBuilder()
-                .append(" title:" + title)
-                .append(" description:" + description)
-                .toString();
+        return " title : " + title +
+                " description : " + description;
     }
 }

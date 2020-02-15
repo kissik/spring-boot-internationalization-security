@@ -66,7 +66,7 @@ public class RequestService {
         try {
             requestRepository.saveAndFlush(request);
             logger.info("Request was changed: " + request.toString());
-            if (request.getStatus().isClose())
+            if (request.getStatus().isClosed())
                 requestRepository.delete(request);
             logger.info("Request was deleted");
         } catch (Exception e) {
