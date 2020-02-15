@@ -16,8 +16,6 @@ public class WorkmanUpdateRequestForm {
 
     @Override
     public String toString() {
-        return new StringBuilder()
-                .append(" status : " + getStatus())
-                .toString();
+        return " status : " + getStatus();
     }
 }

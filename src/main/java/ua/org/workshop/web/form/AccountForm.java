@@ -1,7 +1,7 @@
 package ua.org.workshop.web.form;
 
 import org.hibernate.validator.constraints.ScriptAssert;
-import ua.org.workshop.service.ApplicationConstants;
+import ua.org.workshop.configuration.ApplicationConstants;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -33,7 +33,10 @@ public class AccountForm {
     private String[] role = {ApplicationConstants.APP_DEFAULT_ROLE};
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Size(min = 6, max = 50, message = "{validation.text.error.from.six.to.fifty}")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_6,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_50,
+            message = "{validation.text.error.from.six.to.fifty}")
     @Pattern(regexp = "[a-z_]{1}[0-9a-z_]*", message = "{validation.username.symbols}")
     public String getUsername() {
         return username;
@@ -44,7 +47,10 @@ public class AccountForm {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Size(min = 8, max = 50, message = "{validation.text.error.from.eight.to.fifty}")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_8,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_50,
+            message = "{validation.text.error.from.eight.to.fifty}")
     public String getPassword() {
         return password;
     }
@@ -62,7 +68,10 @@ public class AccountForm {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_3,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_50,
+            message = "{validation.text.error.from.three.to.fifty}")
     public String getFirstName() {
         return firstName;
     }
@@ -72,7 +81,10 @@ public class AccountForm {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_3,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_50,
+            message = "{validation.text.error.from.three.to.fifty}")
     public String getLastName() {
         return lastName;
     }
@@ -82,7 +94,10 @@ public class AccountForm {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Size(min = 6, max = 50, message = "{validation.text.error.from.six.to.fifty}")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_6,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_50,
+            message = "{validation.text.error.from.six.to.fifty}")
     public String getEmail() {
         return email;
     }
@@ -110,21 +125,11 @@ public class AccountForm {
         this.role = role;
     }
 
-    public String toString() {
-        return new StringBuilder()
-                .append(" username: " + username)
-                .append(" firstName: " + firstName)
-                .append(" lastName: " + lastName)
-                .append(" firstNameOrigin: " + firstNameOrigin)
-                .append(" lastNameOrigin: " + lastNameOrigin)
-                .append(" email: " + email)
-                .append(" phone: " + phone)
-                .append(" role:" + Arrays.toString(role))
-                .toString();
-    }
-
     @NotNull(message = "{validation.text.error.required.field}")
-    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_3,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_50,
+            message = "{validation.text.error.from.three.to.fifty}")
     public String getFirstNameOrigin() {
         return firstNameOrigin;
     }
@@ -134,12 +139,27 @@ public class AccountForm {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_3,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_50,
+            message = "{validation.text.error.from.three.to.fifty}")
     public String getLastNameOrigin() {
         return lastNameOrigin;
     }
 
     public void setLastNameOrigin(String lastNameOrigin) {
         this.lastNameOrigin = lastNameOrigin;
+    }
+
+    @Override
+    public String toString() {
+        return " username: " + username +
+                " firstName: " + firstName +
+                " lastName: " + lastName +
+                " firstNameOrigin: " + firstNameOrigin +
+                " lastNameOrigin: " + lastNameOrigin +
+                " email: " + email +
+                " phone: " + phone +
+                " role:" + Arrays.toString(role);
     }
 }

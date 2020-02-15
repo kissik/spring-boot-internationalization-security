@@ -1,6 +1,7 @@
 package ua.org.workshop.web;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -8,6 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class PortalController {
+
+    @GetMapping("/")
+    public String welcome() {
+        return Pages.WELCOME_PAGE;
+    }
 
     @RequestMapping(value = "/access-denied")
     public String getAccessDenied() {

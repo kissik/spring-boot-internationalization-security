@@ -11,7 +11,6 @@ import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import ua.org.workshop.filter.CharsetFilter;
-import ua.org.workshop.service.ApplicationConstants;
 
 @Configuration
 @EnableWebMvc
@@ -38,11 +37,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return registration;
     }
 
-    @Bean("messageSource")
+    @Bean(ApplicationConstants.Bean.APP_MESSAGE_BUNDLE_BEAN_NAME)
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("classpath:/"+ ApplicationConstants.APP_MESSAGES_BUNDLE_NAME);
-        messageSource.setDefaultEncoding(ApplicationConstants.APP_ENCODING);
+        messageSource.setBasename("classpath:/" + ApplicationConstants.APP_MESSAGES_BUNDLE_NAME);
+        messageSource.setDefaultEncoding(
+                ApplicationConstants.InitParameters.APP_ENCODING);
         messageSource.setUseCodeAsDefaultMessage(false);
         messageSource.setCacheSeconds(0);
         return messageSource;

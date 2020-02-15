@@ -3,7 +3,6 @@ package ua.org.workshop.web;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -13,9 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import ua.org.workshop.configuration.ApplicationConstants;
 import ua.org.workshop.domain.Account;
-import ua.org.workshop.domain.HistoryRequest;
-import ua.org.workshop.domain.Request;
 import ua.org.workshop.domain.Role;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.*;
@@ -53,16 +51,16 @@ public class AdminRoleController {
 
     @GetMapping("/accounts")
     @ResponseBody
-    Page<Account> workmanRequests(
+    org.springframework.data.domain.Page workmanRequests(
             @PageableDefault(
-                    page = ApplicationConstants.Pageable.PAGE_DEFAULT_VALUE,
-                    size = ApplicationConstants.Pageable.SIZE_DEFAULT_VALUE)
+                    page = ApplicationConstants.Page.PAGE_DEFAULT_VALUE,
+                    size = ApplicationConstants.Page.SIZE_DEFAULT_VALUE)
             @SortDefault.SortDefaults({
                     @SortDefault(
-                            sort = ApplicationConstants.AccountField.USERNAME,
+                            sort = ApplicationConstants.Account.Sort.USERNAME,
                             direction = Sort.Direction.ASC),
                     @SortDefault(
-                            sort = ApplicationConstants.AccountField.DATE_CREATED,
+                            sort = ApplicationConstants.Account.Sort.DATE_CREATED,
                             direction = Sort.Direction.DESC)
             })
                     Pageable pageable) {
@@ -71,16 +69,16 @@ public class AdminRoleController {
 
     @GetMapping(path = "/history-requests")
     @ResponseBody
-    Page<HistoryRequest> loadRequestsHistoryPage(
+    org.springframework.data.domain.Page loadRequestsHistoryPage(
             @PageableDefault(
-                    page = ApplicationConstants.Pageable.PAGE_DEFAULT_VALUE,
-                    size = ApplicationConstants.Pageable.SIZE_DEFAULT_VALUE)
+                    page = ApplicationConstants.Page.PAGE_DEFAULT_VALUE,
+                    size = ApplicationConstants.Page.SIZE_DEFAULT_VALUE)
             @SortDefault.SortDefaults({
                     @SortDefault(
-                            sort = ApplicationConstants.RequestField.DATE_CREATED,
+                            sort = ApplicationConstants.HistoryRequest.Sort.DATE_CREATED,
                             direction = Sort.Direction.DESC),
                     @SortDefault(
-                            sort = ApplicationConstants.RequestField.TITLE,
+                            sort = ApplicationConstants.HistoryRequest.Sort.TITLE,
                             direction = Sort.Direction.ASC)
             })
                     Pageable pageable) {
@@ -89,16 +87,16 @@ public class AdminRoleController {
 
     @GetMapping(path = "/requests")
     @ResponseBody
-    Page<Request> loadRequestsPage(
+    org.springframework.data.domain.Page loadRequestsPage(
             @PageableDefault(
-                    page = ApplicationConstants.Pageable.PAGE_DEFAULT_VALUE,
-                    size = ApplicationConstants.Pageable.SIZE_DEFAULT_VALUE)
+                    page = ApplicationConstants.Page.PAGE_DEFAULT_VALUE,
+                    size = ApplicationConstants.Page.SIZE_DEFAULT_VALUE)
             @SortDefault.SortDefaults({
                     @SortDefault(
-                            sort = ApplicationConstants.RequestField.DATE_CREATED,
+                            sort = ApplicationConstants.Request.Sort.DATE_CREATED,
                             direction = Sort.Direction.DESC),
                     @SortDefault(
-                            sort = ApplicationConstants.RequestField.TITLE,
+                            sort = ApplicationConstants.Request.Sort.TITLE,
                             direction = Sort.Direction.ASC)
             })
                     Pageable pageable) {
@@ -113,12 +111,12 @@ public class AdminRoleController {
             Model model) {
         try {
             model.addAttribute(
-                    ApplicationConstants.ModelAttribute.ACCOUNT,
+                    ApplicationConstants.ModelAttribute.View.ACCOUNT,
                     accountService.getAccountById(id));
         } catch (WorkshopException e) {
             LOGGER.error("custom error message: " + e.getMessage());
             model.addAttribute(
-                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
                     e.getMessage());
             return Pages.ERROR_PAGE;
         }
@@ -135,11 +133,11 @@ public class AdminRoleController {
         try {
             account = accountService.getAccountById(id);
             model.addAttribute(
-                    ApplicationConstants.ModelAttribute.ROLES_LIST,
+                    ApplicationConstants.ModelAttribute.View.ROLES_LIST,
                     roleService.findAll());
         } catch (WorkshopException e) {
             model.addAttribute(
-                    ApplicationConstants.ModelAttribute.MESSAGE,
+                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
                     e.getMessage());
             return Pages.ERROR_PAGE;
         }
@@ -152,10 +150,10 @@ public class AdminRoleController {
 
         roleForm.setRole(roles);
         model.addAttribute(
-                ApplicationConstants.ModelAttribute.ACCOUNT,
+                ApplicationConstants.ModelAttribute.View.ACCOUNT,
                 account);
         model.addAttribute(
-                ApplicationConstants.ModelAttribute.ROLE,
+                ApplicationConstants.ModelAttribute.Form.ROLE_FORM,
                 roleForm);
         return Pages.ADMIN_ACCOUNT_EDIT_PAGE;
     }
@@ -165,8 +163,11 @@ public class AdminRoleController {
             method = RequestMethod.POST)
     public String putAccountRoles(
             @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
-            @ModelAttribute(ApplicationConstants.ModelAttribute.ROLE) @Valid RoleForm roleForm,
+            @ModelAttribute(ApplicationConstants.ModelAttribute.Form.ROLE_FORM) @Valid RoleForm roleForm,
             BindingResult result) {
+        if (!SecurityService.isCurrentUserHasRole(CURRENT_ROLE)) {
+            return Pages.ACCESS_DENIED_PAGE;
+        }
         if (!result.hasErrors()) {
             Account account = accountService.getAccountById(id);
             Collection<Role> roles = new HashSet<>();
@@ -174,8 +175,7 @@ public class AdminRoleController {
                 roles.add(roleService.findByCode(roleStr));
             account.setRoles(roles);
             accountService.update(account);
-        }
-        else
+        } else
             return Pages.ERROR_PAGE;
         return Pages.ADMIN_PAGE_REDIRECT_UPDATE_ACCOUNT_SUCCESS + id + "?update=true";
     }
@@ -185,7 +185,7 @@ public class AdminRoleController {
             method = RequestMethod.POST)
     public String deleteAccount(
             @PathVariable(ApplicationConstants.PathVariable.ID) Long id) {
-        if (!SecurityService.isCurrentUserHasRole(ApplicationConstants.APP_SUPERUSER_ROLE)) {
+        if (!SecurityService.isCurrentUserHasRole(CURRENT_ROLE)) {
             return Pages.ACCESS_DENIED_PAGE;
         }
         try {

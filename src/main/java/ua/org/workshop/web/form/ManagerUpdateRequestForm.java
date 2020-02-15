@@ -1,5 +1,7 @@
 package ua.org.workshop.web.form;
 
+import ua.org.workshop.configuration.ApplicationConstants;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
@@ -26,7 +28,9 @@ public class ManagerUpdateRequestForm {
         this.price = price;
     }
 
-    @Size(max = 255, message = "{validation.text.error.from.six.to.two.five.five}")
+    @Size(
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_255,
+            message = "{validation.text.error.from.six.to.two.five.five}")
     public String getCause() {
         return cause;
     }
@@ -37,10 +41,8 @@ public class ManagerUpdateRequestForm {
 
     @Override
     public String toString() {
-        return new StringBuilder()
-                .append(" status : " + getStatus())
-                .append(" price : " + getPrice())
-                .append(" cause : " + getCause())
-                .toString();
+        return " status : " + status +
+                " price : " + price +
+                " cause : " + cause;
     }
 }

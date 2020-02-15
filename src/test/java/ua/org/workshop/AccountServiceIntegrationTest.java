@@ -85,7 +85,7 @@ public class AccountServiceIntegrationTest {
         account.setPhone("+38(050)145-72-54");
         account.setEnabled(true);
         account.setUsername("kissik");
-        account.setRoles(Arrays.asList(new Role[]{role}));
+        account.setRoles(Arrays.asList(role));
         account.setPassword("password");
         account.setDateCreated(LocalDate.now());
 

@@ -1,5 +1,7 @@
 package ua.org.workshop.domain;
 
+import ua.org.workshop.configuration.ApplicationConstants;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
@@ -8,30 +10,28 @@ import java.util.HashSet;
 /**
  * @author kissik
  */
-@SuppressWarnings("serial")
 @Entity
-@Table(name = "status")
+@Table(name = ApplicationConstants.Status.TABLE_NAME)
 public class Status {
     private Long id;
     private String code;
     private String name;
-    private boolean close;
+    private boolean closed;
     private Collection<Status> nextStatuses = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = ApplicationConstants.Status.COLUMN_ID)
     public Long getId() {
         return id;
     }
 
-    @SuppressWarnings("unused")
     private void setId(Long id) {
         this.id = id;
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Column(name = "scode")
+    @Column(name = ApplicationConstants.Status.COLUMN_CODE)
     public String getCode() {
         return code;
     }
@@ -41,7 +41,7 @@ public class Status {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Column(name = "sname")
+    @Column(name = ApplicationConstants.Status.COLUMN_NAME)
     public String getName() {
         return name;
     }
@@ -51,20 +51,26 @@ public class Status {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Column(name = "bclose")
-    public boolean isClose() {
-        return close;
+    @Column(name = ApplicationConstants.Status.COLUMN_CLOSED)
+    public boolean isClosed() {
+        return closed;
     }
 
-    public void setClose(boolean close) {
-        this.close = close;
+    public void setClosed(boolean closed) {
+        this.closed = closed;
     }
 
     @ManyToMany
     @JoinTable(
-            name = "next_statuses",
-            joinColumns = {@JoinColumn(name = "nstatus", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "nnextstatus", referencedColumnName = "id")})
+            name = ApplicationConstants.NextStatuses.TABLE_NAME,
+            joinColumns = {
+                    @JoinColumn(
+                            name = ApplicationConstants.NextStatuses.COLUMN_STATUS,
+                            referencedColumnName = ApplicationConstants.Status.COLUMN_ID)},
+            inverseJoinColumns = {
+                    @JoinColumn(
+                            name = ApplicationConstants.NextStatuses.COLUMN_NEXT_STATUS,
+                            referencedColumnName = ApplicationConstants.Status.COLUMN_ID)})
     public Collection<Status> getNextStatuses() {
         return nextStatuses;
     }

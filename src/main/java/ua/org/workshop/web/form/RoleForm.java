@@ -1,6 +1,6 @@
 package ua.org.workshop.web.form;
 
-import ua.org.workshop.service.ApplicationConstants;
+import ua.org.workshop.configuration.ApplicationConstants;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;

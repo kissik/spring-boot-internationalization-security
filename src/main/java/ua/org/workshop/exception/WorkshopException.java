@@ -18,8 +18,4 @@ public class WorkshopException extends RuntimeException {
     public Integer getErrorCode() {
         return workshopError.code();
     }
-
-    public WorkshopError getWorkshopError() {
-        return workshopError;
-    }
 }

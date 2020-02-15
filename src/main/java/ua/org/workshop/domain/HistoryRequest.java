@@ -1,5 +1,7 @@
 package ua.org.workshop.domain;
 
+import ua.org.workshop.configuration.ApplicationConstants;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -7,7 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "history_request_list")
+@Table(name = ApplicationConstants.HistoryRequest.TABLE_NAME)
 public class HistoryRequest {
     private Long id;
     private String title;
@@ -25,7 +27,7 @@ public class HistoryRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = ApplicationConstants.HistoryRequest.COLUMN_ID)
     public Long getId() {
         return id;
     }
@@ -35,7 +37,11 @@ public class HistoryRequest {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Column(name = "stitle")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_6,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_50,
+            message = "{validation.text.error.from.six.to.fifty}")
+    @Column(name = ApplicationConstants.HistoryRequest.COLUMN_TITLE)
     public String getTitle() {
         return title;
     }
@@ -45,7 +51,11 @@ public class HistoryRequest {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Column(name = "sdescription")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_6,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_255,
+            message = "{validation.text.error.from.six.to.two.five.five}")
+    @Column(name = ApplicationConstants.HistoryRequest.COLUMN_DESCRIPTION)
     public String getDescription() {
         return description;
     }
@@ -56,7 +66,9 @@ public class HistoryRequest {
 
     @NotNull(message = "{validation.text.error.required.field}")
     @ManyToOne
-    @JoinColumn(name = "nstatus", referencedColumnName = "id")
+    @JoinColumn(
+            name = ApplicationConstants.HistoryRequest.COLUMN_STATUS,
+            referencedColumnName = ApplicationConstants.Status.COLUMN_ID)
     public Status getStatus() {
         return status;
     }
@@ -67,7 +79,9 @@ public class HistoryRequest {
 
     @NotNull(message = "{validation.text.error.required.field}")
     @ManyToOne
-    @JoinColumn(name = "nuser", referencedColumnName = "id")
+    @JoinColumn(
+            name = ApplicationConstants.HistoryRequest.COLUMN_USER,
+            referencedColumnName = ApplicationConstants.Account.COLUMN_ID)
     public Account getUser() {
         return user;
     }
@@ -76,7 +90,7 @@ public class HistoryRequest {
         this.user = user;
     }
 
-    @Column(name = "ddate_created")
+    @Column(name = ApplicationConstants.HistoryRequest.COLUMN_DATE_CREATED)
     public LocalDate getDateCreated() {
         return dateCreated;
     }
@@ -85,7 +99,7 @@ public class HistoryRequest {
         this.dateCreated = dateCreated;
     }
 
-    @Column(name = "ddate_updated")
+    @Column(name = ApplicationConstants.HistoryRequest.COLUMN_DATE_UPDATED)
     public LocalDate getDateUpdated() {
         return dateUpdated;
     }
@@ -94,7 +108,7 @@ public class HistoryRequest {
         this.dateUpdated = dateUpdated;
     }
 
-    @Column(name = "nprice")
+    @Column(name = ApplicationConstants.HistoryRequest.COLUMN_PRICE)
     public BigDecimal getPrice() {
         return price;
     }
@@ -103,7 +117,10 @@ public class HistoryRequest {
         this.price = price;
     }
 
-    @Column(name = "scause")
+    @Column(name = ApplicationConstants.HistoryRequest.COLUMN_CAUSE)
+    @Size(
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_255,
+            message = "{validation.text.error.more.than.two.five.five}")
     public String getCause() {
         return cause;
     }
@@ -112,12 +129,8 @@ public class HistoryRequest {
         this.cause = cause;
     }
 
-    public String toString() {
-        return this.title + ": " + this.description;
-    }
-
     @NotNull(message = "{validation.text.error.required.field}")
-    @Column(name = "slang")
+    @Column(name = ApplicationConstants.HistoryRequest.COLUMN_LANGUAGE)
     public String getLanguage() {
         return language;
     }
@@ -128,7 +141,9 @@ public class HistoryRequest {
 
     @NotNull(message = "{validation.text.error.required.field}")
     @ManyToOne
-    @JoinColumn(name = "nauthor", referencedColumnName = "id")
+    @JoinColumn(
+            name = ApplicationConstants.HistoryRequest.COLUMN_AUTHOR,
+            referencedColumnName = ApplicationConstants.Account.COLUMN_ID)
     public Account getAuthor() {
         return author;
     }
@@ -137,8 +152,10 @@ public class HistoryRequest {
         this.author = author;
     }
 
-    @Column(name = "sreview")
-    @Size(max = 255, message = "{validation.text.error.more.than.two.five.five}")
+    @Column(name = ApplicationConstants.HistoryRequest.COLUMN_REVIEW)
+    @Size(
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_255,
+            message = "{validation.text.error.more.than.two.five.five}")
     public String getReview() {
         return review;
     }
@@ -147,12 +164,21 @@ public class HistoryRequest {
         this.review = review;
     }
 
-    @Column(name = "nrating")
+    @Column(name = ApplicationConstants.HistoryRequest.COLUMN_RATING)
     public Long getRating() {
         return rating;
     }
 
     public void setRating(Long rating) {
         this.rating = rating;
+    }
+
+    @Override
+    public String toString() {
+        return " title : " + this.title
+                + " description : " + this.description
+                + " status : " + this.status
+                + " author : " + this.author
+                + " user : " + this.user;
     }
 }

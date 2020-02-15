@@ -20,9 +20,9 @@ public interface Pages {
     String ADMIN_ACCOUNT_INFO_PAGE = "admin/user";
     String ADMIN_ACCOUNT_EDIT_PAGE = "admin/edit-user-form";
 
-    String ERROR_PAGE = "/error";
+    String ERROR_PAGE = "error";
 
-    String FIRST_PAGE = REDIRECT + "/";
+    String WELCOME_PAGE = "welcome";
 
     String LOGIN_PAGE = "login";
 

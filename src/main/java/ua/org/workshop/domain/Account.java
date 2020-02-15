@@ -1,6 +1,7 @@
 package ua.org.workshop.domain;
 
 import org.springframework.security.core.GrantedAuthority;
+import ua.org.workshop.configuration.ApplicationConstants;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -15,9 +16,10 @@ import java.util.Set;
  * @author kissik
  */
 @Entity
-@Table(name = "user_list")
+@Table(name = ApplicationConstants.Account.TABLE_NAME)
 public class Account {
-    public static final Account ACCOUNT = new Account("anonymous");
+    public static final Account ACCOUNT =
+            new Account(ApplicationConstants.InitParameters.APP_ANONYMOUS_ACCOUNT_USERNAME);
 
     private Long id;
     private String username;
@@ -41,7 +43,7 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = ApplicationConstants.Account.COLUMN_ID)
     public Long getId() {
         return id;
     }
@@ -51,8 +53,11 @@ public class Account {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Size(min = 6, max = 50, message = "{validation.text.error.from.six.to.fifty}")
-    @Column(name = "slogin")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_6,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_50,
+            message = "{validation.text.error.from.six.to.fifty}")
+    @Column(name = ApplicationConstants.Account.COLUMN_USERNAME)
     public String getUsername() {
         return username;
     }
@@ -62,7 +67,7 @@ public class Account {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Column(name = "spassword")
+    @Column(name = ApplicationConstants.Account.COLUMN_PASSWORD)
     public String getPassword() {
         return password;
     }
@@ -72,8 +77,11 @@ public class Account {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
-    @Column(name = "sfirst_name")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_3,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_50,
+            message = "{validation.text.error.from.three.to.fifty}")
+    @Column(name = ApplicationConstants.Account.COLUMN_FIRST_NAME)
     public String getFirstName() {
         return firstName;
     }
@@ -83,8 +91,11 @@ public class Account {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
-    @Column(name = "sfirst_name_origin")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_3,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_50,
+            message = "{validation.text.error.from.three.to.fifty}")
+    @Column(name = ApplicationConstants.Account.COLUMN_FIRST_NAME_ORIGIN)
     public String getFirstNameOrigin() {
         return firstNameOrigin;
     }
@@ -94,8 +105,11 @@ public class Account {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
-    @Column(name = "slast_name_origin")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_3,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_50,
+            message = "{validation.text.error.from.three.to.fifty}")
+    @Column(name = ApplicationConstants.Account.COLUMN_LAST_NAME_ORIGIN)
     public String getLastNameOrigin() {
         return lastNameOrigin;
     }
@@ -105,8 +119,11 @@ public class Account {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Size(min = 3, max = 50, message = "{validation.text.error.from.three.to.fifty}")
-    @Column(name = "slast_name")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_3,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_50,
+            message = "{validation.text.error.from.three.to.fifty}")
+    @Column(name = ApplicationConstants.Account.COLUMN_LAST_NAME)
     public String getLastName() {
         return lastName;
     }
@@ -126,8 +143,11 @@ public class Account {
     }
 
     @NotNull(message = "{validation.text.error.required.field}")
-    @Size(min = 6, max = 50, message = "{validation.text.error.from.six.to.fifty}")
-    @Column(name = "semail")
+    @Size(
+            min = ApplicationConstants.Varchar.MIN_VARCHAR_6,
+            max = ApplicationConstants.Varchar.MAX_VARCHAR_50,
+            message = "{validation.text.error.from.six.to.fifty}")
+    @Column(name = ApplicationConstants.Account.COLUMN_EMAIL)
     public String getEmail() {
         return email;
     }
@@ -138,7 +158,7 @@ public class Account {
 
     @NotNull(message = "{validation.text.error.required.field}")
     @Pattern(regexp = "\\+\\d{12}", message = "+380001112233")
-    @Column(name = "sphone")
+    @Column(name = ApplicationConstants.Account.COLUMN_PHONE)
     public String getPhone() {
         return phone;
     }
@@ -147,7 +167,7 @@ public class Account {
         this.phone = phone;
     }
 
-    @Column(name = "benabled")
+    @Column(name = ApplicationConstants.Account.COLUMN_ENABLED)
     public boolean isEnabled() {
         return enabled;
     }
@@ -158,9 +178,15 @@ public class Account {
 
     @ManyToMany
     @JoinTable(
-            name = "user_role",
-            joinColumns = {@JoinColumn(name = "nuser", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "nrole", referencedColumnName = "id")})
+            name = ApplicationConstants.UserRole.TABLE_NAME,
+            joinColumns = {
+                    @JoinColumn(
+                            name = ApplicationConstants.UserRole.COLUMN_USER_ID,
+                            referencedColumnName = ApplicationConstants.Account.COLUMN_ID)},
+            inverseJoinColumns = {
+                    @JoinColumn(
+                            name = ApplicationConstants.UserRole.COLUMN_ROLE_ID,
+                            referencedColumnName = ApplicationConstants.Role.COLUMN_ID)})
     public Collection<Role> getRoles() {
         return roles;
     }
@@ -169,7 +195,7 @@ public class Account {
         this.roles = roles;
     }
 
-    @Column(name = "ddate_created")
+    @Column(name = ApplicationConstants.Account.COLUMN_DATE_CREATED)
     public LocalDate getDateCreated() {
         return dateCreated;
     }

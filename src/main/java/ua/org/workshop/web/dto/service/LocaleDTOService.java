@@ -3,7 +3,7 @@ package ua.org.workshop.web.dto.service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.MessageSource;
-import ua.org.workshop.service.ApplicationConstants;
+import ua.org.workshop.configuration.ApplicationConstants;
 import ua.org.workshop.web.UserRoleController;
 
 import java.math.BigDecimal;
