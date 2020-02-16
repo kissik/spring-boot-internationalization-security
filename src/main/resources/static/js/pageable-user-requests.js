@@ -56,7 +56,7 @@ const updateHistoryRequest = (hiddenDesk, rowData, hiddenId) => {
     textarea.setAttribute('class','form-control caps');
     textarea.setAttribute('id',`cause-${hiddenId}`);
     textarea.setAttribute('rows','3');
-    textarea.setAttribute('name','review');
+    textarea.setAttribute('name','feedback');
     textarea.setAttribute('required','true');
     textarea.setAttribute('style','background: white; margin: 10px 0; border: 1px solid #dee2e6;');
     div.appendChild(textarea);

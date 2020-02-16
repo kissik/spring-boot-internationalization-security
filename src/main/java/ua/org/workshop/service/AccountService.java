@@ -3,6 +3,7 @@ package ua.org.workshop.service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,13 +57,8 @@ public class AccountService {
     }
 
     @Transactional(readOnly = false)
-    public void delete(Long id) throws WorkshopException {
-        try {
-            accountRepository.deleteById(id);
-        } catch (Exception e) {
-            LOGGER.error("delete account error : " + e.getMessage());
-            throw new WorkshopException(WorkshopError.ACCOUNT_DELETE_ERROR);
-        }
+    public void delete(Long id) {
+        accountRepository.deleteById(id);
     }
 
     public Account getAccountByUsername(String username) throws WorkshopException {
@@ -91,7 +87,11 @@ public class AccountService {
                 .orElseThrow(() -> new WorkshopException(WorkshopError.ACCOUNT_NOT_FOUND_ERROR));
     }
 
-    public Page<Account> findAll(Pageable pageable) {
-        return accountRepository.findAll(pageable);
+    public Page<Account> findAll(Pageable pageable) throws WorkshopException{
+        try {
+            return accountRepository.findAll(pageable);
+        }catch (ConstraintViolationException ex){
+            throw new WorkshopException(WorkshopError.ACCOUNT_DELETE_ERROR);
+        }
     }
 }

@@ -109,17 +109,9 @@ public class AdminRoleController {
     public String getAccount(
             @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
             Model model) {
-        try {
-            model.addAttribute(
+        model.addAttribute(
                     ApplicationConstants.ModelAttribute.View.ACCOUNT,
                     accountService.getAccountById(id));
-        } catch (WorkshopException e) {
-            LOGGER.error("custom error message: " + e.getMessage());
-            model.addAttribute(
-                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
-                    e.getMessage());
-            return Pages.ERROR_PAGE;
-        }
         return Pages.ADMIN_ACCOUNT_INFO_PAGE;
     }
 
@@ -130,17 +122,10 @@ public class AdminRoleController {
             @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
             Model model) {
         Account account = null;
-        try {
-            account = accountService.getAccountById(id);
-            model.addAttribute(
+        account = accountService.getAccountById(id);
+        model.addAttribute(
                     ApplicationConstants.ModelAttribute.View.ROLES_LIST,
                     roleService.findAll());
-        } catch (WorkshopException e) {
-            model.addAttribute(
-                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
-                    e.getMessage());
-            return Pages.ERROR_PAGE;
-        }
         RoleForm roleForm = new RoleForm();
 
         String[] roles = account.getRoles()
@@ -165,9 +150,7 @@ public class AdminRoleController {
             @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
             @ModelAttribute(ApplicationConstants.ModelAttribute.Form.ROLE_FORM) @Valid RoleForm roleForm,
             BindingResult result) {
-        if (!SecurityService.isCurrentUserHasRole(CURRENT_ROLE)) {
-            return Pages.ACCESS_DENIED_PAGE;
-        }
+        SecurityService.isCurrentUserHasRole(CURRENT_ROLE);
         if (!result.hasErrors()) {
             Account account = accountService.getAccountById(id);
             Collection<Role> roles = new HashSet<>();
@@ -185,16 +168,9 @@ public class AdminRoleController {
             method = RequestMethod.POST)
     public String deleteAccount(
             @PathVariable(ApplicationConstants.PathVariable.ID) Long id) {
-        if (!SecurityService.isCurrentUserHasRole(CURRENT_ROLE)) {
-            return Pages.ACCESS_DENIED_PAGE;
-        }
-        try {
-            Account deleteAccount = accountService.getAccountById(id);
-            accountService.delete(deleteAccount.getId());
-        } catch (WorkshopException e) {
-            LOGGER.error("delect account error : " + e.getMessage());
-            return Pages.ADMIN_PAGE_REDIRECT_DELETE_ACCOUNT_FAILED;
-        }
+        SecurityService.isCurrentUserHasRole(CURRENT_ROLE);
+        Account deleteAccount = accountService.getAccountById(id);
+        accountService.delete(deleteAccount.getId());
         return Pages.ADMIN_PAGE_REDIRECT_DELETE_ACCOUNT_SUCCESS;
     }
 }

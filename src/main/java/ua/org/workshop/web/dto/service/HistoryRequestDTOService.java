@@ -10,6 +10,7 @@ import ua.org.workshop.web.dto.HistoryRequestDTO;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class HistoryRequestDTOService {
@@ -38,13 +39,13 @@ public class HistoryRequestDTOService {
                         locale)
         );
         historyRequestDTO.setPrice(localeDTOService.getLocalePrice(locale, historyRequest.getPrice()));
-        historyRequestDTO.setCause(localeDTOService.getNullableString(historyRequest.getCause(),
-                ApplicationConstants.APP_STRING_DEFAULT_VALUE));
+        historyRequestDTO.setCause(Optional.ofNullable(historyRequest.getCause())
+                .orElse(ApplicationConstants.APP_STRING_DEFAULT_VALUE));
         historyRequestDTO.setStatus(statusDTOService.getStatusDTO(historyRequest.getStatus(), locale));
         historyRequestDTO.setAuthorDTO(accountDTOService.getAccountDTO(historyRequest.getAuthor()));
         historyRequestDTO.setUser(accountDTOService.getAccountDTO(historyRequest.getUser()));
-        historyRequestDTO.setReview(localeDTOService.getNullableString(historyRequest.getReview(),
-                ApplicationConstants.APP_STRING_DEFAULT_VALUE));
+        historyRequestDTO.setReview(Optional.ofNullable(historyRequest.getReview())
+                .orElse(ApplicationConstants.APP_STRING_DEFAULT_VALUE));
 
         return historyRequestDTO;
     }

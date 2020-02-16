@@ -6,6 +6,10 @@
 	background-size: cover;
 }
 
+.workshop-contact-administrator{
+    background-image: url("/img/contact_administrator.jpg");
+}
+
 .workshop-access-denied-body-class{
 	max-width: 980px;
 	height: 100vh;

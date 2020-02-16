@@ -88,18 +88,9 @@ public class WorkmanRoleController {
     public String getRequest(
             @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
             Model model) throws IllegalArgumentException {
-        try {
-            model.addAttribute(
-                    ApplicationConstants.ModelAttribute.View.REQUEST,
-                    requestService.findById(id)
-            );
-        } catch (WorkshopException e) {
-            LOGGER.error("custom error message: " + e.getMessage());
-            model.addAttribute(
-                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
-                    e.getMessage());
-            return Pages.ERROR_PAGE;
-        }
+        model.addAttribute(
+                ApplicationConstants.ModelAttribute.View.REQUEST,
+                requestService.findById(id));
         return Pages.WORKMAN_REQUEST_PAGE;
     }
 
@@ -110,19 +101,9 @@ public class WorkmanRoleController {
     public String getEditRequestStatusForm(
             @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
             Model model) {
-        Request request;
-        try {
-            request = requestService.findById(id);
-        } catch (WorkshopException e) {
-            model.addAttribute(
-                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
-                    e.getMessage()
-            );
-            return Pages.ERROR_PAGE;
-        }
         model.addAttribute(
                 ApplicationConstants.ModelAttribute.View.REQUEST,
-                request);
+                requestService.findById(id));
         model.addAttribute(
                 ApplicationConstants.ModelAttribute.Form.WORKMAN_UPDATE_REQUEST_FORM,
                 new WorkmanUpdateRequestForm());
@@ -140,53 +121,25 @@ public class WorkmanRoleController {
             Model model) {
         Request request;
         Status newStatus;
-
-        try {
-            request = requestService.findById(id);
-        } catch (WorkshopException e) {
-            model.addAttribute(
-                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
-                    e.getMessage()
-            );
-            return Pages.ERROR_PAGE;
-        }
+        request = requestService.findById(id);
         model.addAttribute(
                 ApplicationConstants.ModelAttribute.View.REQUEST,
                 request);
         if (result.hasErrors())
             return Pages.WORKMAN_UPDATE_REQUEST_FORM_PAGE;
-        try {
-            SecurityService.checkTheAuthorities(CURRENT_ROLE,
+        SecurityService.checkTheAuthorities(CURRENT_ROLE,
                     request.getStatus().getCode(),
                     ApplicationConstants.UPDATE_REQUEST_WORKMAN_VALID_STATUS);
-            newStatus = statusService.findByCode(form.getStatus());
-            request.setUser(accountService.getAccountByUsername(SecurityService.getCurrentUsername()));
-        } catch (WorkshopException e) {
-            LOGGER.error(e.getMessage());
-            model.addAttribute(
-                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
-                    e.getMessage()
-            );
-            if (e.getErrorCode().equals(WorkshopError.RIGHT_VIOLATION_ERROR.code()))
-                return Pages.ACCESS_DENIED_PAGE_REDIRECT;
-            return Pages.ERROR_PAGE;
-        }
+        newStatus = statusService.findByCode(form.getStatus());
+        request.setUser(accountService.getAccountByUsername(SecurityService.getCurrentUsername()));
         statusService
                 .hasNextStatus(
                         request.getStatus(),
                         newStatus);
         request.setStatus(newStatus);
         request.setClosed(newStatus.isClosed());
-        try {
-            LOGGER.info(request);
-            requestService.setRequestInfo(request);
-        } catch (WorkshopException e) {
-            LOGGER.error("custom error message: " + e.getMessage());
-            model.addAttribute(
-                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
-                    e.getMessage());
-            return Pages.ERROR_PAGE;
-        }
+        LOGGER.info(request);
+        requestService.setRequestInfo(request);
         return SecurityService.getPathByAuthority();
     }
 }
