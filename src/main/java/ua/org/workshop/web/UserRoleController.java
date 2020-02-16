@@ -91,7 +91,7 @@ public class UserRoleController {
         historyRequest.setRating(rating);
         historyRequestService.update(historyRequest);
 
-        return SecurityService.getPathByAuthority();
+        return Pages.USER_PAGE_REDIRECT_UPDATE_HISTORY_REQUEST_SUCCESS;
     }
 
 
