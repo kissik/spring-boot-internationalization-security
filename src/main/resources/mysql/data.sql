@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 09, 2020 at 11:02 PM
+-- Generation Time: Feb 16, 2020 at 05:25 AM
 -- Server version: 5.7.23-0ubuntu0.16.04.1
 -- PHP Version: 7.0.30-0ubuntu0.16.04.1
 
@@ -24,21 +24,32 @@ SET time_zone = "+00:00";
 -- Dumping data for table `history_request_list`
 --
 
-INSERT INTO `history_request_list` (`id`, `ddate_created`, `ddate_updated`, `sdescription`, `stitle`, `nauthor`, `nstatus`, `nuser`, `nprice`, `scause`, `sreview`, `nrating`, `slang`) VALUES
-(8, '2020-01-13 17:14:32', '2020-01-13 17:14:32', 'May the Force be with you', 'Fix the Death Star, please', 12, 3, 4, '0', 'he is evil', NULL, -1, 'en_US'),
+INSERT INTO `history_request_list` (`id`, `ddate_created`, `ddate_updated`, `sdescription`, `stitle`, `nauthor`, `nstatus`, `nuser`, `nprice`, `scause`, `sreview`, `nrating`, `slanguage`) VALUES
+(8, '2020-01-13 17:14:32', '2020-02-14 14:25:35', 'May the Force be with you', 'Fix the Death Star, please', 12, 3, 4, '0', 'You are evil', 'You don\'t understand me', 3, 'en_US'),
 (14, '2020-01-14 22:44:05', '2020-01-14 22:44:05', 'На улюблені джинси', 'Поставити шкіряну латку', 1, 2, 4, '15', 'така ціна', NULL, -1, 'uk_UA'),
 (15, '2020-01-14 22:53:25', '2020-01-14 22:53:25', 'Її зламала войовнича верба, а нову мені, у найближчій час, точно не куплять... машина і все таке...', 'Чарівна паличка', 6, 2, 4, '143', 'робимо нову', NULL, -1, 'uk_UA'),
 (19, '2020-01-15 13:09:32', '2020-01-15 13:09:32', 'May the Force be with you', 'Fix the Death Star, please', 12, 3, 4, '0', '', NULL, -1, 'en_US'),
 (20, '2020-01-15 13:16:47', '2020-01-15 13:16:47', 'May the Force be with you', 'Fix the Death Star, please', 12, 3, 4, '0', 'This is the third attempt in a week - he is persistent', NULL, -1, 'en_US'),
 (21, '2020-01-15 13:29:23', '2020-01-15 13:29:23', 'Наш будинок "Барліг" підірвала Белатриса Лестрандж', 'Полагодити будинок', 6, 2, 4, '20000', '', NULL, -1, 'uk_UA'),
 (22, '2020-01-15 13:31:55', '2020-01-15 13:31:55', 'Наш будинок "Барліг" підірвала Белатриса Лестрандж', 'Полагодити будинок', 6, 4, 13, '2500', '', NULL, -1, 'uk_UA'),
-(25, '2020-01-15 21:52:31', '2020-01-15 21:52:31', 'Не вмикається люстра, був пшик і щось голосно ляснуло... лячно ((((( пишу з ноута при свічках - боюся вмикати електричні прилади', 'Лампочка', 10, 2, 1, '111', '111', NULL, -1, 'uk_UA');
+(25, '2020-01-15 21:52:31', '2020-01-15 21:52:31', 'Не вмикається люстра, був пшик і щось голосно ляснуло... лячно ((((( пишу з ноута при свічках - боюся вмикати електричні прилади', 'Лампочка', 10, 2, 1, '111', '111', NULL, -1, 'uk_UA'),
+(26, '2020-02-10 13:51:06', '2020-02-10 13:51:06', 'Some valuable description', 'Brand New Request', 1, 2, 1, '15', 'to be done', NULL, -1, 'en_US'),
+(31, '2020-02-12 11:24:34', '2020-02-12 20:23:10', 'На улюблені джинси', 'Поставити шкіряну латку', 1, 4, 37, '15', 'така ціна', 'Дякую!', 5, 'uk_UA'),
+(32, '2020-02-13 22:36:03', '2020-02-14 14:34:38', 'Some valuable description', 'Brand New Request', 1, 4, 1, '15', 'to be done', 'Thank you!', 4, 'en_US'),
+(33, '2020-02-14 00:14:26', '2020-02-14 14:28:14', 'In English!', 'New Request From Barbie', 10, 3, 1, '0', 'It does not make sense', NULL, -1, 'en_US'),
+(34, '2020-02-14 14:30:50', '2020-02-14 14:30:50', 'I want to buy the first edition : White Fang', 'Jack London', 55, 2, 1, '30', 'I have found it in a flea market for $20 ', NULL, -1, 'en_US'),
+(35, '2020-02-14 16:59:41', '2020-02-14 16:59:41', 'Ще один опис заявки', 'Ще одна заявка', 10, 3, 1, '0', 'Не відомо про що йдеться', NULL, -1, 'uk_UA'),
+(36, '2020-02-14 17:58:38', '2020-02-14 17:58:38', 'Було б чудово', 'Закрити усі TODO', 1, 4, 1, '0', '', NULL, -1, 'uk_UA'),
+(37, '2020-02-14 18:21:04', '2020-02-14 18:21:04', 'Її зламала войовнича верба, а нову мені, у найближчій час, точно не куплять... машина і все таке...', 'Чарівна паличка', 6, 4, 37, '143', 'робимо нову', NULL, -1, 'uk_UA'),
+(38, '2020-02-14 19:22:50', '2020-02-14 19:22:50', 'And some description', 'Brand New Request Again', 1, 4, 1, '0', '', NULL, -1, 'en_US'),
+(39, '2020-02-14 23:30:35', '2020-02-14 23:30:35', 'Description', 'Something', 1, 3, 1, '0', 'Something', NULL, -1, 'en_US'),
+(41, '2020-02-14 23:41:37', '2020-02-14 23:41:37', 'Текст опису', 'Ще одна заявка', 1, 3, 1, '0', 'Ще одна відмова', NULL, -1, 'uk_UA');
 
 --
 -- Dumping data for table `next_statuses`
 --
 
-INSERT INTO `next_statuses` (`nstatus`, `nnextstatus`) VALUES
+INSERT INTO `next_statuses` (`nstatus`, `nnext_status`) VALUES
 (1, 2),
 (1, 3),
 (2, 4);
@@ -47,20 +58,14 @@ INSERT INTO `next_statuses` (`nstatus`, `nnextstatus`) VALUES
 -- Dumping data for table `request_list`
 --
 
-INSERT INTO `request_list` (`id`, `ddate_created`, `ddate_updated`, `sdescription`, `stitle`, `nauthor`, `bclosed`, `nstatus`, `nuser`, `nprice`, `scause`, `slang`) VALUES
+INSERT INTO `request_list` (`id`, `ddate_created`, `ddate_updated`, `sdescription`, `stitle`, `nauthor`, `bclosed`, `nstatus`, `nuser`, `nprice`, `scause`, `slanguage`) VALUES
 (16, '2020-01-07 00:00:00', '2020-01-15 21:17:39', 'It does not boil water (((', 'Kettle', 1, 0, 1, 1, '0', NULL, 'en_US'),
 (17, '2020-01-08 00:00:00', '2020-01-15 00:00:00', 'Не вмикається люстра, був пшик і щось голосно ляснуло... лячно ((((( пишу з ноута при свічках - боюся вмикати електричні прилади', 'Лампочка', 10, 0, 2, 1, '111', '111', 'uk_UA'),
-(21, '2020-01-08 00:00:00', '2020-01-14 22:53:25', 'Її зламала войовнича верба, а нову мені, у найближчій час, точно не куплять... машина і все таке...', 'Чарівна паличка', 6, 0, 2, 4, '143', 'робимо нову', 'uk_UA'),
 (22, '2020-01-10 00:00:00', '2020-01-13 11:52:26', 'I feel that Force is going out', 'Lightsaber energy leak', 12, 0, 1, 12, '0', NULL, 'en_US'),
-(31, '2020-01-07 00:00:00', '2020-01-13 00:00:00', 'На улюблені джинси', 'Поставити шкіряну латку', 1, 0, 2, 4, '15', 'така ціна', 'uk_UA'),
 (36, '2020-01-15 11:34:42', '2020-01-15 11:34:42', 'Користуюсь вже місяць хочу наточити ножі, бо мені здається, що їх вже потрібно наточувати', 'Кавомолка', 10, 0, 1, 10, '0', NULL, 'uk_UA'),
-(37, '2020-01-29 16:17:36', '2020-01-29 16:17:36', 'Some valuable description', 'Brand New Request', 1, 0, 1, 1, '0', NULL, 'en_US'),
-(42, '2020-01-29 17:09:29', '2020-01-29 17:09:29', 'Ще один опис заявки', 'Ще одна заявка', 10, 0, 1, 10, '0', NULL, 'uk_UA'),
-(43, '2020-01-29 18:46:56', '2020-01-29 18:46:56', 'Текст', 'Ще одна заявка', 1, 0, 1, 1, '0', NULL, 'uk_UA'),
-(44, '2020-01-30 00:18:40', '2020-01-30 00:18:40', 'And some description', 'Brand New Request Again', 1, 0, 1, 1, '0', NULL, 'en_US'),
-(45, '2020-01-30 00:19:50', '2020-01-30 00:19:50', 'Було б чудово', 'Закрити усі TODO', 1, 0, 1, 1, '0', NULL, 'uk_UA'),
-(47, '2020-01-31 14:02:02', '2020-01-31 14:02:02', 'Description', 'Something', 1, 0, 1, 1, '0', NULL, 'en_US'),
-(48, '2020-02-04 16:28:32', '2020-02-04 16:28:32', 'In English!', 'New Request From Barbie', 10, 0, 1, 10, '0', NULL, 'en_US');
+(49, '2020-02-10 16:18:04', '2020-02-11 10:11:40', 'I want to change my helmet color to pink ', 'Helmet', 12, 0, 1, 12, '0', NULL, 'en_US'),
+(50, '2020-02-11 10:20:17', '2020-02-14 14:30:50', 'I want to buy the first edition : White Fang', 'Jack London', 55, 0, 2, 1, '30', 'I have found it in a flea market for $20 ', 'en_US'),
+(51, '2020-02-14 16:50:36', '2020-02-14 16:50:36', 'Супутник не ловить канали Сіріуса', 'Нова заявка №3', 1, 0, 1, 1, '0', NULL, 'uk_UA');
 
 --
 -- Dumping data for table `role`
@@ -76,7 +81,7 @@ INSERT INTO `role` (`id`, `scode`, `sname`) VALUES
 -- Dumping data for table `status`
 --
 
-INSERT INTO `status` (`id`, `scode`, `sname`, `bclose`) VALUES
+INSERT INTO `status` (`id`, `scode`, `sname`, `bclosed`) VALUES
 (1, 'REGISTER', 'Request was created by user', 0),
 (2, 'ACCEPT', 'Request was accepted by manager', 0),
 (3, 'REJECT', 'Request was rejected by manager', 1),
@@ -99,16 +104,13 @@ INSERT INTO `user_list` (`id`, `slogin`, `sfirst_name`, `slast_name`, `semail`, 
 (12, 'darth_vader', 'Anakin', 'Skywalker', 'darth.vader@death.star', '+380000000000', '$2a$11$bNtL1wumOhwLWf5Phyuq8O54HBSLqB4Sva9m9Yc8TgqfgCF3FM9.a', 1, '2020-01-08 22:52:22', '2020-01-08 22:52:22', 'Анакін', 'Скайвокер'),
 (13, 'papa_karlo', 'Papa', 'Karlo', 'papa.karlo@italy.com', '+380001144555', '$2a$11$M33yvVY0WJheGYB16eDGiOXpsf74Z0E5pUJBZZlgEeQIgxJm9vdrC', 1, '2020-01-09 16:10:14', '2020-01-09 16:10:14', 'Тато', 'Карло'),
 (23, 'hermione', 'Hermione', 'Granger', 'hermione.granger@gryffindor.hogwarts', '+380008888888', '$2a$11$3YwvF1WpNEYsmCbf28wUyu88wdB0XOXSLc4SIRoVikebHw8XJplkG', 1, '2020-01-10 11:06:10', '2020-01-10 11:06:10', 'Герміона', 'Гренджер'),
-(30, 'test_user', 'Text', 'User', 'test.user@test.com', '+385556664477', '$2a$11$6THrRUCBMt6XYEdCyejcneqP/wW4vCY3by/AIWghzl2L7o9g0Ia6C', 1, '2020-01-10 16:56:57', '2020-01-10 16:56:57', 'Тест', 'Користувач'),
 (35, 'albus_dumbledore', 'Albus', 'Dumbledore', 'albus.dumbledore@gryffindor.hogwarts', '+389999999999', '$2a$11$Mv4c5eLEX/xqwaNVLdw52OclgUHDvKygmX7MtdnabyVVodLXDCevG', 1, '2020-01-14 14:56:37', '2020-01-14 14:56:37', 'Албус', 'Дамблдор'),
 (37, 'dobby_free_elf', 'Dobby', 'Free Elf', 'dobby@malfoy.home', '+333333333333', '$2a$11$LiolbNO9trVu9Li6Y6CWO.xfHZC/yTS6thh1eNdpomEFr1v9t2llS', 1, '2020-01-15 12:25:26', '2020-01-15 12:25:26', 'Доббі', 'Вільний ельф'),
 (38, 'frodo_baggins', 'Frodo', 'Baggins', 'frodo.baggins@mount.doom', '+386547898765', '$2a$11$RKvdRemqN1olq8ifdWzcweuA4C.xj48qlyBOTiupytUzWf9jtmidW', 1, '2020-01-25 17:39:05', '2020-01-25 18:35:38', 'Фродо', 'Беггінс'),
 (39, 'gandalf_grey', 'Gandalf', 'The Grey', 'gandalf.grey@istari.wizard', '+380001111111', '$2a$11$.2Ykdh6fwXP5pK6l9GRFw.ru4r0TYr7xcIaPVNSM1rLYEH3t5ENxu', 1, '2020-01-25 18:05:22', '2020-01-25 18:36:00', 'Гендальф', 'Сірий'),
-(41, 'new_user', 'new_user', 'new_user', 'new_user@new_user', '+334455667788', '$2a$11$ED0RR3E9/aGykMnEVJLpqO7lmYNl960Phtf8PPLiaK0AnvV7WSoIu', 1, '2020-01-25 18:33:55', '2020-01-25 18:33:55', 'новий користувач', 'Новий користувач'),
-(46, 'test22', 'Text', 'Test', 'some.email@gmaillll.com', '+332211455772', '$2a$11$DNcP1DfLWKWbHfpGCQKmqewdDGi1oAbm/lmHM.6KnxfYvtcBT5W9S', 1, '2020-01-25 23:20:24', '2020-01-25 23:20:24', 'Текст', 'Прізвище'),
-(47, 'testtttttt', 'Test', 'Test', 'email@email.com', '+333331114477', '$2a$11$kYZor3d6QuURWL8WJuWM7.DEB3ThoDy2b9JYbvO6OafipCay3.uWy', 1, '2020-01-31 16:40:00', '2020-01-31 16:40:00', 'Назва', 'Прізвище'),
-(48, 'albus_dumbledore_2', 'Albus', 'Dumbledore', 'some.emailllll@gryffindor.hogwarts', '+389999999990', '$2a$11$3nd3v17ixr5XXIs.jNiRLuBuo8tYWgoklMy4k9qg3mtAaL0D60QZy', 1, '2020-01-31 17:02:31', '2020-01-31 17:02:31', 'Албус', 'Дамблдор'),
-(54, 'draco_malfoy', 'Draco', 'Malfoy', 'draco.malfoy@malfoy.corp', '+770007777777', '$2a$11$ic96ZjOofzt7D9vdjf2Ag.YogRQeogN9zAaQyJMJBtuc67Kjnwp/K', 1, '2020-02-06 23:16:35', '2020-02-06 23:16:35', 'Драко', 'Малфой');
+(54, 'draco_malfoy', 'Draco', 'Malfoy', 'draco.malfoy@malfoy.corp', '+770007777777', '$2a$11$ic96ZjOofzt7D9vdjf2Ag.YogRQeogN9zAaQyJMJBtuc67Kjnwp/K', 1, '2020-02-06 23:16:35', '2020-02-06 23:16:35', 'Драко', 'Малфой'),
+(55, 'nastia', 'Anastasiia', 'Lastname', 'anastasiia@iqcenter.com', '+380501114477', '$2a$11$MP0SRRA9hMBh5ffBJvRWJOgVff.d1IBNn8JrMBif4POBzWH5Jj2Yi', 1, '2020-02-11 09:50:59', '2020-02-11 09:50:59', 'Анастасія', 'Прізвище'),
+(56, 'severus', 'Severus', 'Snape', 'severus.snape@hogwarts.sly', '+220001144411', '$2a$11$.LqFLwloEQkAwun0Ply6A.TTiq1s3X9eazLOBmjHkJw70nXBjhnmq', 1, '2020-02-11 18:47:40', '2020-02-11 18:47:40', 'Северус', 'Снейп');
 
 --
 -- Dumping data for table `user_role`
@@ -117,9 +119,8 @@ INSERT INTO `user_list` (`id`, `slogin`, `sfirst_name`, `slast_name`, `semail`, 
 INSERT INTO `user_role` (`nuser`, `nrole`) VALUES
 (1, 1),
 (35, 1),
-(37, 1),
+(55, 1),
 (1, 2),
-(4, 2),
 (5, 2),
 (6, 2),
 (8, 2),
@@ -128,24 +129,23 @@ INSERT INTO `user_role` (`nuser`, `nrole`) VALUES
 (11, 2),
 (12, 2),
 (23, 2),
-(30, 2),
-(37, 2),
+(35, 2),
 (38, 2),
 (39, 2),
-(41, 2),
-(46, 2),
-(47, 2),
-(48, 2),
 (54, 2),
+(55, 2),
+(56, 2),
 (1, 3),
 (4, 3),
 (5, 3),
 (7, 3),
-(37, 3),
+(35, 3),
+(55, 3),
 (1, 4),
 (13, 4),
+(35, 4),
 (37, 4),
-(48, 4);
+(55, 4);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
