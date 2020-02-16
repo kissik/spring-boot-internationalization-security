@@ -21,6 +21,7 @@ public interface Pages {
     String ADMIN_ACCOUNT_EDIT_PAGE = "admin/edit-user-form";
 
     String ERROR_PAGE = "error";
+    String WORSHOP_ERROR_PAGE = "workshop-error";
 
     String WELCOME_PAGE = "welcome";
 

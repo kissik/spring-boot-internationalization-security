@@ -89,18 +89,11 @@ public class ManagerRoleController {
     public String getRequest(
             @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
             Model model) throws IllegalArgumentException {
-        try {
-            if (SecurityService.isCurrentUserHasRole(CURRENT_ROLE)) {
-                model.addAttribute(
-                        ApplicationConstants.ModelAttribute.View.REQUEST,
-                        requestService.findById(id)
+        SecurityService.isCurrentUserHasRole(CURRENT_ROLE);
+        model.addAttribute(
+                ApplicationConstants.ModelAttribute.View.REQUEST,
+                requestService.findById(id)
                 );
-            } else
-                return Pages.ACCESS_DENIED_PAGE_REDIRECT;
-        } catch (WorkshopException e) {
-            LOGGER.error("custom error message: " + e.getMessage());
-            model.addAttribute(ApplicationConstants.ModelAttribute.ERROR_MESSAGE, e.getMessage());
-        }
         return Pages.MANAGER_REQUEST_PAGE;
     }
 
@@ -114,19 +107,9 @@ public class ManagerRoleController {
         model.addAttribute(
                 ApplicationConstants.ModelAttribute.Form.MANAGER_UPDATE_REQUEST_FORM,
                 new ManagerUpdateRequestForm());
-        Request request;
-        try {
-            request = requestService.findById(id);
-        } catch (WorkshopException e) {
-            model.addAttribute(
-                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
-                    e.getMessage()
-            );
-            return Pages.ERROR_PAGE;
-        }
         model.addAttribute(
                 ApplicationConstants.ModelAttribute.View.REQUEST,
-                request);
+                requestService.findById(id));
         model.addAttribute(
                 ApplicationConstants.ModelAttribute.Form.MANAGER_UPDATE_REQUEST_FORM,
                 new ManagerUpdateRequestForm());
@@ -143,25 +126,11 @@ public class ManagerRoleController {
             BindingResult result,
             Model model) {
         Request request;
-        try {
-            request = requestService.findById(id);
-        } catch (WorkshopException e) {
-            model.addAttribute(
-                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
-                    e.getMessage()
-            );
-            return Pages.ERROR_PAGE;
-        }
+        request = requestService.findById(id);
         model.addAttribute(
                 ApplicationConstants.ModelAttribute.View.REQUEST,
                 request);
-        try {
-            SecurityService.checkTheAuthorities(CURRENT_ROLE, request.getStatus().getCode(), ApplicationConstants.UPDATE_REQUEST_MANAGER_VALID_STATUS);
-        } catch (WorkshopException e) {
-            if (e.getErrorCode().equals(WorkshopError.RIGHT_VIOLATION_ERROR.code()))
-                return Pages.ACCESS_DENIED_PAGE_REDIRECT;
-            return Pages.ERROR_PAGE;
-        }
+        SecurityService.checkTheAuthorities(CURRENT_ROLE, request.getStatus().getCode(), ApplicationConstants.UPDATE_REQUEST_MANAGER_VALID_STATUS);
         validateFields(form, result);
         Status newStatus = statusService.findByCode(form.getStatus());
         statusService
@@ -176,17 +145,12 @@ public class ManagerRoleController {
                         .ofNullable(form.getCause())
                         .orElse(ApplicationConstants.APP_STRING_DEFAULT_VALUE));
         request.setUser(accountService.getAccountByUsername(SecurityService.getCurrentUsername()));
-
-        if (!result.hasErrors())
-            try {
-                request.setStatus(newStatus);
-                request.setClosed(newStatus.isClosed());
-                LOGGER.info(request);
-                requestService.setRequestInfo(request);
-            } catch (WorkshopException e) {
-                LOGGER.error("custom error message: " + e.getMessage());
-            }
-
+        if (!result.hasErrors()){
+            request.setStatus(newStatus);
+            request.setClosed(newStatus.isClosed());
+            LOGGER.info(request);
+            requestService.setRequestInfo(request);
+        }
         return (result.hasErrors() ? Pages.MANAGER_UPDATE_REQUEST_FORM_PAGE : SecurityService.getPathByAuthority());
     }
 

@@ -77,12 +77,7 @@ public class RegistrationController {
         account.setPassword(passwordEncoder.encode(form.getPassword()));
 
         if (!result.hasErrors())
-            try {
-                accountService.registerAccount(account);
-            } catch (WorkshopException e) {
-                LOGGER.info("New account error: " + e.getMessage());
-                LOGGER.error("New account error: " + e.getMessage());
-            }
+            accountService.registerAccount(account);
 
         model.addAttribute(
                 ApplicationConstants.ModelAttribute.Form.LOGIN_USERNAME,
@@ -100,34 +95,19 @@ public class RegistrationController {
     }
 
     private void validateUsername(String username, Errors errors) {
-        try {
-            accountService.getAccountByUsername(username);
-        } catch (WorkshopException e) {
-            LOGGER.error("error: " + e.getMessage());
-            return;
-        }
+        accountService.getAccountByUsername(username);
         errors.rejectValue("username", "error.duplicate", new String[]{username}, "Login is already in use!");
         LOGGER.info("Validation failed: duplicate username -> " + username);
     }
 
     private void validateEmail(String username, String email, Errors errors) {
-        try {
-            accountService.getAccountByEmail(email);
-        } catch (WorkshopException e) {
-            LOGGER.error("error: " + e.getMessage());
-            return;
-        }
+        accountService.getAccountByEmail(email);
         LOGGER.debug("Validation failed: duplicate email -> " + email);
         errors.rejectValue("email", "error.duplicate", new String[]{email}, "email is already in use!");
     }
 
     private void validatePhone(String username, String phone, Errors errors) {
-        try {
-            accountService.getAccountByPhone(phone);
-        } catch (WorkshopException e) {
-            LOGGER.error("error: " + e.getMessage());
-            return;
-        }
+        accountService.getAccountByPhone(phone);
         LOGGER.debug("Validation failed: duplicate phone -> " + phone);
         errors.rejectValue("phone", "error.duplicate", new String[]{phone}, "The phone already in use!");
     }

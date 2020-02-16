@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Locale;
-import java.util.Optional;
 
 public class LocaleDTOService {
     private MessageSource messageSource;
@@ -46,19 +45,6 @@ public class LocaleDTOService {
             LOGGER.error("Number format exception : " + e.getMessage());
         }
         return defaultValue;
-    }
-
-    private static Integer tryParseInteger(String value, Integer defaultValue) {
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            LOGGER.error("Number format exception : " + e.getMessage());
-        }
-        return defaultValue;
-    }
-
-    String getNullableString(String nullableString, String defaultValue) {
-        return Optional.ofNullable(nullableString).orElse(defaultValue);
     }
 
 }

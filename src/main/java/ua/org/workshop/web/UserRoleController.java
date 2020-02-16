@@ -82,13 +82,10 @@ public class UserRoleController {
                     ApplicationConstants.PathVariable.ID + "}/edit")
     public String editHitoryRequest(
             @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
-            @RequestParam(ApplicationConstants.RequestAttributes.HISTORY_REQUEST_REVIEW_ATTRIBUTE) String review,
-            @RequestParam(ApplicationConstants.RequestAttributes.HISTORY_REQUEST_RATING_ATTRIBUTE) Long rating
+            @RequestParam(ApplicationConstants.HttpRequestParameter.HISTORY_REQUEST_FEEDBACK_PARAMETER) String review,
+            @RequestParam(ApplicationConstants.HttpRequestParameter.HISTORY_REQUEST_RATING_PARAMETER) Long rating
             ){
         HistoryRequest historyRequest = historyRequestService.findById(id);
-        LOGGER.info("upload history request : " + historyRequest.getTitle());
-        LOGGER.info("upload history request user : " + historyRequest.getAuthor().getUsername());
-
         SecurityService.checkUserUsername(historyRequest.getAuthor().getUsername());
         historyRequest.setReview(review);
         historyRequest.setRating(rating);
@@ -150,23 +147,16 @@ public class UserRoleController {
         Request request;
         Account author;
         Status status;
-        try {
-            request = toRequest(form, locale);
-            author = accountService.getAccountByUsername(SecurityService.getCurrentUsername());
-            status = statusService.findByCode(ApplicationConstants.REQUEST_DEFAULT_STATUS);
-            if (!result.hasErrors()) {
-                request.setStatus(status);
-                request.setAuthor(author);
-                request.setUser(author);
-                request.setClosed(status.isClosed());
-                requestService.newRequest(request);
-            }
-        } catch (WorkshopException e) {
-            LOGGER.error("custom error message: " + e.getMessage());
-            model.addAttribute(
-                    ApplicationConstants.ModelAttribute.ERROR_MESSAGE,
-                    e.getMessage());
-            return Pages.ERROR_PAGE;
+
+        request = toRequest(form, locale);
+        author = accountService.getAccountByUsername(SecurityService.getCurrentUsername());
+        status = statusService.findByCode(ApplicationConstants.REQUEST_DEFAULT_STATUS);
+        if (!result.hasErrors()) {
+            request.setStatus(status);
+            request.setAuthor(author);
+            request.setUser(author);
+            request.setClosed(status.isClosed());
+            requestService.newRequest(request);
         }
         return (result.hasErrors() ? Pages.USER_CREATE_REQUEST_FORM : Pages.USER_PAGE_REDIRECT_NEW_REQUEST_SUCCESS);
     }

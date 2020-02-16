@@ -10,6 +10,7 @@ import ua.org.workshop.web.dto.RequestDTO;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class RequestDTOService {
@@ -38,8 +39,8 @@ public class RequestDTOService {
                         locale)
         );
         requestDTO.setPrice(localeDTOService.getLocalePrice(locale, request.getPrice()));
-        requestDTO.setCause(localeDTOService.getNullableString(request.getCause(),
-                ApplicationConstants.APP_STRING_DEFAULT_VALUE));
+        requestDTO.setCause(Optional.ofNullable(request.getCause())
+                .orElse(ApplicationConstants.APP_STRING_DEFAULT_VALUE));
         requestDTO.setStatus(statusDTOService.getStatusDTO(request.getStatus(), locale));
         requestDTO.setAuthorDTO(accountDTOService.getAccountDTO(request.getAuthor()));
         requestDTO.setUser(accountDTOService.getAccountDTO(request.getUser()));
