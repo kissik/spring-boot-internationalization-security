@@ -153,7 +153,6 @@ public class WorkmanRoleController {
         model.addAttribute(
                 ApplicationConstants.ModelAttribute.View.REQUEST,
                 request);
-        LOGGER.info("request after --------------------->" + request.toString());
         if (result.hasErrors())
             return Pages.WORKMAN_UPDATE_REQUEST_FORM_PAGE;
         try {
@@ -172,6 +171,10 @@ public class WorkmanRoleController {
                 return Pages.ACCESS_DENIED_PAGE_REDIRECT;
             return Pages.ERROR_PAGE;
         }
+        statusService
+                .hasNextStatus(
+                        request.getStatus(),
+                        newStatus);
         request.setStatus(newStatus);
         request.setClosed(newStatus.isClosed());
         try {

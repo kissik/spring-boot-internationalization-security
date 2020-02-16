@@ -162,8 +162,12 @@ public class ManagerRoleController {
                 return Pages.ACCESS_DENIED_PAGE_REDIRECT;
             return Pages.ERROR_PAGE;
         }
-        result = validateFields(form, result);
+        validateFields(form, result);
         Status newStatus = statusService.findByCode(form.getStatus());
+        statusService
+                .hasNextStatus(
+                        request.getStatus(),
+                        newStatus);
         request.setPrice(
                 Optional.ofNullable(form.getPrice())
                         .orElse(ApplicationConstants.APP_DEFAULT_PRICE));

@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import ua.org.workshop.configuration.ApplicationConstants;
 import ua.org.workshop.domain.Account;
+import ua.org.workshop.domain.HistoryRequest;
 import ua.org.workshop.domain.Request;
 import ua.org.workshop.domain.Status;
 import ua.org.workshop.exception.WorkshopException;
@@ -53,7 +55,7 @@ public class UserRoleController {
 
     @GetMapping("/requests")
     @ResponseBody
-    public org.springframework.data.domain.Page userRequests(
+    public Page userRequests(
             @PageableDefault(
                     page = ApplicationConstants.Page.PAGE_DEFAULT_VALUE,
                     size = ApplicationConstants.Page.SIZE_DEFAULT_VALUE)
@@ -75,9 +77,30 @@ public class UserRoleController {
         ));
     }
 
+    @PostMapping(
+            "/history-requests/{" +
+                    ApplicationConstants.PathVariable.ID + "}/edit")
+    public String editHitoryRequest(
+            @PathVariable(ApplicationConstants.PathVariable.ID) Long id,
+            @RequestParam(ApplicationConstants.RequestAttributes.HISTORY_REQUEST_REVIEW_ATTRIBUTE) String review,
+            @RequestParam(ApplicationConstants.RequestAttributes.HISTORY_REQUEST_RATING_ATTRIBUTE) Long rating
+            ){
+        HistoryRequest historyRequest = historyRequestService.findById(id);
+        LOGGER.info("upload history request : " + historyRequest.getTitle());
+        LOGGER.info("upload history request user : " + historyRequest.getAuthor().getUsername());
+
+        SecurityService.checkUserUsername(historyRequest.getAuthor().getUsername());
+        historyRequest.setReview(review);
+        historyRequest.setRating(rating);
+        historyRequestService.update(historyRequest);
+
+        return SecurityService.getPathByAuthority();
+    }
+
+
     @GetMapping("/history-requests")
     @ResponseBody
-    org.springframework.data.domain.Page userHistoryRequests(
+    Page userHistoryRequests(
             @PageableDefault(
                     page = ApplicationConstants.Page.PAGE_DEFAULT_VALUE,
                     size = ApplicationConstants.Page.SIZE_DEFAULT_VALUE)
