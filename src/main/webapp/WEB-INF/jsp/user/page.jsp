@@ -18,6 +18,9 @@
              <c:if test="${param.created == true}">
                 <div class="alert alert-success"><spring:message code="request.create.message" /></div>
              </c:if>
+             <c:if test="${param.updated == true}">
+                <div class="alert alert-success"><spring:message code="request.update.message" /></div>
+             </c:if>
              <h1>
                 <spring:message code="requestsList.pageTitle" />
              </h1>
