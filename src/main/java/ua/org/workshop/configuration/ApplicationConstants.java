@@ -99,7 +99,6 @@ public interface ApplicationConstants {
         String COLUMN_STATUS = "nstatus";
         String COLUMN_AUTHOR = "nauthor";
         String COLUMN_USER = "nuser";
-        String COLUMN_CLOSED = "bclosed";
         String COLUMN_DATE_CREATED = "ddate_created";
         String COLUMN_DATE_UPDATED = "ddate_updated";
         String COLUMN_PRICE = "nprice";
@@ -130,11 +129,11 @@ public interface ApplicationConstants {
         String DEFAULT_ERROR_BUNDLE_MESSAGE = "error.contact.admin";
 
         interface Form {
-            String ACCOUNT_FORM = "account";
-            String ROLE_FORM = "role";
+            String ACCOUNT_FORM = "accountForm";
+            String ROLE_FORM = "roleForm";
             String MANAGER_UPDATE_REQUEST_FORM = "requestForm";
             String WORKMAN_UPDATE_REQUEST_FORM = "requestForm";
-            String REQUEST_FORM = "request";
+            String REQUEST_FORM = "requestForm";
             String LOGIN_USERNAME = "username";
         }
 

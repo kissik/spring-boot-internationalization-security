@@ -95,21 +95,31 @@ public class RegistrationController {
     }
 
     private void validateUsername(String username, Errors errors) {
-        accountService.getAccountByUsername(username);
-        errors.rejectValue("username", "error.duplicate", new String[]{username}, "Login is already in use!");
-        LOGGER.info("Validation failed: duplicate username -> " + username);
+        try {
+            accountService.getAccountByUsername(username);
+            errors.rejectValue("username", "error.duplicate", new String[]{username}, "Login is already in use!");
+            LOGGER.info("Validation failed: duplicate username -> " + username);
+        }catch(WorkshopException ignored){
+        }
     }
 
     private void validateEmail(String username, String email, Errors errors) {
-        accountService.getAccountByEmail(email);
-        LOGGER.debug("Validation failed: duplicate email -> " + email);
-        errors.rejectValue("email", "error.duplicate", new String[]{email}, "email is already in use!");
+        try{
+            accountService.getAccountByEmail(email);
+            LOGGER.debug("Validation failed: duplicate email -> " + email);
+            errors.rejectValue("email", "error.duplicate", new String[]{email}, "email is already in use!");
+        }
+        catch(WorkshopException ignored){
+        }
     }
 
     private void validatePhone(String username, String phone, Errors errors) {
-        accountService.getAccountByPhone(phone);
-        LOGGER.debug("Validation failed: duplicate phone -> " + phone);
-        errors.rejectValue("phone", "error.duplicate", new String[]{phone}, "The phone already in use!");
+        try{
+            accountService.getAccountByPhone(phone);
+            LOGGER.debug("Validation failed: duplicate phone -> " + phone);
+            errors.rejectValue("phone", "error.duplicate", new String[]{phone}, "The phone already in use!");
+        }catch(WorkshopException ignored){
+        }
     }
 
     private static Account toAccount(AccountForm form) {

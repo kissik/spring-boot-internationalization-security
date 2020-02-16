@@ -29,7 +29,7 @@
 			<div class="info alert"><spring:message code="editUser.user.save" /><a href="${userUrl}"><spring:message code="editUser.user.view" /></a></div>
 		</c:if>
 
-        <form:form cssClass="main" method="post" modelAttribute="role">
+        <form:form cssClass="main" method="post" modelAttribute="roleForm">
             <div class="form-group">
         	    <label>
         		    ${account.firstName} ${account.lastName}

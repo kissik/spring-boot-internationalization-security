@@ -56,7 +56,7 @@
                 <label for="price" class="workshop-field-label">
                     <spring:message code="editRequest.label.price" />
                 </label>
-                <form:input path="price" type="number" class="form-control" id="price" />
+                <form:input path="price" type="text" class="form-control" id="price" />
                 <c:set var="priceErrors"><form:errors path="price"/></c:set>
         		<c:if test="${not empty priceErrors}">
         		    <div class="alert alert-danger"><form:errors path="price"/></div>

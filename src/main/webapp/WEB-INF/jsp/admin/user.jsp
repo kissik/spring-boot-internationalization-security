@@ -23,8 +23,8 @@
         	<li class="breadcrumb-item"><a href="/"><spring:message code="home.pageTitle" /></a></li>
         	<li class="breadcrumb-item active"><a href="/admin/page"><spring:message code="usersList.pageTitle" /></a></li>
         </ol>
-        <c:if test="${param.updated == true}">
-            <div class="info alert"><spring:message code="user.save" /></div>
+        <c:if test="${param.update == true}">
+            <div class="alert alert-success"><spring:message code="user.save" /></div>
         </c:if>
         <h1><c:out value="${account.fullName}" /></h1>
         <form action="${deleteUserUrl}" method="post">
