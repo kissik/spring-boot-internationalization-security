@@ -127,7 +127,6 @@ td, th {
     overflow: hidden;
 	display: inline-block;
 	width: 25%;
-	white-space: nowrap;
     text-overflow: ellipsis;
 }
 
