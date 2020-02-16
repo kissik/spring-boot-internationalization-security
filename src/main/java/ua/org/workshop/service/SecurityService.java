@@ -10,9 +10,8 @@ import ua.org.workshop.web.Pages;
 
 public class SecurityService {
 
-    public static boolean isCurrentUserHasRole(String role) throws WorkshopException {
-        if (getPrincipal().hasRole(role)) return true;
-        throw new WorkshopException(WorkshopError.RIGHT_VIOLATION_ERROR);
+    public static boolean isCurrentUserHasRole(String role){
+        return getPrincipal().hasRole(role);
     }
 
     private static Authentication getAuthentication() {
