@@ -1,7 +1,6 @@
 var page = `user`;
 var urlPath = `/${page}/${requests}`;
 var urlPathHistory = `/${page}/history-${requests}`;
-var urlEditHistoryRequest = `/${page}/edit-history-request`;
 
 const doTheStuff = () => {
     wizard(urlPath, "on work");
@@ -26,11 +25,7 @@ const closed = () => {
 const updateHistoryRequest = (hiddenDesk, rowData, hiddenId) => {
     let form = document.createElement('form');
     form.setAttribute('id',`form-${hiddenId}`);
-    let requestId = document.createElement('input');
-    requestId.setAttribute('name','id');
-    requestId.setAttribute('value', rowData.id);
-    requestId.setAttribute('style','display:none');
-    form.appendChild(requestId);
+    form.setAttribute('method', 'post');
 
     let select = document.createElement('select');
     let div = document.createElement('div');
@@ -55,7 +50,7 @@ const updateHistoryRequest = (hiddenDesk, rowData, hiddenId) => {
 
     button.setAttribute('type', 'submit');
     button.setAttribute('class','btn btn-form-submit');
-    form.setAttribute('action', urlEditHistoryRequest);
+    form.setAttribute('action', `${urlPathHistory}/${rowData.id}/edit`);
     div.setAttribute('class','form-group');
     textarea.appendChild(document.createTextNode(rowData.review));
     textarea.setAttribute('class','form-control caps');

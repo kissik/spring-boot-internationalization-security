@@ -22,9 +22,11 @@ public enum WorkshopError {
     REQUEST_CREATE_NEW_ERROR(301, "error.request.create"),
     REQUEST_LIST_IS_EMPTY_ERROR(302, "error.request.list.empty"),
 
-    REQUEST_HISTORY_NOT_FOUND_ERROR(330, "error.request.history.not.found"),
-    REQUEST_LIST_HISTORY_IS_EMPTY_ERROR(331, "error.request.history.list.not.found"),
-    REQUEST_UPDATE_ERROR(333, "error.request.update"),
+    HISTORY_REQUEST_NOT_FOUND_ERROR(330, "error.request.history.not.found"),
+    HISTORY_REQUEST_UPDATE_ERROR(333, "error.request.history.update"),
+    HISTORY_REQUEST_LIST_IS_EMPTY_ERROR(335, "error.request.history.list.not.found"),
+
+    NEXT_STATUS_CHECK_ERROR(340, "error.request.update"),
 
     STATUS_NOT_FOUND_ERROR(350, "error.status.not.found"),
     STATUS_LIST_IS_EMPTY_ERROR(355, "error.status.list.not.found"),

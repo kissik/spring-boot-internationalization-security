@@ -47,6 +47,7 @@ form:invalid #form-submit {
 	border: none;
 	color: black;
 	box-shadow: none;
+	border: 1px solid #dee2e6;
 }
 
 .request-form{

@@ -40,7 +40,7 @@ public class HistoryRequestService {
     public HistoryRequest findById(Long id) throws WorkshopException {
         return historyRequestRepository
                 .findById(id)
-                .orElseThrow(() -> new WorkshopException(WorkshopError.REQUEST_HISTORY_NOT_FOUND_ERROR));
+                .orElseThrow(() -> new WorkshopException(WorkshopError.HISTORY_REQUEST_NOT_FOUND_ERROR));
     }
 
     public Page<HistoryRequest> findByLanguageAndStatus(
@@ -61,5 +61,14 @@ public class HistoryRequestService {
 
     public Page<HistoryRequest> findAll(Pageable pageable) {
         return historyRequestRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = false)
+    public void update(HistoryRequest historyRequest) throws WorkshopException {
+        try {
+            historyRequestRepository.save(historyRequest);
+        }catch (Exception e){
+            throw new WorkshopException(WorkshopError.HISTORY_REQUEST_UPDATE_ERROR);
+        }
     }
 }
