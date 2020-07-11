@@ -1,7 +1,6 @@
 package ua.org.workshop.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,16 +17,16 @@ import ua.org.workshop.repository.RequestRepository;
 @Transactional(readOnly = true)
 public class RequestService {
 
+    private final AccountService accountService;
     private final RequestRepository requestRepository;
+    private final StatusService statusService;
 
-    @Autowired
-    private StatusService statusService;
-    @Autowired
-    private AccountService accountService;
-
-    public RequestService(RequestRepository requestRepository) {
-        super();
+    public RequestService(AccountService accountService,
+                          RequestRepository requestRepository,
+                          StatusService statusService) {
+        this.accountService = accountService;
         this.requestRepository = requestRepository;
+        this.statusService = statusService;
     }
 
     @Transactional(readOnly = false)

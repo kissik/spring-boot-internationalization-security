@@ -35,8 +35,9 @@ public class SecurityService {
 
     public static void checkTheAuthorities(String role, String status, String statusCheck) throws WorkshopException {
         boolean check = true;
-        if (SecurityService.isCurrentUserHasRole(role) && status.equals(statusCheck))
+        if (SecurityService.isCurrentUserHasRole(role) && status.equals(statusCheck)) {
             check = false;
+        }
 
         if (check) throw new WorkshopException(WorkshopError.RIGHT_VIOLATION_ERROR);
     }

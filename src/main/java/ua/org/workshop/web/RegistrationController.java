@@ -1,7 +1,6 @@
 package ua.org.workshop.web;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,12 +27,17 @@ import java.util.Collections;
 @RequestMapping("/registration")
 public class RegistrationController {
 
-    @Autowired
-    private AccountService accountService;
-    @Autowired
-    private RoleService roleService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final AccountService accountService;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
+
+    public RegistrationController(AccountService accountService,
+                                  PasswordEncoder passwordEncoder,
+                                  RoleService roleService) {
+        this.accountService = accountService;
+        this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
+    }
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {

@@ -1,7 +1,6 @@
 package ua.org.workshop.web;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,16 +34,24 @@ import java.util.Locale;
 public class UserRoleController {
 
     private static final String CURRENT_ROLE = "USER";
-    @Autowired
-    private RequestService requestService;
-    @Autowired
-    private HistoryRequestService historyRequestService;
-    @Autowired
-    private AccountService accountService;
-    @Autowired
-    private StatusService statusService;
-    @Autowired
-    private MessageSource messageSource;
+
+    private final AccountService accountService;
+    private final HistoryRequestService historyRequestService;
+    private final MessageSource messageSource;
+    private final RequestService requestService;
+    private final StatusService statusService;
+
+    public UserRoleController(AccountService accountService,
+                              HistoryRequestService historyRequestService,
+                              MessageSource messageSource,
+                              RequestService requestService,
+                              StatusService statusService) {
+        this.accountService = accountService;
+        this.historyRequestService = historyRequestService;
+        this.messageSource = messageSource;
+        this.requestService = requestService;
+        this.statusService = statusService;
+    }
 
     @InitBinder
     private void initBinder(WebDataBinder binder) {

@@ -1,6 +1,5 @@
 package ua.org.workshop.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -20,8 +19,11 @@ import ua.org.workshop.service.AccountDetailsService;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    public AccountDetailsService accountDetailsService;
+    public final AccountDetailsService accountDetailsService;
+
+    public WebSecurityConfig(AccountDetailsService accountDetailsService) {
+        this.accountDetailsService = accountDetailsService;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

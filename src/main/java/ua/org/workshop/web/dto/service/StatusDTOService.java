@@ -10,7 +10,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class StatusDTOService {
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
     public StatusDTOService(MessageSource messageSource) {
         this.messageSource = messageSource;

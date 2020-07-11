@@ -1,7 +1,6 @@
 package ua.org.workshop.web;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * @author kissik
  */
+@Slf4j
 @Controller
 public class PortalController {
-    private static final Logger LOGGER = LogManager.getLogger(AdminRoleController.class);
 
     @GetMapping("/")
     public String welcome() {
@@ -31,7 +30,7 @@ public class PortalController {
 
     @RequestMapping(value = "/null-pointer", method = RequestMethod.GET)
     public String throwNullPointerException() {
-        LOGGER.info("This will throw a NullPointerException");
+        log.info("This will throw a NullPointerException");
 
         @SuppressWarnings("null")
         String str = null;

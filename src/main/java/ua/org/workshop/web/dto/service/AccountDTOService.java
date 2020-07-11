@@ -5,7 +5,7 @@ import ua.org.workshop.domain.Account;
 import ua.org.workshop.web.dto.AccountDTO;
 
 public class AccountDTOService {
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
     public AccountDTOService(MessageSource messageSource) {
         this.messageSource = messageSource;
