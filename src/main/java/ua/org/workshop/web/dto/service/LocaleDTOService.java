@@ -1,5 +1,6 @@
 package ua.org.workshop.web.dto.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.MessageSource;
@@ -12,9 +13,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Locale;
 
+@Slf4j
 public class LocaleDTOService {
     private MessageSource messageSource;
-    private static final Logger LOGGER = LogManager.getLogger(UserRoleController.class);
 
     LocaleDTOService(MessageSource messageSource) {
         this.messageSource = messageSource;
@@ -42,7 +43,7 @@ public class LocaleDTOService {
         try {
             return BigDecimal.valueOf(Double.parseDouble(value));
         } catch (NumberFormatException e) {
-            LOGGER.error("Number format exception : " + e.getMessage());
+            log.error("Number format exception : {}", e.getMessage());
         }
         return defaultValue;
     }
