@@ -31,10 +31,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `APP_GET_COUNT_PAGINATON` (IN `stmt`
   SET ncount = @counter;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `APP_INSERT_REQUEST_LIST` (IN `sdescription` VARCHAR(50) CHARSET utf8, IN `stitle` VARCHAR(50) CHARSET utf8, IN `nauthor` BIGINT(20), IN `bclosed` BOOLEAN, IN `nstatus` BIGINT(20), IN `nuser` BIGINT(20), IN `slang` VARCHAR(50) CHARSET utf8, OUT `nid` BIGINT(20) UNSIGNED)  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `APP_INSERT_REQUEST_LIST` (IN `sdescription` VARCHAR(50) CHARSET utf8, IN `stitle` VARCHAR(50) CHARSET utf8, IN `nauthor` BIGINT(20), IN `bclosed` BOOLEAN, IN `nstatus` BIGINT(20), IN `nuser` BIGINT(20), IN `slanguage` VARCHAR(50) CHARSET utf8, OUT `nid` BIGINT(20) UNSIGNED)  BEGIN
 
-INSERT INTO `request_list`(`sdescription`, `stitle`, `nauthor`, `bclosed`, `nstatus`, `nuser`, `slang`)
-VALUES (`sdescription`, `stitle`, `nauthor`, `bclosed`, `nstatus`, `nuser`, `slang`);
+INSERT INTO `request_list`(`sdescription`, `stitle`, `nauthor`, `bclosed`, `nstatus`, `nuser`, `slanguage`)
+VALUES (`sdescription`, `stitle`, `nauthor`, `bclosed`, `nstatus`, `nuser`, `slanguage`);
 
 SELECT LAST_INSERT_ID() into `nid`;
 
@@ -75,7 +75,7 @@ DEALLOCATE PREPARE stm;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `APP_PAGINATION_HISTORY_REQUEST_LIST_BY_LANGUAGE_AND_AUTHOR` (IN `nlimit` BIGINT(20) UNSIGNED, IN `noffset` BIGINT(20) UNSIGNED, IN `nauthor` BIGINT(20) UNSIGNED, IN `ssearch` VARCHAR(50), IN `slang` VARCHAR(50), IN `ssorting` VARCHAR(50), OUT `ncount` BIGINT(20) UNSIGNED)  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `APP_PAGINATION_HISTORY_REQUEST_LIST_BY_LANGUAGE_AND_AUTHOR` (IN `nlimit` BIGINT(20) UNSIGNED, IN `noffset` BIGINT(20) UNSIGNED, IN `nauthor` BIGINT(20) UNSIGNED, IN `ssearch` VARCHAR(50), IN `slanguage` VARCHAR(50), IN `ssorting` VARCHAR(50), OUT `ncount` BIGINT(20) UNSIGNED)  BEGIN
 
 DECLARE stmt varchar(1000);
 
@@ -84,7 +84,7 @@ SET stmt = concat(stmt, ' inner join `user_list` u on h.nuser = u.id');
 SET stmt = concat(stmt, ' inner join `user_list` a on h.nauthor = a.id');
 SET stmt = concat(stmt, ' inner join `status` s on h.nstatus = s.id');
 SET stmt = concat(stmt, ' where h.nauthor = ', `nauthor`);
-SET stmt = concat(stmt, ' AND h.slanguage = ''', `slang`, ''' ');
+SET stmt = concat(stmt, ' AND h.slanguage = ''', `slanguage`, ''' ');
 SET stmt = concat(stmt, ' AND s.bclosed = 1 ');
 if (`ssearch` is not null) and (length(`ssearch`) > 0) THEN
 	SET stmt = concat(stmt, ' AND (h.stitle like ''%', `ssearch`, '%'' or ');
@@ -155,7 +155,7 @@ DEALLOCATE PREPARE stm;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `APP_PAGINATION_REQUEST_LIST_BY_LANGUAGE_AND_AUTHOR` (IN `nlimit` BIGINT(20) UNSIGNED, IN `noffset` BIGINT(20) UNSIGNED, IN `nauthor` BIGINT(20) UNSIGNED, IN `ssearch` VARCHAR(50), IN `slang` VARCHAR(50), IN `ssorting` VARCHAR(50), OUT `ncount` BIGINT(20) UNSIGNED)  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `APP_PAGINATION_REQUEST_LIST_BY_LANGUAGE_AND_AUTHOR` (IN `nlimit` BIGINT(20) UNSIGNED, IN `noffset` BIGINT(20) UNSIGNED, IN `nauthor` BIGINT(20) UNSIGNED, IN `ssearch` VARCHAR(50), IN `slanguage` VARCHAR(50), IN `ssorting` VARCHAR(50), OUT `ncount` BIGINT(20) UNSIGNED)  BEGIN
 
 DECLARE stmt varchar(1000);
 
@@ -164,7 +164,7 @@ SET stmt = concat(stmt, ' inner join `user_list` u on r.nuser = u.id');
 SET stmt = concat(stmt, ' inner join `user_list` a on r.nauthor = a.id');
 SET stmt = concat(stmt, ' inner join `status` s on r.nstatus = s.id');
 SET stmt = concat(stmt, ' where r.nauthor = ', `nauthor`);
-SET stmt = concat(stmt, ' AND r.slanguage = ''', `slang`, '''');
+SET stmt = concat(stmt, ' AND r.slanguage = ''', `slanguage`, '''');
 if (`ssearch` is not null) and (length(`ssearch`) > 0) THEN
 	SET stmt = concat(stmt, ' AND (r.stitle like ''%', `ssearch`, '%'' or ');
     SET stmt = concat(stmt, ' r.sdescription like ''%', `ssearch`, '%'' )');
@@ -182,7 +182,7 @@ DEALLOCATE PREPARE stm;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `APP_PAGINATION_REQUEST_LIST_BY_LANGUAGE_AND_STATUS` (IN `nlimit` BIGINT(20) UNSIGNED, IN `noffset` BIGINT(20) UNSIGNED, IN `nstatus` BIGINT(20) UNSIGNED, IN `ssearch` VARCHAR(50), IN `slang` VARCHAR(50), IN `ssorting` VARCHAR(50), OUT `ncount` BIGINT(20) UNSIGNED)  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `APP_PAGINATION_REQUEST_LIST_BY_LANGUAGE_AND_STATUS` (IN `nlimit` BIGINT(20) UNSIGNED, IN `noffset` BIGINT(20) UNSIGNED, IN `nstatus` BIGINT(20) UNSIGNED, IN `ssearch` VARCHAR(50), IN `slanguage` VARCHAR(50), IN `ssorting` VARCHAR(50), OUT `ncount` BIGINT(20) UNSIGNED)  BEGIN
 
 DECLARE stmt varchar(1000);
 
@@ -191,7 +191,7 @@ SET stmt = concat(stmt, ' inner join `user_list` u on r.nuser = u.id');
 SET stmt = concat(stmt, ' inner join `user_list` a on r.nauthor = a.id');
 SET stmt = concat(stmt, ' inner join `status` s on r.nstatus = s.id');
 SET stmt = concat(stmt, ' where r.nstatus = ', `nstatus`);
-SET stmt = concat(stmt, ' AND r.slanguage = ''', `slang`, '''');
+SET stmt = concat(stmt, ' AND r.slanguage = ''', `slanguage`, '''');
 if (`ssearch` is not null) and (length(`ssearch`) > 0) THEN
 	SET stmt = concat(stmt, ' AND (r.stitle like ''%', `ssearch`, '%'' or ');
     SET stmt = concat(stmt, ' r.sdescription like ''%', `ssearch`, '%'' )');
@@ -314,8 +314,8 @@ DELIMITER $$
 CREATE TRIGGER `REQUEST_LIST_AFTER_UPDATE` AFTER UPDATE ON `request_list` FOR EACH ROW BEGIN
 DECLARE n_id bigint(20);
 
-INSERT INTO history_request_list(`sdescription`, `stitle`, `nauthor`, `nstatus`, `nuser`, `nprice`, `scause`, `slang`)
-VALUES(NEW.`sdescription`, NEW.`stitle`, NEW.`nauthor`, NEW.`nstatus`, NEW.`nuser`, NEW.`nprice`, NEW.`scause`, NEW.`slang`);
+INSERT INTO history_request_list(`sdescription`, `stitle`, `nauthor`, `nstatus`, `nuser`, `nprice`, `scause`, `slanguage`)
+VALUES(NEW.`sdescription`, NEW.`stitle`, NEW.`nauthor`, NEW.`nstatus`, NEW.`nuser`, NEW.`nprice`, NEW.`scause`, NEW.`slanguage`);
 
 END
 $$
