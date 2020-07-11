@@ -3,7 +3,6 @@ package ua.org.workshop.service;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,14 +20,13 @@ import ua.org.workshop.repository.AccountRepository;
 @Transactional(readOnly = true)
 public class AccountService {
 
-    @Autowired
-    private RoleService roleService;
-
     private final AccountRepository accountRepository;
+    private final RoleService roleService;
 
-    public AccountService(AccountRepository accountRepository) {
-        super();
+    public AccountService(AccountRepository accountRepository,
+                          RoleService roleService) {
         this.accountRepository = accountRepository;
+        this.roleService = roleService;
     }
 
     @Transactional(readOnly = false)

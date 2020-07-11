@@ -15,7 +15,7 @@ import java.util.Locale;
 
 @Slf4j
 public class LocaleDTOService {
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
     LocaleDTOService(MessageSource messageSource) {
         this.messageSource = messageSource;

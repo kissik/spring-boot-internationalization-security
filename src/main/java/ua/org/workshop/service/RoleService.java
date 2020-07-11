@@ -15,7 +15,6 @@ public class RoleService {
     private final RoleRepository roleRepository;
 
     public RoleService(RoleRepository roleRepository) {
-        super();
         this.roleRepository = roleRepository;
     }
 
@@ -24,7 +23,6 @@ public class RoleService {
                 .findByCode(roleStr)
                 .orElseThrow(() -> new WorkshopException(WorkshopError.ROLE_NOT_FOUND_ERROR));
     }
-
 
     @Transactional(readOnly = false)
     public boolean newRole(Role role) throws WorkshopException {

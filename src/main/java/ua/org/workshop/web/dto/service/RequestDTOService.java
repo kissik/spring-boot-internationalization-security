@@ -14,10 +14,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class RequestDTOService {
-    private MessageSource messageSource;
-    private StatusDTOService statusDTOService;
-    private AccountDTOService accountDTOService;
-    private LocaleDTOService localeDTOService;
+    private final MessageSource messageSource;
+    private final StatusDTOService statusDTOService;
+    private final AccountDTOService accountDTOService;
+    private final LocaleDTOService localeDTOService;
 
     public RequestDTOService(MessageSource messageSource) {
         this.messageSource = messageSource;

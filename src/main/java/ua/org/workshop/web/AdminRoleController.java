@@ -1,7 +1,6 @@
 package ua.org.workshop.web;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,14 +30,20 @@ public class AdminRoleController {
 
     private static final String CURRENT_ROLE = "ADMIN";
 
-    @Autowired
-    private AccountService accountService;
-    @Autowired
-    private HistoryRequestService historyRequestService;
-    @Autowired
-    private RequestService requestService;
-    @Autowired
-    private RoleService roleService;
+    private final AccountService accountService;
+    private final HistoryRequestService historyRequestService;
+    private final RequestService requestService;
+    private final RoleService roleService;
+
+    public AdminRoleController (AccountService accountService,
+                                HistoryRequestService historyRequestService,
+                                RequestService requestService,
+                                RoleService roleService) {
+        this.accountService = accountService;
+        this.historyRequestService = historyRequestService;
+        this.requestService = requestService;
+        this.roleService = roleService;
+    }
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {

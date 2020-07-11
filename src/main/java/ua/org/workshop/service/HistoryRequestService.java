@@ -18,7 +18,6 @@ public class HistoryRequestService {
     private final HistoryRequestRepository historyRequestRepository;
 
     public HistoryRequestService(HistoryRequestRepository historyRequestRepository) {
-        super();
         this.historyRequestRepository = historyRequestRepository;
     }
 

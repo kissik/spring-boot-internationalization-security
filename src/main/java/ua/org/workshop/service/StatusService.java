@@ -13,7 +13,6 @@ public class StatusService {
     private final StatusRepository statusRepository;
 
     public StatusService(StatusRepository statusRepository) {
-        super();
         this.statusRepository = statusRepository;
     }
 

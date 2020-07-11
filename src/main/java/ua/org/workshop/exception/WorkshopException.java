@@ -3,7 +3,7 @@ package ua.org.workshop.exception;
 import ua.org.workshop.enums.WorkshopError;
 
 public class WorkshopException extends RuntimeException {
-    private WorkshopError workshopError;
+    private final WorkshopError workshopError;
 
     public WorkshopException(WorkshopError workshopError) {
         super(workshopError.message());
