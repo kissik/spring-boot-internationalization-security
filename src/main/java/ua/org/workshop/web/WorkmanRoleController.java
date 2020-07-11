@@ -1,9 +1,9 @@
 package ua.org.workshop.web;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -17,23 +17,22 @@ import org.springframework.web.bind.annotation.*;
 import ua.org.workshop.configuration.ApplicationConstants;
 import ua.org.workshop.domain.Request;
 import ua.org.workshop.domain.Status;
-import ua.org.workshop.enums.WorkshopError;
-import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.AccountService;
 import ua.org.workshop.service.RequestService;
 import ua.org.workshop.service.SecurityService;
 import ua.org.workshop.service.StatusService;
+import ua.org.workshop.web.dto.RequestDTO;
 import ua.org.workshop.web.dto.service.RequestDTOService;
 import ua.org.workshop.web.form.WorkmanUpdateRequestForm;
 
 import javax.validation.Valid;
 import java.util.Locale;
 
+@Slf4j
 @Controller
 @RequestMapping("/workman")
 public class WorkmanRoleController {
 
-    private static final Logger LOGGER = LogManager.getLogger(WorkmanRoleController.class);
     private static final String CURRENT_ROLE = "WORKMAN";
 
     @Autowired
@@ -54,7 +53,7 @@ public class WorkmanRoleController {
 
     @GetMapping("/requests")
     @ResponseBody
-    org.springframework.data.domain.Page workmanRequests(
+    Page<RequestDTO> workmanRequests(
             @PageableDefault(
                     page = ApplicationConstants.Page.PAGE_DEFAULT_VALUE,
                     size = ApplicationConstants.Page.SIZE_DEFAULT_VALUE)
@@ -138,7 +137,7 @@ public class WorkmanRoleController {
                         newStatus);
         request.setStatus(newStatus);
         request.setClosed(newStatus.isClosed());
-        LOGGER.info(request);
+        log.info("request : {}", request);
         requestService.setRequestInfo(request);
         return SecurityService.getPathByAuthority();
     }

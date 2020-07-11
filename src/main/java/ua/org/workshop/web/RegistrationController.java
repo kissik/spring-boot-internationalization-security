@@ -1,7 +1,6 @@
 package ua.org.workshop.web;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -24,11 +23,10 @@ import ua.org.workshop.web.form.AccountForm;
 import javax.validation.Valid;
 import java.util.Collections;
 
+@Slf4j
 @Controller
 @RequestMapping("/registration")
 public class RegistrationController {
-
-    private static final Logger LOGGER = LogManager.getLogger(RegistrationController.class);
 
     @Autowired
     private AccountService accountService;
@@ -98,7 +96,7 @@ public class RegistrationController {
         try {
             accountService.getAccountByUsername(username);
             errors.rejectValue("username", "error.duplicate", new String[]{username}, "Login is already in use!");
-            LOGGER.info("Validation failed: duplicate username -> " + username);
+            log.info("Validation failed: duplicate username -> {}", username);
         }catch(WorkshopException ignored){
         }
     }
@@ -106,7 +104,7 @@ public class RegistrationController {
     private void validateEmail(String username, String email, Errors errors) {
         try{
             accountService.getAccountByEmail(email);
-            LOGGER.debug("Validation failed: duplicate email -> " + email);
+            log.debug("Validation failed: duplicate email -> {}", email);
             errors.rejectValue("email", "error.duplicate", new String[]{email}, "email is already in use!");
         }
         catch(WorkshopException ignored){
@@ -116,7 +114,7 @@ public class RegistrationController {
     private void validatePhone(String username, String phone, Errors errors) {
         try{
             accountService.getAccountByPhone(phone);
-            LOGGER.debug("Validation failed: duplicate phone -> " + phone);
+            log.debug("Validation failed: duplicate phone -> {}", phone);
             errors.rejectValue("phone", "error.duplicate", new String[]{phone}, "The phone already in use!");
         }catch(WorkshopException ignored){
         }

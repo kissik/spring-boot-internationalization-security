@@ -1,7 +1,6 @@
 package ua.org.workshop.service;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,11 +13,10 @@ import ua.org.workshop.enums.WorkshopError;
 import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.repository.RequestRepository;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 public class RequestService {
-
-    private static final Logger logger = LogManager.getLogger(RequestService.class);
 
     private final RequestRepository requestRepository;
 
@@ -34,15 +32,15 @@ public class RequestService {
 
     @Transactional(readOnly = false)
     public void newRequest(Request request) throws WorkshopException {
-        logger.info("Before New request creation");
+        log.info("Before New request creation");
 
         try {
             requestRepository.save(request);
         } catch (Exception e) {
-            logger.error(WorkshopError.DATABASE_CONNECTION_ERROR.message());
+            log.error(WorkshopError.DATABASE_CONNECTION_ERROR.message());
             throw new WorkshopException(WorkshopError.DATABASE_CONNECTION_ERROR);
         }
-        logger.info("New request was created: " + request.toString());
+        log.info("New request was created: {}", request.toString());
     }
 
     public Page<Request> findAllByLanguageAndAuthor(Pageable pageable, String language, Account author) {
@@ -65,12 +63,12 @@ public class RequestService {
     public void setRequestInfo(Request request) throws WorkshopException {
         try {
             requestRepository.saveAndFlush(request);
-            logger.info("Request was changed: " + request.toString());
+            log.info("Request was changed: {}", request.toString());
             if (request.getStatus().isClosed())
                 requestRepository.delete(request);
-            logger.info("Request was deleted");
+            log.info("Request was deleted");
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             throw new WorkshopException(WorkshopError.DATABASE_CONNECTION_ERROR);
         }
     }

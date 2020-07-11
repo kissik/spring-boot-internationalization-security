@@ -1,7 +1,5 @@
 package ua.org.workshop.service;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,8 +14,6 @@ import ua.org.workshop.repository.HistoryRequestRepository;
 @Service
 @Transactional(readOnly = true)
 public class HistoryRequestService {
-
-    private static final Logger LOGGER = LogManager.getLogger(HistoryRequestService.class);
 
     private final HistoryRequestRepository historyRequestRepository;
 

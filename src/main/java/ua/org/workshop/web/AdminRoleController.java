@@ -1,8 +1,8 @@
 package ua.org.workshop.web;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -14,8 +14,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import ua.org.workshop.configuration.ApplicationConstants;
 import ua.org.workshop.domain.Account;
+import ua.org.workshop.domain.HistoryRequest;
+import ua.org.workshop.domain.Request;
 import ua.org.workshop.domain.Role;
-import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.*;
 import ua.org.workshop.web.form.RoleForm;
 
@@ -23,11 +24,11 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.HashSet;
 
+@Slf4j
 @Controller
 @RequestMapping("/admin")
 public class AdminRoleController {
 
-    private static final Logger LOGGER = LogManager.getLogger(AdminRoleController.class);
     private static final String CURRENT_ROLE = "ADMIN";
 
     @Autowired
@@ -51,7 +52,7 @@ public class AdminRoleController {
 
     @GetMapping("/accounts")
     @ResponseBody
-    org.springframework.data.domain.Page workmanRequests(
+    Page<Account> workmanRequests(
             @PageableDefault(
                     page = ApplicationConstants.Page.PAGE_DEFAULT_VALUE,
                     size = ApplicationConstants.Page.SIZE_DEFAULT_VALUE)
@@ -69,7 +70,7 @@ public class AdminRoleController {
 
     @GetMapping(path = "/history-requests")
     @ResponseBody
-    org.springframework.data.domain.Page loadRequestsHistoryPage(
+    Page<HistoryRequest> loadRequestsHistoryPage(
             @PageableDefault(
                     page = ApplicationConstants.Page.PAGE_DEFAULT_VALUE,
                     size = ApplicationConstants.Page.SIZE_DEFAULT_VALUE)
@@ -87,7 +88,7 @@ public class AdminRoleController {
 
     @GetMapping(path = "/requests")
     @ResponseBody
-    org.springframework.data.domain.Page loadRequestsPage(
+    Page<Request> loadRequestsPage(
             @PageableDefault(
                     page = ApplicationConstants.Page.PAGE_DEFAULT_VALUE,
                     size = ApplicationConstants.Page.SIZE_DEFAULT_VALUE)

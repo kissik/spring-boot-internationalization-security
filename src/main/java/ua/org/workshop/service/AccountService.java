@@ -1,7 +1,6 @@
 package ua.org.workshop.service;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import ua.org.workshop.repository.AccountRepository;
 /**
  * @author kissik
  */
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 public class AccountService {
@@ -31,17 +31,15 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    private static final Logger LOGGER = LogManager.getLogger(AccountService.class);
-
     @Transactional(readOnly = false)
     public boolean registerAccount(Account account) throws WorkshopException {
         try {
             accountRepository.save(account);
         } catch (Exception e) {
-            LOGGER.error("error: " + e.getMessage());
+            log.error("error: {}", e.getMessage());
             throw new WorkshopException(WorkshopError.ACCOUNT_CREATE_NEW_ERROR);
         }
-        LOGGER.info("Account " + account.getFullNameOrigin() + " was successfully created");
+        log.info("Account {} was successfully created", account.getFullNameOrigin());
         return true;
     }
 
@@ -50,10 +48,10 @@ public class AccountService {
         try {
             accountRepository.saveAndFlush(account);
         } catch (Exception e) {
-            LOGGER.error("error: " + e.getMessage());
+            log.error("error: {}", e.getMessage());
             throw new WorkshopException(WorkshopError.ACCOUNT_UPDATE_ERROR);
         }
-        LOGGER.info("Account " + account.getUsername() + " was successfully updated");
+        log.info("Account {} was successfully updated", account.getUsername());
     }
 
     @Transactional(readOnly = false)

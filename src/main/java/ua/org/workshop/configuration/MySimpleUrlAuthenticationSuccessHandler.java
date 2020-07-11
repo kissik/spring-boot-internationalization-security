@@ -1,7 +1,6 @@
 package ua.org.workshop.configuration;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -14,10 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+@Slf4j
 public class MySimpleUrlAuthenticationSuccessHandler
         implements AuthenticationSuccessHandler {
-
-    private static final Logger LOGGER = LogManager.getLogger(MySimpleUrlAuthenticationSuccessHandler.class);
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
@@ -37,9 +35,7 @@ public class MySimpleUrlAuthenticationSuccessHandler
         String targetUrl = SecurityService.getPathByAuthority();
 
         if (response.isCommitted()) {
-            LOGGER.debug(
-                    "Response has already been committed. Unable to redirect to "
-                            + targetUrl);
+            log.debug("Response has already been committed. Unable to redirect to {}", targetUrl);
             return;
         }
 

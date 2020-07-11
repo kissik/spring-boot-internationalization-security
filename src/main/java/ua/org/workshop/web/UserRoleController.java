@@ -1,7 +1,6 @@
 package ua.org.workshop.web;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -19,8 +18,9 @@ import ua.org.workshop.domain.Account;
 import ua.org.workshop.domain.HistoryRequest;
 import ua.org.workshop.domain.Request;
 import ua.org.workshop.domain.Status;
-import ua.org.workshop.exception.WorkshopException;
 import ua.org.workshop.service.*;
+import ua.org.workshop.web.dto.HistoryRequestDTO;
+import ua.org.workshop.web.dto.RequestDTO;
 import ua.org.workshop.web.dto.service.HistoryRequestDTOService;
 import ua.org.workshop.web.dto.service.RequestDTOService;
 import ua.org.workshop.web.form.RequestForm;
@@ -29,11 +29,11 @@ import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.Locale;
 
+@Slf4j
 @Controller
 @RequestMapping("/user")
 public class UserRoleController {
 
-    private static final Logger LOGGER = LogManager.getLogger(UserRoleController.class);
     private static final String CURRENT_ROLE = "USER";
     @Autowired
     private RequestService requestService;
@@ -55,7 +55,7 @@ public class UserRoleController {
 
     @GetMapping("/requests")
     @ResponseBody
-    public Page userRequests(
+    public Page<RequestDTO> userRequests(
             @PageableDefault(
                     page = ApplicationConstants.Page.PAGE_DEFAULT_VALUE,
                     size = ApplicationConstants.Page.SIZE_DEFAULT_VALUE)
@@ -97,7 +97,7 @@ public class UserRoleController {
 
     @GetMapping("/history-requests")
     @ResponseBody
-    Page userHistoryRequests(
+    Page<HistoryRequestDTO> userHistoryRequests(
             @PageableDefault(
                     page = ApplicationConstants.Page.PAGE_DEFAULT_VALUE,
                     size = ApplicationConstants.Page.SIZE_DEFAULT_VALUE)
